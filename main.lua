@@ -7,6 +7,8 @@ require("modules.gamectx")
 require("modules.gamestate")
 
 GameCtx = CTX.MENU
+world = World
+debugMode = true
 
 p1 = require("modules.entities.player")
 

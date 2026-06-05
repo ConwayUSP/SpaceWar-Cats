@@ -1,0 +1,14 @@
+{
+    "diagnostics": {
+        "globals": [
+            "love"
+        ],
+        "disable": [
+            "duplicate-set-field",
+            "lowercase-global"
+        ]
+    },
+    "workspace": {
+        "checkThirdParty": false
+    }
+}

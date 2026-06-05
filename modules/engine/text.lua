@@ -1,9 +1,15 @@
 ----------------------------------------
+-- Importações de Módulos
+----------------------------------------
+require("modules.system.render")
+
+----------------------------------------
 -- Classe Text
 ----------------------------------------
 
 Text = {}
 Text.__index = Text
+Text.type = "Text"
 
 function Text.new(content, size, color, pos, rotation, centerOffset, lifetime, updateFunc, maxWidth)
 	local text = setmetatable({}, Text)
@@ -88,7 +94,7 @@ function TextPhysical.new(content, size, color, pos, rotation, centerOffset, lif
 
 	local w, h = text:getDimensions()
 
-	text.body = love.physics.newBody(World.world, pos[1], pos[2], "dynamic")
+	text.body = love.physics.newBody(Physics.world, pos[1], pos[2], "dynamic")
 	text.body:setFixedRotation(true)
 	text.realSize = { width = w, height = h }
 	text.shape = love.physics.newRectangleShape(w, h)
@@ -96,7 +102,7 @@ function TextPhysical.new(content, size, color, pos, rotation, centerOffset, lif
 	text.fixture:setUserData(text)
 	text.fixture:setFilterData(
 		CATEGORY.TEXT, 
-		CATEGORY.PLAYER, 
+		CATEGORY.PLAYER + CATEGORY.PLAYER_BULLET, 
 		0
 	)
 	text.fixture:setSensor(true)
@@ -107,12 +113,7 @@ end
 
 function TextPhysical:draw()
 	Text.draw(self)
-
-	if debugMode then
-		love.graphics.setColor(1, 0, 0)
-		local x, y = self.body:getPosition()
-		love.graphics.rectangle("line", x - self.realSize.width / 2, y - self.realSize.height / 2, self.realSize.width, self.realSize.height)
-	end
+	debugRender(self)
 
 end
 

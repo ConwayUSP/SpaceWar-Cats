@@ -4,6 +4,8 @@
 require("modules.engine.text")
 require("modules.utils.utils")
 require("modules.engine.physics")
+require("modules.entities.enemy")
+require("modules.constructor.enemy")
 
 ----------------------------------------
 -- Estado do Battle
@@ -21,33 +23,40 @@ BattleState.sounds = {}
 BattleState.timer = 0
 
 function BattleState:load()
-  
+	local width, height = VIRTUAL_WIDTH, VIRTUAL_HEIGHT
+  newBasicEnemy(width - 50, height / 3)
+	newFastEnemy(width - 50, height * 2 / 3)
 end
 
 function BattleState:update(dt)
-  World.world:update(dt)
+  Physics:update(dt)
   p1:update(dt)
+	enemyManager:update(dt)
+	pProjectiles:update(dt)
+	eProjectiles:update(dt)
 
 	updateTexts(self.texts, dt)
 	cleanUpTexts(self.texts)
 end
 
 function BattleState:draw()
-  local screenW, screenH = love.graphics.getWidth(), love.graphics.getHeight()
-
-	-- background
-	-- local bg = self.sprites.bg
-	-- local bgW, bgH = bg:getWidth(), bg:getHeight()
-	-- local scale = math.max(screenW / bgW, screenH / bgH)
-	-- local drawX = (screenW - bgW * scale) / 2
-	-- local drawY = (screenH - bgH * scale) / 2
-	-- love.graphics.draw(bg, drawX, drawY, 0, scale, scale)
-
   p1:draw()
+	enemyManager:draw()
+	pProjectiles:draw()
+	eProjectiles:draw()
+
   drawTexts(self.texts)
 
 	-- reset de cor
 	love.graphics.setColor(1, 1, 1, 1)
+end
+
+function BattleState:keypressed(key, scancode, isrepeat)
+	p1:keypressed(key, scancode, isrepeat)
+end
+
+function BattleState:mousepressed( x, y, button, istouch, presses )
+	p1:mousepressed(x, y, button, istouch, presses)
 end
 
 return BattleState

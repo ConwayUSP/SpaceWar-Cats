@@ -11,9 +11,10 @@ GameCtx = CTX.MENU
 world = World
 debugMode = true
 
-newEnemy1 = require("modules.constructor.enemy1")
-enemyManager = require("modules.engine.enemyManager")
 p1 = require("modules.entities.player")
+enemies = require("modules.constructor.enemy")
+enemyManager = require("modules.engine.enemyManager")
+projectiles = require("modules.constructor.projectile")
 
 
 -- Função auxiliar para trocar de contexto e carregar o novo estado
@@ -32,17 +33,24 @@ end
 function love.load()
 	-- carrega o estado inicial manualmente para usar uma transição
 	GAMESTATE[GameCtx]:load()
-	newEnemy1(1800, 100)
+	enemies.spawnBasic(1800, 50)
+	enemies.spawnFast(1800, 80)
+
 end
 
 function love.update(dt)
 	GAMESTATE[GameCtx]:update(dt)
 	enemyManager.update(dt)
+	projectiles.proj1:update(dt)
+	projectiles.proj2:update(dt)
 end
 
 function love.draw()
 	GAMESTATE[GameCtx]:draw()
 	enemyManager.draw()
+	projectiles.proj1:draw()
+	projectiles.proj2:draw()
+
 end
 
 function love.keypressed(key, scancode, isrepeat)

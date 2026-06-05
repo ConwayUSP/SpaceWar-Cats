@@ -1,4 +1,3 @@
-
 local enemyManager = {}
 enemyManager.list = {}
 
@@ -9,7 +8,7 @@ end
 function enemyManager.update(dt)
     for i = #enemyManager.list, 1, -1 do
         local e = enemyManager.list[i]
-        e:move(dt)
+        e:update(dt)
         if e.isDead then
             table.remove(enemyManager.list, i)
         end
@@ -19,9 +18,7 @@ end
 function enemyManager.draw()
     for i = 1, #enemyManager.list do
         local e = enemyManager.list[i]
-        
-        -- AQUI É A MÁGICA: O gerenciador chama o 'draw' que está lá no Enemy.lua!
-        e:draw() 
+        e:draw()
     end
 end
 

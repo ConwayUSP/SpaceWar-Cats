@@ -18,6 +18,9 @@ function SetGameCtx(newCtx)
 			sound:stop()
 		end
 	end
+
+  GameCtx = newCtx
+  GAMESTATE[GameCtx]:load()
 end
 
 function love.load()

@@ -19,12 +19,9 @@ MenuState.sounds = {}
 MenuState.timer = 0
 
 function MenuState:load()
-	local width, height = love.graphics.getDimensions()
+	local width, height = VIRTUAL_WIDTH, VIRTUAL_HEIGHT
 
-	-- sprites
-	-- self.sprites.bg = love.graphics.newImage("assets/UI/menu/menu_bg.png")
-
-	World:load()
+	Physics:load()
 	p1:load()
 
 	-- texts
@@ -33,7 +30,6 @@ function MenuState:load()
 		65,
 		{ 1, 1, 1, 1 },
 		{ width / 2, height / 2 },
-		-- { 50, height / 2 - 200 },
 		0,
 		true,
 		math.huge,
@@ -47,25 +43,18 @@ function MenuState:load()
 end
 
 function MenuState:update(dt)
-	World.world:update(dt)
+	Physics:update(dt)
   p1:update(dt)
+	pProjectiles:update(dt)
 	updateTexts(self.texts, dt)
 
 	cleanUpTexts(self.texts)
 end
 
 function MenuState:draw()
-	local screenW, screenH = love.graphics.getWidth(), love.graphics.getHeight()
-
-	-- background
-	-- local bg = self.sprites.bg
-	-- local bgW, bgH = bg:getWidth(), bg:getHeight()
-	-- local scale = math.max(screenW / bgW, screenH / bgH)
-	-- local drawX = (screenW - bgW * scale) / 2
-	-- local drawY = (screenH - bgH * scale) / 2
-	-- love.graphics.draw(bg, drawX, drawY, 0, scale, scale)
-
   p1:draw()
+	pProjectiles:draw()
+
 	drawTexts(self.texts)
 
 	-- reset de cor
@@ -78,6 +67,10 @@ function MenuState:keypressed(key, scancode, isrepeat)
 	if key == "return" then
 		SetGameCtx(CTX.BATTLE)
 	end
+end
+
+function MenuState:mousepressed( x, y, button, istouch, presses )
+	p1:mousepressed(x, y, button, istouch, presses)
 end
 
 return MenuState

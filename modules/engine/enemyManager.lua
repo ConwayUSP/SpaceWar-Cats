@@ -1,25 +1,28 @@
-local enemyManager = {}
-enemyManager.list = {}
+local EnemyManager = {}
+EnemyManager.list = {}
+EnemyManager.type = "EnemyManager"
 
-function enemyManager.add(enemy)
-    table.insert(enemyManager.list, enemy)
+function EnemyManager:add(enemy)
+    table.insert(self.list, enemy)
 end
 
-function enemyManager.update(dt)
-    for i = #enemyManager.list, 1, -1 do
-        local e = enemyManager.list[i]
-        e:update(dt)
+function EnemyManager:update(dt)
+    for i = #self.list, 1, -1 do
+        local e = self.list[i]
         if e.isDead then
-            table.remove(enemyManager.list, i)
+            table.remove(self.list, i)
+
+        else
+            e:update(dt)
         end
     end
 end
 
-function enemyManager.draw()
-    for i = 1, #enemyManager.list do
-        local e = enemyManager.list[i]
+function EnemyManager:draw()
+    for i = 1, #self.list do
+        local e = self.list[i]
         e:draw()
     end
 end
 
-return enemyManager
+return EnemyManager

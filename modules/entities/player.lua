@@ -78,11 +78,12 @@ end
 function Player:die()
   self.isDead = true
   self.body:destroy()
+  self.weapon:destroy()
 end
 
 function Player:takeDamage(damage)
   self.hp = self.hp - damage
-  if self.hp <= 0 then
+  if self.hp <= 0 and not self.isDead then
     self:die()
   end
 end

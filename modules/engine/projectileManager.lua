@@ -20,6 +20,15 @@ function ProjectileManager:update(dt)
   end
 end
 
+function ProjectileManager:remove(projectile)
+  for i = #self.projectiles, 1, -1 do
+      if self.projectiles[i] == projectile then
+          table.remove(self.projectiles, i)
+          break
+      end
+  end
+end
+
 function ProjectileManager:draw()
   for i = 1, #self.projectiles do
       local p = self.projectiles[i]

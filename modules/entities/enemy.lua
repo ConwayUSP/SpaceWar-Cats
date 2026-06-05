@@ -97,11 +97,12 @@ end
 function Enemy:die()
   self.isDead = true
   self.body:destroy()
+  self.weapon:destroy()
 end
 
 function Enemy:takeDamage(damage)
   self.hp = self.hp - damage
-  if self.hp <= 0 then
+  if self.hp <= 0 and not self.isDead then
     self:die()
   end
 end

@@ -32,14 +32,25 @@ function Projectile:shot(origin)
     table.insert(self.events, shotEvent)
 end
 
+function Projectile:destroy()
+    for _, shotEvent in pairs(self.events) do
+        shotEvent:destroy()
+    end
+    self.projManager:remove(self)
+end
+
 function Projectile:update(dt)
     for i = #self.events, 1, -1 do
         local shot = self.events[i]
-        shot.trajectory(shot, dt)
-
-        local x, y = shot.body:getPosition()
-        if (x > VIRTUAL_WIDTH + 100) or (x < -100) or (y > VIRTUAL_HEIGHT + 100) or (y < -100) then
-            shot:destroy(i)
+        
+        if not shot.active then
+            table.remove(self.events, i)
+        else
+            shot.trajectory(shot, dt)
+            local x, y = shot.body:getPosition()
+            if (x > VIRTUAL_WIDTH + 100) or (x < -100) or (y > VIRTUAL_HEIGHT + 100) or (y < -100) then
+                shot:destroy(i)
+            end
         end
     end
 end
@@ -47,10 +58,11 @@ end
 function Projectile:draw()
     for i = 1, #self.events do
         local shot = self.events[i]
-        local x, y = shot.body:getPosition()
-        love.graphics.draw(self.image, x, y, 0, 1, 1, self.image:getWidth() / 2, self.image:getHeight() / 2)
-        debugRender(shot)
-        
+        if shot.active then
+            local x, y = shot.body:getPosition()
+            love.graphics.draw(self.image, x, y, 0, 1, 1, self.image:getWidth() / 2, self.image:getHeight() / 2)
+            debugRender(shot)
+        end
     end
 end
 
@@ -105,5 +117,4 @@ function ShotEvent:destroy(i)
 
     self.body:destroy()
     self.active = false
-    table.remove(self.projectileState.events, i)
 end

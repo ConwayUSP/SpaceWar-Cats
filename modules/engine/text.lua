@@ -44,14 +44,6 @@ function Text:update(dt, ...)
 	end
 end
 
-function cleanUpTexts(texts)
-	for k, v in pairs(texts) do
-		if v.isOver then
-			texts[k] = nil
-		end
-	end
-end
-
 function Text:draw()
 	-- salvar estado atual
 	local prevFont = love.graphics.getFont()
@@ -85,4 +77,65 @@ function Text:draw()
 	-- restaurar estado anterior
 	love.graphics.setFont(prevFont)
 	love.graphics.setColor(prevR, prevG, prevB, prevA)
+end
+
+TextPhysical = setmetatable({}, { __index = Text })
+TextPhysical.__index = TextPhysical
+
+function TextPhysical.new(content, size, color, pos, rotation, centerOffset, lifetime, updateFunc, maxWidth, onHit)
+	local text = Text.new(content, size, color, pos, rotation, centerOffset, lifetime, updateFunc, maxWidth)
+	setmetatable(text, TextPhysical)
+
+	local w, h = text:getDimensions()
+
+	text.body = love.physics.newBody(World.world, pos[1], pos[2], "dynamic")
+	text.body:setFixedRotation(true)
+	text.realSize = { width = w, height = h }
+	text.shape = love.physics.newRectangleShape(w, h)
+	text.fixture = love.physics.newFixture(text.body, text.shape)
+	text.fixture:setUserData(text)
+	text.fixture:setFilterData(
+		CATEGORY.TEXT, 
+		CATEGORY.PLAYER, 
+		0
+	)
+	text.fixture:setSensor(true)
+	text.onHit = onHit
+
+	return text
+end
+
+function TextPhysical:draw()
+	Text.draw(self)
+
+	if debugMode then
+		love.graphics.setColor(1, 0, 0)
+		local x, y = self.body:getPosition()
+		love.graphics.rectangle("line", x - self.realSize.width / 2, y - self.realSize.height / 2, self.realSize.width, self.realSize.height)
+	end
+
+end
+
+---------------------------------
+-- Global
+--------------------------------
+
+function cleanUpTexts(texts)
+	for k, v in pairs(texts) do
+		if v.isOver then
+			texts[k] = nil
+		end
+	end
+end
+
+function updateTexts(texts, dt)
+	for _, text in pairs(texts) do
+		text:update(dt)
+	end
+end
+
+function drawTexts(texts)
+	for _, text in pairs(texts) do
+		text:draw()
+	end
 end

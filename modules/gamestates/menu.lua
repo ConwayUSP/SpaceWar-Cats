@@ -22,6 +22,7 @@ function MenuState:load()
 	local width, height = VIRTUAL_WIDTH, VIRTUAL_HEIGHT
 
 	Physics:load()
+	planet:load()
 	p1:load()
 
 	-- texts
@@ -46,12 +47,14 @@ function MenuState:update(dt)
 	Physics:update(dt)
   p1:update(dt)
 	pProjectiles:update(dt)
+	planet:update(dt)
 	updateTexts(self.texts, dt)
 
 	cleanUpTexts(self.texts)
 end
 
 function MenuState:draw()
+	planet:draw()
   p1:draw()
 	pProjectiles:draw()
 

@@ -96,7 +96,7 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
     shot.fixture:setUserData(shot)
 
     local mask = (projectileState.category == CATEGORY.PLAYER_BULLET) and CATEGORY.ENEMY or CATEGORY.PLAYER
-    mask = mask + CATEGORY.TEXT
+    mask = mask + CATEGORY.TEXT + CATEGORY.PLANET
     shot.fixture:setFilterData(
         projectileState.category, 
         mask, 

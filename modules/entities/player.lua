@@ -20,7 +20,7 @@ Player.type = "Player"
 
 function Player:load()
   self.initialPos = vec(50, VIRTUAL_HEIGHT / 2)
-  self.size = 20
+  self.size = 15
   self.weapon = Projectile.new("playerProj", moveDirection, nil, pProjectiles, {
     speed = 80000,
     damage = 40,

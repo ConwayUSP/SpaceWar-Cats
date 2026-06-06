@@ -5,6 +5,7 @@ require("modules.engine.animation")
 require("modules.utils.utils")
 require("modules.engine.physics")
 require("modules.system.render")
+require("modules.system.shaders")
 require("table")
 
 ----------------------------------------
@@ -42,6 +43,7 @@ function Enemy.new(name, spawnPos, move, weapon, customShot, config)
 
   enemy.shootTimer = 0
   enemy.cooldownTimer = 0
+  enemy.damagedTimer = 0
   enemy.timer = 0
   enemy.shoots = 0
   enemy.image = love.graphics.newImage(pngPathFormat({ "assets", "sprites", "enemies", enemy.name }))
@@ -55,6 +57,14 @@ end
 function Enemy:update(dt)
   self:updateMotion(dt)
   self:updateShooting(dt)
+  self:updateState(dt)
+end
+
+function Enemy:updateState(dt)
+  if self.damagedTimer > 0 then
+    self.damagedTimer = self.damagedTimer - dt
+  end
+  
 end
 
 function Enemy:updateMotion(dt)
@@ -105,6 +115,7 @@ end
 
 function Enemy:takeDamage(damage)
   self.hp = self.hp - damage
+  self.damagedTimer = 0.1
   if self.hp <= 0 and not self.isDead then
     self:die()
   end
@@ -112,6 +123,15 @@ end
 
 function Enemy:draw()
   local x, y = self.body:getPosition()
-  love.graphics.draw(self.image, x, y, 0, 1, 1, self.image:getWidth() / 2, self.image:getHeight() / 2)
+  local drawFunc = function()
+    love.graphics.draw(self.image, x, y, 0, 1, 1, self.image:getWidth() / 2, self.image:getHeight() / 2)
+  end
+  
+  if self.damagedTimer > 0 then
+    applyWhiteShader(drawFunc)
+  else
+    drawFunc()
+  end
+  
   debugRender(self)
 end

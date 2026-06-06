@@ -9,22 +9,25 @@ require("modules.system.shots")
 ----------------------------------------
 -- INIMIGO 1
 ----------------------------------------
-function newBasicEnemy(x, y)
+function newShooterEnemy(x, y)
     local projConfig = {
-        speed = 40000,
+        speed = 15000,
         damage = 20,
         size = 2,
     }
     local proj = Projectile.new("enemyproj", moveDirection, nil, eProjectiles, projConfig)
 
     local function moveBasic(self, dt)
-        self.body:setLinearVelocity(0, 10000 * math.cos(self.timer * 4) * dt)
+        local error = (VIRTUAL_WIDTH - 50) - self.body:getX()
+        local vx = error * dt * 100
+        local vy = 1000 * math.cos(self.timer * math.pi * 0.5) * dt
+        self.body:setLinearVelocity(vx, vy)
     end
     local config = {
         hp = 100,
-        hbSize = 10,
-        fireRate = 2,
-        shootsUntilCd = 5,
+        size = 12,
+        fireRate = 1,
+        shootsUntilCd = 2,
         cd = 2
     }
     local enemy = Enemy.new("enemy1", vec(x, y), moveBasic, proj, nil, config)
@@ -36,11 +39,11 @@ end
 ----------------------------------------
 function newFastEnemy(x, y)
     local function moveFast(self, dt)
-        self.body:setLinearVelocity(-30000 * dt, 0)
+        self.body:setLinearVelocity(-15000 * dt, 0)
     end
     local config = {
         hp = 100,
-        hbSize = 40,
+        size = 12,
         fireRate = 3,
         shootsUntilCd = 5,
         cd = 3
@@ -65,7 +68,7 @@ function newTankEnemy(x, y)
     end
     local config = {
         hp = 300,
-        hbSize = 40,
+        size = 20,
         fireRate = 3,
         shootsUntilCd = 5,
         cd = 3

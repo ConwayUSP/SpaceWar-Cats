@@ -7,20 +7,18 @@ require("modules.entities.spawner")
 require("modules.constructor.enemy")
 require("modules.system.shots")
 
-
-
 -- Wave 1:
 function addWave1()
     local spawners = {
         Spawner.new(function()
-            local startX = SCREEN_WIDTH - 50
-            local startY = math.random(0, 500)
+            local startX = VIRTUAL_WIDTH + 50
+            local startY = math.random(VIRTUAL_HEIGHT / 4, VIRTUAL_HEIGHT * 3 / 3)
             newFastEnemy(startX, startY)
         end, 1, 0),
         Spawner.new(function()
-            local startX = SCREEN_WIDTH - 50
-            local startY = math.random(100, 500)
-            newBasicEnemy(startX, startY)
+            local startX = VIRTUAL_WIDTH + 50
+            local startY = math.random(VIRTUAL_HEIGHT / 3, VIRTUAL_HEIGHT * 2 / 3)
+            newShooterEnemy(startX, startY)
         end, 2, 3)
     }
     local wave1 = Wave.new("Wave 1", 15, spawners)

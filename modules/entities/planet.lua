@@ -29,7 +29,7 @@ function Planet:load()
   self.fixture:setUserData(self)
   self.fixture:setFilterData(
     CATEGORY.PLANET, 
-    CATEGORY.ENEMY + CATEGORY.ENEMY_BULLET, 
+    CATEGORY.ENEMY, 
     0
   )
   self.fixture:setSensor(true)

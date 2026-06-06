@@ -110,6 +110,17 @@ LifeBarWrapper.type = "LifeBarWrapper"
 function LifeBarWrapper:load()
   self.lifeBar = LifeBarBg
   self.lifeBarFront = LifeBarFront
+  self.text = Text.new(
+    "EARTH LIFE",
+    14,
+    { 1, 1, 1, 0.8 },
+    { VIRTUAL_WIDTH / 2, 12 },
+    0,
+    true,
+    math.huge,
+    nil,
+    nil
+  )
 
   self.lifeBarFront:load()
   self.lifeBar:load()
@@ -118,11 +129,13 @@ end
 function LifeBarWrapper:update(dt)
   self.lifeBar:update(dt)
   self.lifeBarFront:update(dt)
+  updateTexts({ self.text }, dt)
 end
 
 function LifeBarWrapper:draw()
   self.lifeBar:draw()
   self.lifeBarFront:draw()
+  drawTexts({ self.text })
 end
 
 return LifeBarWrapper

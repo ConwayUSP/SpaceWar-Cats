@@ -36,7 +36,7 @@ function Enemy.new(name, spawnPos, move, weapon, customShot, config)
   enemy.fixture:setUserData(enemy)
   enemy.fixture:setFilterData(
     CATEGORY.ENEMY, 
-    CATEGORY.PLAYER_BULLET + CATEGORY.PLAYER,
+    CATEGORY.PLAYER_BULLET + CATEGORY.PLAYER + CATEGORY.PLANET,
     0
   )
   enemy.fixture:setSensor(true)
@@ -64,7 +64,6 @@ function Enemy:updateState(dt)
   if self.damagedTimer > 0 then
     self.damagedTimer = self.damagedTimer - dt
   end
-  
 end
 
 function Enemy:updateMotion(dt)

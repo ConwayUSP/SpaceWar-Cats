@@ -27,6 +27,7 @@ local function beginContact(a, b, coll)
     return
   end
 
+  -- ENEMY_BULLET vs (PLAYER or PLANET)
   local eProjectile = (objA.type == "ShotEvent" and objA.category == CATEGORY.ENEMY_BULLET) and objA 
                   or ((objB.type == "ShotEvent" and objB.category == CATEGORY.ENEMY_BULLET) and objB or nil)
 
@@ -34,6 +35,24 @@ local function beginContact(a, b, coll)
     local target = (objA == eProjectile) and objB or objA
     if target.type == "Player" then
       table.insert(Physics.delayedFunctions, function() eProjectile:onHit(target) end)
+    elseif target.type == "Planet" then
+      table.insert(Physics.delayedFunctions, function() 
+        target:takeDamage(eProjectile.dmg)
+        eProjectile:destroy()
+      end)
+    end
+  end
+
+  -- ENEMY vs PLANET
+  local enemy = (objA.type == "Enemy") and objA or ((objB.type == "Enemy") and objB or nil)
+
+  if enemy then
+    local target = (objA == enemy) and objB or objA
+    if target.type == "Planet" then
+      table.insert(Physics.delayedFunctions, function() 
+        target:takeDamage(20)
+        enemy:die()
+      end)
     end
   end
 
@@ -62,3 +81,4 @@ CATEGORY.PLAYER_BULLET = 2
 CATEGORY.ENEMY         = 4
 CATEGORY.ENEMY_BULLET  = 8
 CATEGORY.TEXT          = 16
+CATEGORY.PLANET        = 32

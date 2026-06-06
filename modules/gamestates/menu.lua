@@ -36,8 +36,8 @@ function MenuState:load()
 		nil,
 		nil,
 		function(text)
-			SetGameCtx(CTX.BATTLE)
 			text.fixture:destroy()
+			SetGameCtx(CTX.BATTLE)
 		end
 	)
 end

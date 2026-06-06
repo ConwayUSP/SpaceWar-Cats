@@ -88,7 +88,7 @@ end
 TextPhysical = setmetatable({}, { __index = Text })
 TextPhysical.__index = TextPhysical
 
-function TextPhysical.new(content, size, color, pos, rotation, centerOffset, lifetime, updateFunc, maxWidth, onHit)
+function TextPhysical.new(content, size, color, pos, rotation, centerOffset, lifetime, updateFunc, maxWidth, customHit)
 	local text = Text.new(content, size, color, pos, rotation, centerOffset, lifetime, updateFunc, maxWidth)
 	setmetatable(text, TextPhysical)
 
@@ -106,9 +106,17 @@ function TextPhysical.new(content, size, color, pos, rotation, centerOffset, lif
 		0
 	)
 	text.fixture:setSensor(true)
-	text.onHit = onHit
+	text.customHit = customHit
+	text.wasHit = false
 
 	return text
+end
+
+function TextPhysical:onHit()
+	if self.customHit and not self.wasHit then
+		self:customHit()
+		self.wasHit = true
+	end
 end
 
 function TextPhysical:draw()

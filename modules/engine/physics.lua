@@ -9,19 +9,7 @@ local function beginContact(a, b, coll)
   local objA = a:getUserData()
   local objB = b:getUserData()
 
-  -- TEXT vs PLAYER_BULLET
-  local textObj = objA.type == "Text" and objA or (objB.type == "Text" and objB or nil)
-  if textObj and textObj.onHit then
-    table.insert(Physics.delayedFunctions, function() textObj:onHit() end)
-    local proj = (objA == textObj) and objB or objA
-    if proj.type == "ShotEvent" then
-      proj:destroy()
-    end
-
-    return
-  end
-
-  -- PLAYER_BULLET vs ENEMY
+  -- PLAYER_BULLET vs (ENEMY or TEXT)
   local pProjectile = (objA.type == "ShotEvent" and objA.category == CATEGORY.PLAYER_BULLET) and objA 
                   or ((objB.type == "ShotEvent" and objB.category == CATEGORY.PLAYER_BULLET) and objB or nil)
 
@@ -29,6 +17,11 @@ local function beginContact(a, b, coll)
     local target = (objA == pProjectile) and objB or objA
     if target.type == "Enemy" then
       table.insert(Physics.delayedFunctions, function() pProjectile:onHit(target) end)
+    elseif target.type == "Text" then
+      table.insert(Physics.delayedFunctions, function() 
+        target:onHit()
+        pProjectile:destroy()
+      end)
     end
 
     return

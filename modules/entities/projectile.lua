@@ -96,7 +96,7 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
     shot.fixture:setUserData(shot)
 
     local mask = (projectileState.category == CATEGORY.PLAYER_BULLET) and CATEGORY.ENEMY or CATEGORY.PLAYER
-    mask = mask + CATEGORY.TEXT + CATEGORY.PLANET
+    mask = mask + CATEGORY.TEXT
     shot.fixture:setFilterData(
         projectileState.category, 
         mask, 
@@ -122,7 +122,6 @@ function ShotEvent:destroy(i)
     end
 
     i = i or tableIndexOf(self.projectileState.events, self)
-
     self.body:destroy()
     self.active = false
 end

@@ -42,6 +42,7 @@ isFullscreen = false
 
 p1 = require("modules.entities.player")
 enemyManager = require("modules.engine.enemyManager")
+waveManager = require("modules.engine.waveManager")
 pProjectiles = ProjectileManager.new(CATEGORY.PLAYER_BULLET)
 eProjectiles = ProjectileManager.new(CATEGORY.ENEMY_BULLET)
 planet = require("modules.entities.planet")

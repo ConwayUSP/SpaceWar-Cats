@@ -1,4 +1,4 @@
-local EnemyManager = {}
+EnemyManager = {}
 EnemyManager.list = {}
 EnemyManager.type = "EnemyManager"
 
@@ -11,7 +11,6 @@ function EnemyManager:update(dt)
         local e = self.list[i]
         if e.isDead then
             table.remove(self.list, i)
-
         else
             e:update(dt)
         end

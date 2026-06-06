@@ -13,7 +13,7 @@ function newBasicEnemy(x, y)
     local projConfig = {
         speed = 40000,
         damage = 20,
-        size = 10,
+        size = 2,
     }
     local proj = Projectile.new("enemyproj", moveDirection, nil, eProjectiles, projConfig)
 
@@ -21,8 +21,8 @@ function newBasicEnemy(x, y)
         self.body:setLinearVelocity(0, 10000 * math.cos(self.timer * 4) * dt)
     end
     local config = {
-        hp = 150,
-        hbSize = 30,
+        hp = 100,
+        hbSize = 10,
         fireRate = 2,
         shootsUntilCd = 5,
         cd = 2
@@ -36,7 +36,7 @@ end
 ----------------------------------------
 function newFastEnemy(x, y)
     local function moveFast(self, dt)
-        self.body:setLinearVelocity(-300, 0)
+        self.body:setLinearVelocity(-30000 * dt, 0)
     end
     local config = {
         hp = 100,
@@ -61,7 +61,7 @@ function newTankEnemy(x, y)
     }
     local proj = Projectile.new("enemyproj", moveDirection, nil, eProjectiles, projConfig)
     local function moveTank(self, dt)
-        self.body:setLinearVelocity(-100, 10000 * math.cos(self.timer * 10) * dt)
+        self.body:setLinearVelocity(-10000 * dt, 10000 * math.cos(self.timer * 10) * dt)
     end
     local config = {
         hp = 300,

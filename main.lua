@@ -8,11 +8,12 @@ require("modules.gamestate")
 require("modules.entities.projectile")
 require("modules.engine.physics")
 require("modules.engine.projectileManager")
+require("modules.engine.uiManager")
 
 
-VIRTUAL_WIDTH = 1280
-VIRTUAL_HEIGHT = 720
-VIRTUAL_SCALE = 3
+VIRTUAL_WIDTH = 640
+VIRTUAL_HEIGHT = 360
+VIRTUAL_SCALE = 1
 
 SCREEN_WIDTH = VIRTUAL_WIDTH
 SCREEN_HEIGHT = VIRTUAL_HEIGHT
@@ -44,6 +45,7 @@ enemyManager = require("modules.engine.enemyManager")
 waveManager = require("modules.engine.waveManager")
 pProjectiles = ProjectileManager.new(CATEGORY.PLAYER_BULLET)
 eProjectiles = ProjectileManager.new(CATEGORY.ENEMY_BULLET)
+planet = require("modules.entities.planet")
 
 
 -- Função auxiliar para trocar de contexto e carregar o novo estado
@@ -73,6 +75,7 @@ end
 
 function love.update(dt)
 	GAMESTATE[GameCtx]:update(dt)
+	UIManager:update(dt)
 end
 
 function love.draw()
@@ -80,6 +83,7 @@ function love.draw()
 	love.graphics.translate(SCREEN_OFFSET_X, SCREEN_OFFSET_Y)
 	love.graphics.scale(SCREEN_SCALE, SCREEN_SCALE)
 	GAMESTATE[GameCtx]:draw()
+	UIManager:draw()
 	love.graphics.pop()
 end
 

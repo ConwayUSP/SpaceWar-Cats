@@ -8,6 +8,8 @@ require("modules.entities.enemy")
 -- require("modules.constructor.enemy")
 -- require("modules.constructor.wave")
 
+lifeBar = require("modules.UI.life")
+
 ----------------------------------------
 -- Estado do Battle
 ----------------------------------------
@@ -25,6 +27,7 @@ BattleState.timer = 0
 
 function BattleState:load()
 	local width, height = VIRTUAL_WIDTH, VIRTUAL_HEIGHT
+	UIManager:add(lifeBar)
 end
 
 function BattleState:update(dt)
@@ -35,12 +38,14 @@ function BattleState:update(dt)
 	waveManager:update(dt)
 	pProjectiles:update(dt)
 	eProjectiles:update(dt)
+	planet:update(dt)
 
 	updateTexts(self.texts, dt)
 	cleanUpTexts(self.texts)
 end
 
 function BattleState:draw()
+	planet:draw()
   p1:draw()
 	enemyManager:draw()
 	pProjectiles:draw()

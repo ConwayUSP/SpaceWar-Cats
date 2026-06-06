@@ -22,7 +22,7 @@ function Player:load()
   self.initialPos = vec(50, VIRTUAL_HEIGHT / 2)
   self.size = 7
   self.weapon = Projectile.new("playerProj", moveDirection, nil, pProjectiles, {
-    speed = 80000,
+    speed = 40000,
     damage = 40,
     size = 4
   })
@@ -43,8 +43,13 @@ function Player:load()
 
   self.firerate = 3
   self.firerateTimer = 0
+  self.respawnCd = 1
+  self.respawnTimer = 0
+  self.invulrabilityTimer = 0
+  self.invulnerabilityCd = 2
   self.canShoot = true
-  self.hp = 100
+  self.maxHp = 1
+  self.hp = self.maxHp
   self.isDead = false
   self.state = FLYING
 
@@ -60,18 +65,33 @@ end
 
 function Player:update(dt)
   if self.isDead then
+    self:updateDead(dt)
     return
   end
+
   self:updateMotion(dt)
   self:updateShooting(dt)
   self:updateState(dt)
 end
 
+function Player:updateDead(dt)
+  self.respawnTimer = self.respawnTimer + dt
+  if self.respawnTimer >= self.respawnCd then
+    self.isDead = false
+    self.respawnTimer = 0
+    self.invulrabilityTimer = self.invulnerabilityCd
+  end
+end
+
 function Player:updateState(dt)
   local mouseX, mouseY = screenToGamePosition(love.mouse.getPosition())
-  mouseX = math.max(mouseX, 300)
+  mouseX = math.max(mouseX, 200)
   local x, y = self.body:getPosition()
   self.angle = math.atan2(mouseY - y, mouseX - x)
+
+  if self.invulrabilityTimer > 0 then
+    self.invulrabilityTimer = self.invulrabilityTimer - dt
+  end
 
   self.animations[self.state]:update(dt)
 end
@@ -93,8 +113,9 @@ end
 
 function Player:updateMotion(dt)
   local _, mouseY = screenToGamePosition(love.mouse.getPosition())
-  local y = clamp(self.body:getY(), 50, VIRTUAL_HEIGHT - 50)
-  mouseY = clamp(mouseY, 50, VIRTUAL_HEIGHT - 50)
+  local limit = 20
+  local y = clamp(self.body:getY(), limit, VIRTUAL_HEIGHT - limit)
+  mouseY = clamp(mouseY, limit, VIRTUAL_HEIGHT - limit)
 
   local error = mouseY - y
   local vy = error * 200 * dt
@@ -104,11 +125,15 @@ end
 
 function Player:die()
   self.isDead = true
-  self.body:destroy()
-  self.weapon:destroy()
+  -- self.body:destroy()
+  -- self.weapon:destroy()
 end
 
 function Player:takeDamage(damage)
+  if self.invulrabilityTimer > 0 then
+    return
+  end
+
   self.hp = self.hp - damage
   if self.hp <= 0 and not self.isDead then
     self:die()
@@ -158,7 +183,11 @@ function Player:draw()
     return
   end
 
-  love.graphics.setColor(1, 1, 1)
+  if self.invulrabilityTimer > 0 and self.invulrabilityTimer % 0.2 < 0.1 then
+    love.graphics.setColor(1, 1, 1, 0.5)
+  else
+    love.graphics.setColor(1, 1, 1, 1)
+  end
 
   local x, y = self.body:getPosition()
   local animation = self.animations[self.state]

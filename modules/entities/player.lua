@@ -21,7 +21,13 @@ Player.type = "Player"
 function Player:load()
   self.initialPos = vec(50, VIRTUAL_HEIGHT / 2)
   self.size = 20
-  self.weapon = Projectile.new("playerProj", 40, moveDirection, nil, 80000, pProjectiles)
+  self.weapon = Projectile.new("playerProj", moveDirection, nil, pProjectiles, {
+    speed = 80000,
+    damage = 40,
+    size = 15
+  })
+  -- self.customShot = nil
+  self.customShot = defaultCircularAttackFunc(-1, 1, math.rad(5))
 
   self.body = love.physics.newBody(Physics.world, self.initialPos.x, self.initialPos.y, "dynamic")
   self.body:setFixedRotation(true)
@@ -62,7 +68,7 @@ function Player:update(dt)
 end
 
 function Player:updateState(dt)
-  local mouseX, mouseY = love.mouse.getPosition()
+  local mouseX, mouseY = screenToGamePosition(love.mouse.getPosition())
   mouseX = math.max(mouseX, 300)
   local x, y = self.body:getPosition()
   self.angle = math.atan2(mouseY - y, mouseX - x)
@@ -87,7 +93,8 @@ end
 
 function Player:updateMotion(dt)
   local _, mouseY = screenToGamePosition(love.mouse.getPosition())
-  local y = self.body:getY()
+  local y = clamp(self.body:getY(), 50, VIRTUAL_HEIGHT - 50)
+  mouseY = clamp(mouseY, 50, VIRTUAL_HEIGHT - 50)
 
   local error = mouseY - y
   local vy = error * 200 * dt
@@ -114,7 +121,12 @@ function Player:shoot()
   end
 
   local x, y = self.body:getPosition()
-  self.weapon:shot(self, addVec(vec(x, y), polarToVec(self.angle, 50)), self.angle)
+  local origin = addVec(vec(x, y), polarToVec(self.angle, 50))
+  if self.customShot then
+    self.customShot(self.weapon, self, origin, self.angle)
+  else
+    self.weapon:shot(self, origin, self.angle)
+  end
 
   self.canShoot = false
   self.firerateTimer = 0

@@ -15,17 +15,20 @@ Enemy = {}
 Enemy.__index = Enemy
 Enemy.type = "Enemy"
 
-function Enemy.new(name, hp, spawnPos, size, move, weapon, customShot, fireRate, shootsUntilCd, cd)
+function Enemy.new(name, spawnPos, move, weapon, customShot, config)
   local enemy = setmetatable({}, Enemy)
+
+  enemy.size = config.size or 30                               
+  enemy.hp = config.hp or 100
+  enemy.shootsUntilCd = config.shootsUntilCd or 1
+  enemy.cd = config.cd or 1
+  enemy.fireRate = config.fireRate or 1
+
   enemy.name = name
-  enemy.hp = hp                                   -- pontos de vida do inimigo
   enemy.move = move                               -- função de movimento do inimigo
-  enemy.size = size                               -- tamanho do inimigo
   enemy.initialPos = vec(spawnPos.x, spawnPos.y)  -- posição inicial
   enemy.weapon = weapon
   enemy.customShot = customShot
-  enemy.shootsUntilCd = shootsUntilCd or 1
-  enemy.cd = cd or 1
   enemy.body = love.physics.newBody(Physics.world, enemy.initialPos.x, enemy.initialPos.y, "dynamic")
   enemy.shape = love.physics.newCircleShape(enemy.size * 1.3)
   enemy.fixture = love.physics.newFixture(enemy.body, enemy.shape)
@@ -37,7 +40,6 @@ function Enemy.new(name, hp, spawnPos, size, move, weapon, customShot, fireRate,
   )
   enemy.fixture:setSensor(true)
 
-  enemy.fireRate = fireRate or 1
   enemy.shootTimer = 0
   enemy.cooldownTimer = 0
   enemy.timer = 0
@@ -77,10 +79,11 @@ function Enemy:updateShooting(dt)
   if self.shootTimer >= (1 / self.fireRate) and 
      self.shoots < self.shootsUntilCd 
   then
+    local x, y = self.body:getPosition()
+    x = x - self.size/2
     if self.customShot then
-      self:customShot()
+      self.customShot(self.weapon, self, vec(x, y), math.rad(180))
     else
-      local x, y = self.body:getPosition()
       local origin = vec(x, y)
       self.weapon:shot(self, origin, math.rad(180))
     end

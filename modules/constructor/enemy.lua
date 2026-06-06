@@ -4,7 +4,7 @@
 require("modules.utils.utils")
 require("modules.entities.enemy")
 require("modules.constructor.projectile")
-
+require("modules.system.shots")
 
 ----------------------------------------
 -- INIMIGO 1
@@ -13,10 +13,22 @@ local function moveBasic(self, dt)
     self.body:setLinearVelocity(0, 10000*math.cos(self.timer * 4)*dt)
 end
 
-
 function newBasicEnemy(x, y)
-    local proj = Projectile.new("project1", 15, moveLeft, nil, 50000, eProjectiles)
-    local enemy = Enemy.new("enemy1", 100, vec(x, y), 30, moveBasic, proj, nil, 4, 10, 1.5)
+    local projConfig = {
+        speed = 40000,
+        damage = 20,
+        size = 10,
+    }
+    local proj = Projectile.new("project1", moveDirection, nil, eProjectiles, projConfig)
+    local config = {
+        hp = 100,
+        hbSize = 30,
+        fireRate = 2,
+        shootsUntilCd = 5,
+        cd = 2
+    }
+    local customShot = defaultCircularAttackFunc(-1, 1, math.rad(10))
+    local enemy = Enemy.new("enemy1", vec(x, y), moveBasic, proj, customShot, config)
     return enemy
 end
 
@@ -28,7 +40,19 @@ local function moveFast(self, dt)
 end
 
 function newFastEnemy(x, y)
-    local proj = Projectile.new("project2", 30, moveLeft, nil, 30000, eProjectiles)
-    local enemy = Enemy.new("enemy2", 50, vec(x, y), 40, moveFast, proj, nil, 3, 5, 3)
+    local projConfig = {
+        speed = 30000,
+        damage = 30,
+        size = 10
+    }
+    local proj = Projectile.new("project2", moveDirection, nil, eProjectiles, projConfig)
+    local config = {
+        hp = 150,
+        hbSize = 40,
+        fireRate = 3,
+        shootsUntilCd = 5,
+        cd = 3
+    }
+    local enemy = Enemy.new("enemy2", vec(x, y), moveFast, proj, nil, config)
     return enemy
 end

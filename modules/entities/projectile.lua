@@ -10,13 +10,15 @@ Projectile = {}
 Projectile.__index = Projectile
 Projectile.type = "Projectile"
 
-function Projectile.new(name, dmg, trajectory, customHit, speed, projManager)
+function Projectile.new(name, trajectory, customHit, projManager, config)
     local projectile = setmetatable({}, Projectile)
+    projectile.dmg = config.damage or 10
+    projectile.speed = config.speed or 20000
+    projectile.size = config.size or 5
+
     projectile.name = name
-    projectile.dmg = dmg               -- dano base do ataque
     projectile.trajectory = trajectory -- função que define a trajetória do projétil
     projectile.customHit = customHit           -- função executada toda vez que um projétil acertar um alvo
-    projectile.speed = speed
     projectile.projManager = projManager
     projectile.category = projManager.category
     projectile.projManager:add(projectile)
@@ -89,7 +91,7 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
     shot.active = true
 
     shot.body = love.physics.newBody(Physics.world, shot.initialPos.x, shot.initialPos.y, "dynamic")
-    shot.shape = love.physics.newCircleShape(5)
+    shot.shape = love.physics.newCircleShape(projectileState.size)
     shot.fixture = love.physics.newFixture(shot.body, shot.shape)
     shot.fixture:setUserData(shot)
 

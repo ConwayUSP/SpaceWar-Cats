@@ -17,12 +17,12 @@ function newBasicEnemy(x, y)
     local projConfig = {
         speed = 40000,
         damage = 20,
-        size = 10,
+        size = 2,
     }
     local proj = Projectile.new("project1", moveDirection, nil, eProjectiles, projConfig)
     local config = {
         hp = 100,
-        hbSize = 30,
+        hbSize = 10,
         fireRate = 2,
         shootsUntilCd = 5,
         cd = 2
@@ -43,12 +43,12 @@ function newFastEnemy(x, y)
     local projConfig = {
         speed = 30000,
         damage = 30,
-        size = 10
+        size = 2
     }
     local proj = Projectile.new("project2", moveDirection, nil, eProjectiles, projConfig)
     local config = {
         hp = 150,
-        hbSize = 40,
+        hbSize = 12,
         fireRate = 3,
         shootsUntilCd = 5,
         cd = 3

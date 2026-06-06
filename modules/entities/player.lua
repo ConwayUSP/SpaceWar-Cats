@@ -20,11 +20,11 @@ Player.type = "Player"
 
 function Player:load()
   self.initialPos = vec(50, VIRTUAL_HEIGHT / 2)
-  self.size = 15
+  self.size = 7
   self.weapon = Projectile.new("playerProj", moveDirection, nil, pProjectiles, {
     speed = 80000,
     damage = 40,
-    size = 15
+    size = 4
   })
   -- self.customShot = nil
   self.customShot = defaultCircularAttackFunc(-1, 1, math.rad(5))
@@ -121,7 +121,7 @@ function Player:shoot()
   end
 
   local x, y = self.body:getPosition()
-  local origin = addVec(vec(x, y), polarToVec(self.angle, 50))
+  local origin = addVec(vec(x, y), polarToVec(self.angle, 25))
   if self.customShot then
     self.customShot(self.weapon, self, origin, self.angle)
   else

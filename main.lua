@@ -10,9 +10,9 @@ require("modules.engine.physics")
 require("modules.engine.projectileManager")
 
 
-VIRTUAL_WIDTH = 1280
-VIRTUAL_HEIGHT = 720
-VIRTUAL_SCALE = 3
+VIRTUAL_WIDTH = 640
+VIRTUAL_HEIGHT = 360
+VIRTUAL_SCALE = 1
 
 SCREEN_WIDTH = VIRTUAL_WIDTH
 SCREEN_HEIGHT = VIRTUAL_HEIGHT

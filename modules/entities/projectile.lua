@@ -117,6 +117,10 @@ function ShotEvent:onHit(target)
 end
 
 function ShotEvent:destroy(i)
+    if not self.active then
+        return
+    end
+
     i = i or tableIndexOf(self.projectileState.events, self)
 
     self.body:destroy()

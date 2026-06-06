@@ -82,7 +82,7 @@ function Enemy:updateShooting(dt)
     else
       local x, y = self.body:getPosition()
       local origin = vec(x, y)
-      self.weapon:shot(origin)
+      self.weapon:shot(self, origin, math.rad(180))
     end
     
     self.shootTimer = 0

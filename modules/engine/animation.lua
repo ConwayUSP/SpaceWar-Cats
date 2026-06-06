@@ -102,6 +102,8 @@ end
 -- o sprite sheet da animação
 function addAnimation(entity, path, action, settings)
 	local animation = newAnimation(path, settings)
+	entity.animations = entity.animations or {}
+	entity.spriteSheets = entity.spriteSheets or {}
 	entity.animations[action] = animation
 	entity.spriteSheets[action] = love.graphics.newImage(path)
 end

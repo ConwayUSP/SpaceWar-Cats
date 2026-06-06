@@ -8,6 +8,7 @@ require("modules.engine.physics")
 require("modules.engine.projectileManager")
 require("modules.system.render")
 require("modules.entities.projectile")
+require("modules.utils.states")
 
 ----------------------------------------
 -- Entidade Player
@@ -20,7 +21,7 @@ Player.type = "Player"
 function Player:load()
   self.initialPos = vec(50, VIRTUAL_HEIGHT / 2)
   self.size = 20
-  self.attack = Projectile.new("playerProj", 40, moveRight, nil, 80000, pProjectiles)
+  self.weapon = Projectile.new("playerProj", 40, moveDirection, nil, 80000, pProjectiles)
 
   self.body = love.physics.newBody(Physics.world, self.initialPos.x, self.initialPos.y, "dynamic")
   self.body:setFixedRotation(true)
@@ -39,7 +40,16 @@ function Player:load()
   self.canShoot = true
   self.hp = 100
   self.isDead = false
+  self.state = FLYING
 
+  self:addAnimations()
+
+end
+
+function Player:addAnimations()
+	----------------- FLYING -----------------
+	local path = pngPathFormat({ "assets", "animations", "player", FLYING })
+	addAnimation(self, path, FLYING, newAnimSetting(4, { width = 32, height = 32 }, 0.1, true, 1))
 end
 
 function Player:update(dt)
@@ -48,6 +58,16 @@ function Player:update(dt)
   end
   self:updateMotion(dt)
   self:updateShooting(dt)
+  self:updateState(dt)
+end
+
+function Player:updateState(dt)
+  local mouseX, mouseY = love.mouse.getPosition()
+  mouseX = math.max(mouseX, 300)
+  local x, y = self.body:getPosition()
+  self.angle = math.atan2(mouseY - y, mouseX - x)
+
+  self.animations[self.state]:update(dt)
 end
 
 function Player:updateShooting(dt)
@@ -94,7 +114,7 @@ function Player:shoot()
   end
 
   local x, y = self.body:getPosition()
-  self.attack:shot(vec(x, y))
+  self.weapon:shot(self, addVec(vec(x, y), polarToVec(self.angle, 50)), self.angle)
 
   self.canShoot = false
   self.firerateTimer = 0
@@ -126,9 +146,18 @@ function Player:draw()
     return
   end
 
-  local x, y = self.body:getPosition()
   love.graphics.setColor(1, 1, 1)
-  love.graphics.circle("fill", x, y, 20)
+
+  local x, y = self.body:getPosition()
+  local animation = self.animations[self.state]
+	local quad = animation.frames[animation.currFrame]
+  local offset = {
+		x = animation.frameDim.width / 2,
+		y = animation.frameDim.height / 2,
+	}
+  love.graphics.draw(self.spriteSheets[self.state], quad, x, y, self.angle, VIRTUAL_SCALE, VIRTUAL_SCALE, offset.x - 4, offset.y)
+  -- love.graphics.circle("fill", x, y, 20)
+
   debugRender(self)
 end
 

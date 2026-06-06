@@ -12,6 +12,7 @@ require("modules.engine.projectileManager")
 
 VIRTUAL_WIDTH = 1280
 VIRTUAL_HEIGHT = 720
+VIRTUAL_SCALE = 3
 
 SCREEN_WIDTH = VIRTUAL_WIDTH
 SCREEN_HEIGHT = VIRTUAL_HEIGHT
@@ -58,7 +59,9 @@ function SetGameCtx(newCtx)
 end
 
 function love.load()
-	-- carrega o estado inicial manualmente para usar uma transição
+	-- muda o filtro padrão para eliminar o efeito de blur
+	love.graphics.setDefaultFilter("nearest", "nearest")
+
 	updateScreenTransform()
 	GAMESTATE[GameCtx]:load()
 end
@@ -87,6 +90,10 @@ function love.keypressed(key, scancode, isrepeat)
 	if key == "f" then 
 		isFullscreen = not isFullscreen
 		love.window.setFullscreen(isFullscreen)
+	end
+
+	if key == "0" then
+		debugMode = not debugMode
 	end
 
 	if GAMESTATE[GameCtx].keypressed then

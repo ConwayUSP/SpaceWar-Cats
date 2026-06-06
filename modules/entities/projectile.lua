@@ -118,7 +118,6 @@ end
 
 function ShotEvent:destroy(i)
     i = i or tableIndexOf(self.projectileState.events, self)
-
     self.body:destroy()
     self.active = false
 end

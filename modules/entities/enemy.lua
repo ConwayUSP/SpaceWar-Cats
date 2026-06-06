@@ -75,6 +75,9 @@ function Enemy:updateMotion(dt)
 end
 
 function Enemy:updateShooting(dt)
+  if not self.weapon then
+    return
+  end
   if self.cooldownTimer > 0 then
     self.cooldownTimer = self.cooldownTimer - dt
     if self.cooldownTimer <= 0 then
@@ -110,7 +113,9 @@ end
 function Enemy:die()
   self.isDead = true
   self.body:destroy()
-  self.weapon:destroy()
+  if self.weapon then
+    self.weapon:destroy()
+  end
 end
 
 function Enemy:takeDamage(damage)

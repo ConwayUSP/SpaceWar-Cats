@@ -7,8 +7,10 @@ require("modules.utils.vec")
 require("modules.engine.physics")
 require("modules.engine.projectileManager")
 require("modules.system.render")
+require("modules.system.shots")
 require("modules.entities.projectile")
 require("modules.utils.states")
+require("modules.constructor.projectile")
 
 ----------------------------------------
 -- Entidade Player

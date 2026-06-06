@@ -5,7 +5,8 @@ require("modules.engine.text")
 require("modules.utils.utils")
 require("modules.engine.physics")
 require("modules.entities.enemy")
-require("modules.constructor.enemy")
+-- require("modules.constructor.enemy")
+-- require("modules.constructor.wave")
 
 ----------------------------------------
 -- Estado do Battle
@@ -24,14 +25,14 @@ BattleState.timer = 0
 
 function BattleState:load()
 	local width, height = VIRTUAL_WIDTH, VIRTUAL_HEIGHT
-  newBasicEnemy(width - 50, height / 3)
-	newFastEnemy(width - 50, height * 2 / 3)
 end
 
 function BattleState:update(dt)
   Physics:update(dt)
   p1:update(dt)
+	
 	enemyManager:update(dt)
+	waveManager:update(dt)
 	pProjectiles:update(dt)
 	eProjectiles:update(dt)
 

@@ -103,11 +103,12 @@ end
 -- Classe LifeBarWrapper
 ----------------------------------------
 
-local LifeBarWrapper = {}
+LifeBarWrapper = {}
 LifeBarWrapper.__index = LifeBarWrapper
 LifeBarWrapper.type = "LifeBarWrapper"
 
-function LifeBarWrapper:load()
+function LifeBarWrapper.new()
+  local self = setmetatable({}, LifeBarWrapper)
   self.lifeBar = LifeBarBg
   self.lifeBarFront = LifeBarFront
   self.text = Text.new(
@@ -124,6 +125,7 @@ function LifeBarWrapper:load()
 
   self.lifeBarFront:load()
   self.lifeBar:load()
+  return self
 end
 
 function LifeBarWrapper:update(dt)
@@ -137,5 +139,3 @@ function LifeBarWrapper:draw()
   self.lifeBarFront:draw()
   drawTexts({ self.text })
 end
-
-return LifeBarWrapper

@@ -9,6 +9,7 @@ require("modules.entities.projectile")
 require("modules.engine.physics")
 require("modules.engine.projectileManager")
 require("modules.engine.uiManager")
+require("modules.utils.screen")
 
 
 VIRTUAL_WIDTH = 640
@@ -20,20 +21,6 @@ SCREEN_HEIGHT = VIRTUAL_HEIGHT
 SCREEN_SCALE = 1
 SCREEN_OFFSET_X = 0
 SCREEN_OFFSET_Y = 0
-
-
-local function updateScreenTransform()
-	SCREEN_WIDTH, SCREEN_HEIGHT = love.graphics.getDimensions()
-	SCREEN_SCALE = math.min(SCREEN_WIDTH / VIRTUAL_WIDTH, SCREEN_HEIGHT / VIRTUAL_HEIGHT)
-	SCREEN_OFFSET_X = (SCREEN_WIDTH - VIRTUAL_WIDTH * SCREEN_SCALE) / 2
-	SCREEN_OFFSET_Y = (SCREEN_HEIGHT - VIRTUAL_HEIGHT * SCREEN_SCALE) / 2
-end
-
-
-function screenToGamePosition(x, y)
-	return (x - SCREEN_OFFSET_X) / SCREEN_SCALE, (y - SCREEN_OFFSET_Y) / SCREEN_SCALE
-end
-
 
 GameCtx = CTX.MENU
 world = Physics
@@ -99,6 +86,10 @@ function love.keypressed(key, scancode, isrepeat)
 
 	if key == "0" then
 		debugMode = not debugMode
+	end
+
+	if key == "u" then
+		SetGameCtx(CTX.UPGRADES)
 	end
 
 	if GAMESTATE[GameCtx].keypressed then

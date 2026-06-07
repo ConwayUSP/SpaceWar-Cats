@@ -5,10 +5,8 @@ require("modules.engine.text")
 require("modules.utils.utils")
 require("modules.engine.physics")
 require("modules.entities.enemy")
--- require("modules.constructor.enemy")
--- require("modules.constructor.wave")
-
-lifeBar = require("modules.UI.life")
+require("modules.engine.uiManager")
+require("modules.constructor.scenes")
 
 ----------------------------------------
 -- Estado do Battle
@@ -24,13 +22,30 @@ BattleState.titleFont = nil
 BattleState.promptFont = nil
 BattleState.sounds = {}
 BattleState.timer = 0
+BattleState.transitionTimer = 0
+BattleState.transitioningCd = 1
 
 function BattleState:load()
-	local width, height = VIRTUAL_WIDTH, VIRTUAL_HEIGHT
-	UIManager:add(lifeBar)
+	self.isTransitioning = false
+	self.transitionTimer = 0
+	waveManager:load()
+	love.mouse.setCursor(cursors.crosshair)
+	UIManager:changeScene(newBattleScene())
 end
 
 function BattleState:update(dt)
+	if self.isTransitioning then
+		self.transitionTimer = self.transitionTimer + dt
+		if self.transitionTimer >= self.transitioningCd then
+			self.isTransitioning = false
+			self.transitionTimer = 0
+			SetGameCtx(CTX.UPGRADES)
+			return
+		end
+	end
+
+	dt = self.isTransitioning and dt * 0.5 or dt
+
   Physics:update(dt)
   p1:update(dt)
 	
@@ -42,6 +57,11 @@ function BattleState:update(dt)
 
 	updateTexts(self.texts, dt)
 	cleanUpTexts(self.texts)
+end
+
+function BattleState:startTransition()
+	self.isTransitioning = true
+	self.transitionTimer = 0
 end
 
 function BattleState:draw()

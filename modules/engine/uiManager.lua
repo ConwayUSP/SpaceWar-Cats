@@ -17,20 +17,16 @@ require("modules.utils.states")
 UIManager = {}
 UIManager.__index = UIManager
 UIManager.type = "UIManager"
-UIManager.elements = {}
+UIManager.scene = nil
 
 function UIManager:update(dt)
-  for _, element in pairs(self.elements) do
-    if element.active then
-      element:update(dt)
-    end
+  if self.scene then
+    self.scene:update(dt)
   end
 end
 
-function UIManager:add(element)
-  table.insert(self.elements, element)
-  element:load()
-  element.active = true
+function UIManager:changeScene(newScene)
+  self.scene = newScene
 end
 
 ----------------------------------------
@@ -38,13 +34,7 @@ end
 ----------------------------------------
 
 function UIManager:draw()
-  love.graphics.setColor(1, 1, 1)
-
-  for _, element in pairs(self.elements) do
-    if element.active then
-      element:draw()
-    end
+  if self.scene then
+    self.scene:draw()
   end
-
-  love.graphics.setColor(1, 1, 1)
 end

@@ -11,7 +11,7 @@ Text = {}
 Text.__index = Text
 Text.type = "Text"
 
-function Text.new(content, size, color, pos, rotation, centerOffset, lifetime, updateFunc, maxWidth)
+function Text.new(content, size, color, pos, rotation, centerOffset, lifetime, updateFunc, maxWidth, align)
 	local text = setmetatable({}, Text)
 
 	text.content = content
@@ -25,6 +25,7 @@ function Text.new(content, size, color, pos, rotation, centerOffset, lifetime, u
 	text.isOver = false
 	text.maxWidth = maxWidth
 	text.font = returnFont(size)
+	text.align = align or "left"
 
 	return text
 end

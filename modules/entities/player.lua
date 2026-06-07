@@ -99,6 +99,10 @@ function Player:updateState(dt)
 end
 
 function Player:updateShooting(dt)
+  if GameCtx == CTX.UPGRADES then
+    return
+  end
+
   self.firerateTimer = self.firerateTimer + dt
   if self.firerateTimer >= (1 / self.firerate) then
     self.canShoot = true
@@ -127,6 +131,7 @@ end
 
 function Player:die()
   self.isDead = true
+  self.body:setPosition(self.initialPos.x, self.initialPos.y)
   -- self.body:destroy()
   -- self.weapon:destroy()
 end
@@ -202,6 +207,7 @@ function Player:draw()
   -- love.graphics.circle("fill", x, y, 20)
 
   debugRender(self)
+  love.graphics.setColor(1, 1, 1, 1)
 end
 
 return Player

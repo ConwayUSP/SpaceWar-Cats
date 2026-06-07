@@ -24,7 +24,7 @@ function MenuState:load()
 	Physics:load()
 	planet:load()
 	p1:load()
-
+	
 	-- texts
 	self.texts.play = TextPhysical.new(
 		"PLAY",
@@ -41,6 +41,9 @@ function MenuState:load()
 			SetGameCtx(CTX.BATTLE)
 		end
 	)
+
+	love.mouse.setCursor(cursors.crosshair)
+	UIManager:changeScene(nil)
 end
 
 function MenuState:update(dt)

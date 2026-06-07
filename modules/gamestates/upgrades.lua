@@ -166,17 +166,40 @@ function UpgradesState:load()
 end
 
 function UpgradesState:getRandomUpgrades()
-	local shuffled = {}
+	local result = {}
+	local pool = {}
+
+	for _, u in ipairs(self.allUpgrades) do
+		pool[#pool+1] = u
+	end
+
+	for _ = 1, self.slotsCount do
+		i = self:pickRandomUpgrade()
+
+		table.insert(result, pool[i])
+		table.remove(pool, i)
+	end
+
+	return result
+end
+
+function UpgradesState:pickRandomUpgrade()
+	local total = 0
+
 	for _, upgrade in ipairs(self.allUpgrades) do
-		table.insert(shuffled, upgrade)
+		total = total + upgrade.weight
 	end
 
-	for i = #shuffled, 2, -1 do
-		local j = math.random(1, i)
-		shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
-	end
+	local r = math.random(0, total)
+	local acc = 0
 
-	return {shuffled[1], shuffled[2], shuffled[3]}
+	for i, upgrade in ipairs(self.allUpgrades) do
+		acc = acc + upgrade.weight
+
+		if acc >= r then
+			return i
+		end
+	end
 end
 
 function UpgradesState:handleSlotClick(slot, x, y)

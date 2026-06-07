@@ -13,6 +13,7 @@ ParticleManager.type = "ParticleManager"
 
 function ParticleManager:load()
   self.particlesAnim = {}
+  self.particlesText = {}
   self.particles = {}
 end
 
@@ -30,6 +31,15 @@ function ParticleManager:update(dt)
   for _, particle in pairs(self.particles) do
     particle:update(dt)
   end
+
+  for i = #self.particlesText, 1, -1 do
+    local particle = self.particlesText[i]
+    if particle.text.isOver then
+      table.remove(self.particlesText, i)
+    else
+      particle:update(dt)
+    end
+  end
 end
 
 function ParticleManager:addAnim(particleAnim)
@@ -38,6 +48,10 @@ end
 
 function ParticleManager:add(particle)
   table.insert(self.particles, particle)
+end
+
+function ParticleManager:addText(particleText)
+  table.insert(self.particlesText, particleText)
 end
 
 function ParticleManager:remove(particleAnim)
@@ -57,6 +71,10 @@ function ParticleManager:draw()
   end
 
   for _, particle in pairs(self.particles) do
+    particle:draw()
+  end
+
+  for _, particle in pairs(self.particlesText) do
     particle:draw()
   end
 end

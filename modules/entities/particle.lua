@@ -97,14 +97,49 @@ end
 
 function Particle:moveTo(x, y)
   for _, emitter in ipairs(self.module) do
-    x, y = screenToGamePosition(x, y)
     emitter.system:moveTo(x, y)
   end
 end
 
 function Particle:draw()
   for _, emitter in ipairs(self.module) do
-    local x, y = emitter.system:getPosition()
-    love.graphics.draw(emitter.system, x, y)
+    love.graphics.draw(emitter.system)
   end
+end
+
+----------------------------------------
+-- Entidade ParticleText
+----------------------------------------
+
+ParticleText = {}
+ParticleText.__index = ParticleText
+ParticleText.type = "ParticleText"
+
+function ParticleText.new(pos, textConfig)
+  local self = setmetatable({}, ParticleText)
+
+  self.initialPos = vec(pos.x, pos.y)
+  self.text = Text.new(
+    textConfig.content,
+    textConfig.size,
+    textConfig.color,
+    {self.initialPos.x, self.initialPos.y},
+    textConfig.rotation,
+    textConfig.centered,
+    textConfig.lifetime,
+    textConfig.customUpdate
+  )
+  self.active = true
+
+  particleManager:addText(self)
+
+  return self
+end
+
+function ParticleText:update(dt)
+  self.text:update(dt)
+end
+
+function ParticleText:draw()
+  self.text:draw()
 end

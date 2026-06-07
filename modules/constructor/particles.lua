@@ -18,3 +18,19 @@ function newBoostParticle(pos)
   local p = Particle.new(boost, pos)
   return p
 end
+
+function newAscendingTextParticle(pos, text, color)
+  local p = ParticleText.new(pos, {
+    content = text,
+    fontSize = 10,
+    color = color or {1, 1, 1, 1},
+    lifetime = 1.0,
+    customUpdate = function(self, dt)
+      self.pos[2] = self.pos[2] - 30 * dt
+      self.color[4] = math.max(0, self.color[4] - 0.5 * dt)
+    end,
+    centerOffset = true
+
+  })
+  return p
+end

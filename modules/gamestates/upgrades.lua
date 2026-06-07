@@ -42,14 +42,16 @@ function UpgradesSlot.new(upgrade, x, y, width, height, delay)
 	self.pos = vec(self.initialPos.x, self.initialPos.y)
 	self.targetPos = vec(x, y)
 
-	self.padding = 12
+	self.paddingX = 10
+	self.paddingY = 16
 	self.isHover = false
 
+	local color = rarityColors[self.upgrade.rarity] or {1, 1, 1, 1}
 	self.title = Text.new(
 		upgrade.name,
 		13,
-		{1, 1, 1, 1},
-		{self.pos.x + self.width/2, self.pos.y + self.padding},
+		color,
+		{self.pos.x + self.width/2, self.pos.y + self.paddingY},
 		0,
 		true
 	)
@@ -58,12 +60,12 @@ function UpgradesSlot.new(upgrade, x, y, width, height, delay)
 		upgrade.description,
 		10,
 		{0.85, 0.85, 0.85, 1},
-		{self.pos.x + self.padding, self.pos.y + 50},
+		{self.pos.x + self.paddingX, self.pos.y + self.paddingY + 34},
 		0,
 		false,
 		math.huge,
 		nil,
-		width - self.padding * 2,
+		width - self.paddingX * 2,
 		"center"
 	)
 
@@ -72,9 +74,9 @@ end
 
 function UpgradesSlot:attachTexts()
 	self.title.pos[1] = self.pos.x + self.width / 2
-	self.title.pos[2] = self.pos.y + self.padding
-	self.description.pos[1] = self.pos.x + self.padding
-	self.description.pos[2] = self.pos.y + 50
+	self.title.pos[2] = self.pos.y + self.paddingY
+	self.description.pos[1] = self.pos.x + self.paddingX
+	self.description.pos[2] = self.pos.y + self.paddingY + 34
 end
 
 function UpgradesSlot:changeUpgrade(upgrade)
@@ -82,6 +84,7 @@ function UpgradesSlot:changeUpgrade(upgrade)
 	self.pos = vec(self.initialPos.x, self.initialPos.y)
 	self:attachTexts()
 	self.upgrade = upgrade
+	self.title.color = rarityColors[self.upgrade.rarity] or {1, 1, 1, 1}
 	self.title.content = upgrade.name
 	self.description.content = upgrade.description
 end
@@ -122,9 +125,7 @@ function UpgradesSlot:draw()
 		self.pos.x,
 		self.pos.y,
 		self.width,
-		self.height,
-		5,
-		5
+		self.height
 	)
 
 	-- Borda
@@ -136,9 +137,7 @@ function UpgradesSlot:draw()
 		self.pos.x,
 		self.pos.y,
 		self.width,
-		self.height,
-		5,
-		5
+		self.height
 	)
 
 	self.title:draw()

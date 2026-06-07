@@ -74,7 +74,7 @@ function Text:draw()
 	end
 
 	local color = self.color or { 1, 1, 1, 1 }
-	love.graphics.setColor(color[1], color[2], color[3], color[4] or 1)
+	love.graphics.setColor(color[1], color[2], color[3], color[4])
 	if self.maxWidth then
 		love.graphics.printf(content, x, y, self.maxWidth, self.align or "left", rotation, scale, scale, ox, oy)
 	else

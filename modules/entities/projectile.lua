@@ -113,11 +113,21 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
 end
 
 function ShotEvent:onHit(target)
+    if not self.active then
+        return
+    end
+
     if self.customHit then
         self:customHit(target)
     end
 
     target:takeDamage(self.dmg)
+    
+    if target.type == "Enemy" then
+        local pos = vec(self.body:getPosition())
+        newAscendingTextParticle(addVec(pos, vec(math.random(-10, 10), -20)), self.dmg, {1, 0.8, 0.3, 1})
+    end
+
     self:destroy()
 end
 

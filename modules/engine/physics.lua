@@ -53,6 +53,14 @@ local function beginContact(a, b, coll)
         target:takeDamage(20)
         enemy:die()
       end)
+    elseif target.type == "Player" then
+      table.insert(Physics.delayedFunctions, function() 
+        local x, y = target.body:getPosition()
+        newExplosionParticle(vec(x, y))
+        
+        target:takeDamage(math.huge)
+        enemy:takeDamage(math.huge)
+      end)
     end
   end
 

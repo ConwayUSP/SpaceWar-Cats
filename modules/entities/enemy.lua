@@ -46,12 +46,17 @@ function Enemy.new(name, spawnPos, move, weapon, customShot, config)
   enemy.damagedTimer = 0
   enemy.timer = 0
   enemy.shoots = 0
-  enemy.image = love.graphics.newImage(pngPathFormat({ "assets", "sprites", "enemies", enemy.name }))
-  enemy.image:setFilter("nearest", "nearest")
+  enemy.state = FLYING
 
   enemyManager:add(enemy)
 
   return enemy
+end
+
+function Enemy:addAnimations(flyingConfig)
+	----------------- FLYING -----------------
+	local path = pngPathFormat({ "assets", "animations", "enemies", self.name, FLYING })
+	addAnimation(self, path, FLYING, flyingConfig)
 end
 
 function Enemy:update(dt)
@@ -64,10 +69,13 @@ function Enemy:updateState(dt)
   if self.damagedTimer > 0 then
     self.damagedTimer = self.damagedTimer - dt
   end
+
+  self.animations[self.state]:update(dt)
 end
 
 function Enemy:updateMotion(dt)
   self.timer = self.timer + dt
+  
   if self.move then
     self:move(dt)
   end
@@ -110,6 +118,10 @@ function Enemy:updateShooting(dt)
 end
 
 function Enemy:die()
+  if self.isDead then
+    return
+  end
+
   self.isDead = true
   self.body:destroy()
   if self.weapon then
@@ -126,9 +138,21 @@ function Enemy:takeDamage(damage)
 end
 
 function Enemy:draw()
+  -- if self.isDead then
+  --   return
+  -- end
+
+  love.graphics.setColor(1, 1, 1, 1)
+
   local x, y = self.body:getPosition()
   local drawFunc = function()
-    love.graphics.draw(self.image, x, y, 0, 1, 1, self.image:getWidth() / 2, self.image:getHeight() / 2)
+    local animation = self.animations[self.state]
+    local quad = animation.frames[animation.currFrame]
+    local offset = {
+      x = animation.frameDim.width / 2,
+      y = animation.frameDim.height / 2,
+    }
+    love.graphics.draw(self.spriteSheets[self.state], quad, x, y, 0, 1, 1, offset.x, offset.y)
   end
   
   if self.damagedTimer > 0 then
@@ -138,4 +162,6 @@ function Enemy:draw()
   end
   
   debugRender(self)
+
+  love.graphics.setColor(1, 1, 1, 1)
 end

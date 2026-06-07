@@ -3,8 +3,8 @@ require("modules.constructor.wave")
 WaveManager = {}
 
 WaveManager.list = {
-    addWave1(),
-    addWave2()
+    initWave1(),
+    initWave2()
 
 }
 WaveManager.currentWaveIndex = 1

@@ -24,6 +24,7 @@ function MenuState:load()
 	Physics:load()
 	planet:load()
 	p1:load()
+	particleManager:load()
 	
 	-- texts
 	self.texts.play = TextPhysical.new(

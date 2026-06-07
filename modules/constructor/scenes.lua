@@ -4,6 +4,7 @@
 
 require("modules.engine.uiScenes")
 require("modules.UI.life")
+require("modules.UI.wave")
 
 ----------------------------------------
 --- BattleScene
@@ -12,5 +13,6 @@ require("modules.UI.life")
 function newBattleScene()
     local battleScene = UIScene.new()
     battleScene:add(LifeBarWrapper.new())
+    battleScene:add(WaveText.new())
     return battleScene
 end

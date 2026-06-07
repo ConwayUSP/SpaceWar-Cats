@@ -23,13 +23,18 @@ Player.type = "Player"
 function Player:load()
   self.initialPos = vec(50, VIRTUAL_HEIGHT / 2)
   self.size = 7
-  self.weapon = Projectile.new("playerProj", moveDirection, nil, pProjectiles, {
+  self.weapon = Projectile.new("blaster-tune", moveDirection, nil, pProjectiles, {
     speed = 40000,
     damage = 40,
-    size = 4
+    size = 4,
+    hb = {
+      type = "rectangle",
+      width = 10,
+      height = 5
+    }
   })
-  -- self.customShot = nil
-  self.customShot = defaultCircularAttackFunc(-1, 1, math.rad(5))
+  self.customShot = nil
+  -- self.customShot = defaultCircularAttackFunc(-1, 1, math.rad(5))
 
   self.body = love.physics.newBody(Physics.world, self.initialPos.x, self.initialPos.y, "dynamic")
   self.body:setFixedRotation(true)
@@ -200,10 +205,10 @@ function Player:draw()
   local animation = self.animations[self.state]
 	local quad = animation.frames[animation.currFrame]
   local offset = {
-		x = animation.frameDim.width / 2,
+		x = animation.frameDim.width / 2 - 4,
 		y = animation.frameDim.height / 2,
 	}
-  love.graphics.draw(self.spriteSheets[self.state], quad, x, y, self.angle, VIRTUAL_SCALE, VIRTUAL_SCALE, offset.x - 4, offset.y)
+  love.graphics.draw(self.spriteSheets[self.state], quad, x, y, self.angle, VIRTUAL_SCALE, VIRTUAL_SCALE, offset.x, offset.y)
   -- love.graphics.circle("fill", x, y, 20)
 
   debugRender(self)

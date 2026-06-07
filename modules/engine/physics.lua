@@ -71,6 +71,14 @@ function Physics:update(dt)
   self.delayedFunctions = {}
 end
 
+function getRightHitbox(hb)
+  if hb.type == "circle" then
+    return love.physics.newCircleShape(hb.radius)
+  elseif hb.type == "rectangle" then
+    return love.physics.newRectangleShape(hb.width, hb.height)
+  end
+end
+
 ----------------------------------------
 -- Categorias
 ----------------------------------------

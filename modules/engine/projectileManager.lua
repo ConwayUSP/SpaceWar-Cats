@@ -21,17 +21,14 @@ function ProjectileManager:update(dt)
 end
 
 function ProjectileManager:remove(projectile)
-  for i = #self.projectiles, 1, -1 do
-      if self.projectiles[i] == projectile then
-          table.remove(self.projectiles, i)
-          break
-      end
+  local idx = tableIndexOf(self.projectiles, projectile)
+  if idx then
+    table.remove(self.projectiles, idx)
   end
 end
 
 function ProjectileManager:draw()
-  for i = 1, #self.projectiles do
-      local p = self.projectiles[i]
-      p:draw()
+  for _, projectile in ipairs(self.projectiles) do
+    projectile:draw()
   end
 end

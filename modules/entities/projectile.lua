@@ -1,5 +1,9 @@
+----------------------------------------
+-- Importações de Módulos
+----------------------------------------
 require("modules.utils.utils")
 require("modules.system.render")
+require("modules.constructor.particles")
 require("table")
 
 ----------------------------------------
@@ -15,6 +19,7 @@ function Projectile.new(name, trajectory, customHit, projManager, config)
     projectile.dmg = config.damage or 10
     projectile.speed = config.speed or 20000
     projectile.size = config.size or 5
+    projectile.hb = config.hb or { type = "circle", radius = projectile.size }
 
     projectile.name = name
     projectile.trajectory = trajectory -- função que define a trajetória do projétil
@@ -91,7 +96,7 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
     shot.active = true
 
     shot.body = love.physics.newBody(Physics.world, shot.initialPos.x, shot.initialPos.y, "dynamic")
-    shot.shape = love.physics.newCircleShape(projectileState.size)
+    shot.shape = getRightHitbox(projectileState.hb)
     shot.fixture = love.physics.newFixture(shot.body, shot.shape)
     shot.fixture:setUserData(shot)
 
@@ -122,6 +127,9 @@ function ShotEvent:destroy(i)
     end
 
     i = i or tableIndexOf(self.projectileState.events, self)
+
+    local x, y = self.body:getPosition()
+    newExplosionParticle(vec(x, y))
     self.body:destroy()
     self.active = false
 end

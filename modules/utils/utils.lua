@@ -1,13 +1,17 @@
 function returnFont(size)
   local path = "assets/fonts/"
-  local name = "Cute Dino"
+  local name = "pixel-font"
   local fontPath = path .. name .. ".ttf"
+	local font
 
   if love.filesystem.getInfo(fontPath) then
-    return love.graphics.newFont(fontPath, size)
+  	font = love.graphics.newFont(fontPath, size)
   else
-    return love.graphics.newFont(size)
+    font = love.graphics.newFont(size)
   end
+	
+	font:setFilter("nearest", "nearest")
+  return font
 end
 
 function capitalize(string)

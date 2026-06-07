@@ -18,9 +18,8 @@ function EnemyManager:update(dt)
 end
 
 function EnemyManager:draw()
-    for i = 1, #self.list do
-        local e = self.list[i]
-        e:draw()
+    for _, enemy in ipairs(self.list) do
+        enemy:draw()
     end
 end
 

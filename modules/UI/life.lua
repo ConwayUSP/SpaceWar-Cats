@@ -35,18 +35,6 @@ function LifeBarBg:update(dt)
   self.animations[self.state]:update(dt)
 end
 
-function LifeBarBg:die()
-  self.isDead = true
-  self.body:destroy()
-end
-
-function LifeBarBg:takeDamage(damage)
-  self.hp = self.hp - damage
-  if self.hp <= 0 and not self.isDead then
-    self:die()
-  end
-end
-
 ----------------------------------------
 -- Renderização
 ----------------------------------------

@@ -29,6 +29,7 @@ function BattleState:load()
 	self.isTransitioning = false
 	self.transitionTimer = 0
 	waveManager:load()
+	-- particleManager:load()
 	love.mouse.setCursor(cursors.crosshair)
 	UIManager:changeScene(newBattleScene())
 end
@@ -51,6 +52,7 @@ function BattleState:update(dt)
 	
 	enemyManager:update(dt)
 	waveManager:update(dt)
+	particleManager:update(dt)
 	pProjectiles:update(dt)
 	eProjectiles:update(dt)
 	planet:update(dt)
@@ -70,6 +72,7 @@ function BattleState:draw()
 	enemyManager:draw()
 	pProjectiles:draw()
 	eProjectiles:draw()
+	particleManager:draw()
 
   drawTexts(self.texts)
 

@@ -28,11 +28,12 @@ debugMode = true
 isFullscreen = false
 
 p1 = require("modules.entities.player")
+planet = require("modules.entities.planet")
 enemyManager = require("modules.engine.enemyManager")
 waveManager = require("modules.engine.waveManager")
+particleManager = require("modules.engine.particleManager")
 pProjectiles = ProjectileManager.new(CATEGORY.PLAYER_BULLET)
 eProjectiles = ProjectileManager.new(CATEGORY.ENEMY_BULLET)
-planet = require("modules.entities.planet")
 
 
 -- Função auxiliar para trocar de contexto e carregar o novo estado

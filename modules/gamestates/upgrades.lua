@@ -23,7 +23,7 @@ local rarityColors = {
 local UpgradesSlot = {}
 UpgradesSlot.__index = UpgradesSlot
 
-function UpgradesSlot.new(upgrade, x, y, width, height)
+function UpgradesSlot.new(upgrade, x, y, width, height, delay)
 	local self = setmetatable({}, UpgradesSlot)
 
 	self.upgrade = upgrade
@@ -33,7 +33,13 @@ function UpgradesSlot.new(upgrade, x, y, width, height)
 	self.width = width
 	self.height = height
 
-	self.pos = vec(x, y)
+	self.initialDelay = delay
+	self.delay = self.initialDelay
+
+	local referenceX = VIRTUAL_WIDTH / 2
+	local k = 1.2
+	self.initialPos = vec(k*(x - referenceX) + referenceX, VIRTUAL_HEIGHT + 100)
+	self.pos = vec(self.initialPos.x, self.initialPos.y)
 	self.targetPos = vec(x, y)
 
 	self.padding = 12
@@ -43,7 +49,7 @@ function UpgradesSlot.new(upgrade, x, y, width, height)
 		upgrade.name,
 		13,
 		{1, 1, 1, 1},
-		{x + self.width/2, y + self.padding},
+		{self.pos.x + self.width/2, self.pos.y + self.padding},
 		0,
 		true
 	)
@@ -52,7 +58,7 @@ function UpgradesSlot.new(upgrade, x, y, width, height)
 		upgrade.description,
 		10,
 		{0.85, 0.85, 0.85, 1},
-		{x + self.padding, y + 50},
+		{self.pos.x + self.padding, self.pos.y + 50},
 		0,
 		false,
 		math.huge,
@@ -64,13 +70,35 @@ function UpgradesSlot.new(upgrade, x, y, width, height)
 	return self
 end
 
+function UpgradesSlot:attachTexts()
+	self.title.pos[1] = self.pos.x + self.width / 2
+	self.title.pos[2] = self.pos.y + self.padding
+	self.description.pos[1] = self.pos.x + self.padding
+	self.description.pos[2] = self.pos.y + 50
+end
+
+function UpgradesSlot:changeUpgrade(upgrade)
+	self.delay = self.initialDelay
+	self.pos = vec(self.initialPos.x, self.initialPos.y)
+	self:attachTexts()
+	self.upgrade = upgrade
+	self.title.content = upgrade.name
+	self.description.content = upgrade.description
+end
+
 function UpgradesSlot:update(dt)
+	if self.delay > 0 then
+		self.delay = self.delay - dt
+		return
+	end
+	
 	self.title:update(dt)
 	self.description:update(dt)
 
-	self.pos.y = lerp(self.pos.y, self.targetPos.y, 10 * dt)
-	self.title.pos[2] = self.pos.y + self.padding
-	self.description.pos[2] = self.pos.y + 50
+	local speed = 15
+	self.pos.y = lerp(self.pos.y, self.targetPos.y, speed * dt)
+	self.pos.x = lerp(self.pos.x, self.targetPos.x, speed * dt)
+	self:attachTexts()
 
 	if self.isHover then
 		self.targetPos = vec(self.x, self.y - 5)
@@ -135,6 +163,8 @@ UpgradesState.sounds = {}
 UpgradesState.timer = 0
 UpgradesState.slots = {}
 UpgradesState.slotsCount = 3
+UpgradesState.slotActive = nil
+UpgradesState.keyPressed = nil
 
 UpgradesState.allUpgrades = upgradesList
 
@@ -142,26 +172,36 @@ function UpgradesState:load()
 	UIManager:changeScene(nil)
 
 	local upgrades = self:getRandomUpgrades()
+	self:setSlots(upgrades)
+end
 
-	local slotWidth = 120
-	local slotHeight = 130
-	local gap = 20
+function UpgradesState:setSlots(upgrades)
+	if #self.slots == 0 then
+		local slotWidth = 120
+		local slotHeight = 130
+		local gap = 20
 
-	local startX = flexCenter(self.slotsCount, slotWidth, gap)
-	local y = (VIRTUAL_HEIGHT - slotHeight) / 2
+		local startX = flexCenter(self.slotsCount, slotWidth, gap)
+		local y = (VIRTUAL_HEIGHT - slotHeight) / 2
 
-	for i, upgrade in ipairs(upgrades) do
-		local x = startX + (i - 1) * (slotWidth + gap)
+		for i, upgrade in ipairs(upgrades) do
+			local x = startX + (i - 1) * (slotWidth + gap)
 
-		local slot = UpgradesSlot.new(
-			upgrade,
-			x,
-			y,
-			slotWidth,
-			slotHeight
-		)
+			local slot = UpgradesSlot.new(
+				upgrade,
+				x,
+				y,
+				slotWidth,
+				slotHeight,
+				0.1 * (i - 1)
+			)
 
-		table.insert(self.slots, slot)
+			table.insert(self.slots, slot)
+		end
+	else
+		for i, upgrade in ipairs(upgrades) do
+			self.slots[i]:changeUpgrade(upgrade)
+		end
 	end
 end
 
@@ -170,11 +210,11 @@ function UpgradesState:getRandomUpgrades()
 	local pool = {}
 
 	for _, u in ipairs(self.allUpgrades) do
-		pool[#pool+1] = u
+		table.insert(pool, u)
 	end
 
 	for _ = 1, self.slotsCount do
-		i = self:pickRandomUpgrade()
+		i = self:pickRandomUpgrade(pool)
 
 		table.insert(result, pool[i])
 		table.remove(pool, i)
@@ -183,17 +223,17 @@ function UpgradesState:getRandomUpgrades()
 	return result
 end
 
-function UpgradesState:pickRandomUpgrade()
+function UpgradesState:pickRandomUpgrade(pool)
 	local total = 0
 
-	for _, upgrade in ipairs(self.allUpgrades) do
+	for _, upgrade in ipairs(pool) do
 		total = total + upgrade.weight
 	end
 
-	local r = math.random(0, total)
+	local r = math.random(total)
 	local acc = 0
 
-	for i, upgrade in ipairs(self.allUpgrades) do
+	for i, upgrade in ipairs(pool) do
 		acc = acc + upgrade.weight
 
 		if acc >= r then
@@ -202,17 +242,9 @@ function UpgradesState:pickRandomUpgrade()
 	end
 end
 
-function UpgradesState:handleSlotClick(slot, x, y)
-	local isClicked = slot:mouseOver(x, y)
-
-	if isClicked then
-		self:applyUpgrade(slot.upgrade)
-		SetGameCtx(CTX.BATTLE)
-	end
-end
-
 function UpgradesState:applyUpgrade(upgrade)
 	upgrade.apply()
+	SetGameCtx(CTX.BATTLE)
 end
 
 function UpgradesState:update(dt)
@@ -220,21 +252,29 @@ function UpgradesState:update(dt)
 	planet:update(dt)
 
 	local isHover = false
-	for _, slot in ipairs(self.slots) do
+	local idx = 0
+	for i, slot in ipairs(self.slots) do
 		slot:update(dt)
 		local mouseX, mouseY = love.mouse.getPosition()
 		if slot:mouseOver(mouseX, mouseY) then
-			slot.isHover = true
 			isHover = true
-		else
-			slot.isHover = false
+			idx = i
 		end
 	end
 
 	if isHover then
 		love.mouse.setCursor(cursors.hand)
+		self.slotActive = idx
+		self.keyPressed = nil
 	else
 		love.mouse.setCursor(cursors.arrow)
+		if not self.keyPressed then
+			self.slotActive = self.slotsCount + 1
+		end
+	end
+
+	for i, slot in ipairs(self.slots) do
+		slot.isHover = (i == self.slotActive)
 	end
 
 	updateTexts(self.texts, dt)
@@ -246,7 +286,7 @@ function UpgradesState:draw()
 	planet:draw()
   p1:draw()
 
-	love.graphics.setColor(0.16, 0.1, 0.24, 0.4)
+	love.graphics.setColor(0.08, 0.05, 0.14, 0.8)
 	love.graphics.rectangle("fill", 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 	love.graphics.setColor(1, 1, 1, 1)
 
@@ -256,12 +296,34 @@ function UpgradesState:draw()
 end
 
 function UpgradesState:keypressed(key, scancode, isrepeat)
-	p1:keypressed(key, scancode, isrepeat)
+	-- p1:keypressed(key, scancode, isrepeat)
+	if key == "a" or key == "left" then
+		self.keyPressed = key
+		self.slotActive = (self.slotActive - 2) % self.slotsCount + 1
+	elseif key == "d" or key == "right" then
+		self.keyPressed = key
+		self.slotActive = (self.slotActive == self.slotsCount + 1) and 1 or (self.slotActive) % self.slotsCount + 1
+	end
+
+	if key == "space" or key == "return" then
+		local slot = self.slots[self.slotActive]
+		if slot then
+			self:applyUpgrade(slot.upgrade)
+		end
+	end
 end
 
 function UpgradesState:mousepressed( x, y, button, istouch, presses )
 	for _, slot in ipairs(self.slots) do
 		self:handleSlotClick(slot, x, y)
+	end
+end
+
+function UpgradesState:handleSlotClick(slot, x, y)
+	local isClicked = slot:mouseOver(x, y)
+
+	if isClicked then
+		self:applyUpgrade(slot.upgrade)
 	end
 end
 

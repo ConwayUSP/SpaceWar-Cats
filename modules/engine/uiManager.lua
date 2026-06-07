@@ -34,6 +34,7 @@ end
 
 function UIManager:changeScene(newScene)
   if not self.scenes[newScene] then
+    self.scene = nil
     return
   end
 

@@ -18,8 +18,8 @@ local LifeBarBg = {}
 LifeBarBg.__index = LifeBarBg
 LifeBarBg.type = "LifeBarBg"
 
-function LifeBarBg:load()
-  self.pos = vec(VIRTUAL_WIDTH / 2, 20)
+function LifeBarBg:load(pos)
+  self.pos = vec(pos.x, pos.y)
   self.state = INTACT
 
   self:addAnimations()
@@ -60,8 +60,8 @@ local LifeBarFront = {}
 LifeBarFront.__index = LifeBarFront
 LifeBarFront.type = "LifeBarFront"
 
-function LifeBarFront:load()
-  self.pos = vec(VIRTUAL_WIDTH / 2, 20)
+function LifeBarFront:load(pos)
+  self.pos = vec(pos.x, pos.y)
   self.state = INTACT
   self.target = 1
 
@@ -99,11 +99,13 @@ function LifeBarWrapper.new()
   local self = setmetatable({}, LifeBarWrapper)
   self.lifeBar = LifeBarBg
   self.lifeBarFront = LifeBarFront
+  self.pos = vec(VIRTUAL_WIDTH / 2, 27)
+
   self.text = Text.new(
     "EARTH LIFE",
     14,
     { 1, 1, 1, 0.8 },
-    { VIRTUAL_WIDTH / 2, 12 },
+    { self.pos.x, self.pos.y - 8 },
     0,
     true,
     math.huge,
@@ -111,8 +113,8 @@ function LifeBarWrapper.new()
     nil
   )
 
-  self.lifeBarFront:load()
-  self.lifeBar:load()
+  self.lifeBarFront:load(self.pos)
+  self.lifeBar:load(self.pos)
   return self
 end
 

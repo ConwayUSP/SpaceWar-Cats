@@ -31,7 +31,6 @@ function BattleState:load()
 	waveManager:load()
 	-- particleManager:load()
 	love.mouse.setCursor(cursors.crosshair)
-	UIManager:changeScene(newBattleScene())
 end
 
 function BattleState:update(dt)

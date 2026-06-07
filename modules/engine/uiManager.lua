@@ -18,6 +18,13 @@ UIManager = {}
 UIManager.__index = UIManager
 UIManager.type = "UIManager"
 UIManager.scene = nil
+UIManager.scenes = {}
+
+function UIManager:load(scenes)
+  for name, scene in pairs(scenes) do
+    self.scenes[name] = scene
+  end
+end
 
 function UIManager:update(dt)
   if self.scene then
@@ -26,7 +33,11 @@ function UIManager:update(dt)
 end
 
 function UIManager:changeScene(newScene)
-  self.scene = newScene
+  if not self.scenes[newScene] then
+    return
+  end
+
+  self.scene = self.scenes[newScene]
 end
 
 ----------------------------------------

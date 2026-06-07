@@ -15,11 +15,11 @@ function WaveText.new()
   local self = setmetatable({}, WaveText)
   self.text = Text.new(
     "WAVE ",
-    10,
-    { 1, 1, 1, 1 },
-    { 8, 8 },
+    24,
+    { 1, 1, 1, 0.8 },
+    { VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT - 20 },
     0,
-    false,
+    true,
     math.huge,
     function(text)
       text.content = "WAVE " .. waveManager.currentWaveIndex

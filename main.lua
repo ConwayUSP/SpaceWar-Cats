@@ -24,7 +24,7 @@ SCREEN_OFFSET_Y = 0
 
 GameCtx = CTX.MENU
 world = Physics
-debugMode = true
+debugMode = false
 isFullscreen = false
 
 p1 = require("modules.entities.player")
@@ -32,9 +32,10 @@ planet = require("modules.entities.planet")
 enemyManager = require("modules.engine.enemyManager")
 waveManager = require("modules.engine.waveManager")
 particleManager = require("modules.engine.particleManager")
+shaderManager = require("modules.engine.shaderManager")
+
 pProjectiles = ProjectileManager.new(CATEGORY.PLAYER_BULLET)
 eProjectiles = ProjectileManager.new(CATEGORY.ENEMY_BULLET)
-
 
 -- Função auxiliar para trocar de contexto e carregar o novo estado
 function SetGameCtx(newCtx)
@@ -47,11 +48,20 @@ function SetGameCtx(newCtx)
 
   GameCtx = newCtx
   GAMESTATE[GameCtx]:load()
+	UIManager:changeScene(GameCtx)
 end
 
 function love.load()
-	-- muda o filtro padrão para eliminar o efeito de blur
 	love.graphics.setDefaultFilter("nearest", "nearest")
+
+	shaderManager:load({
+    "scanlines",
+    "crt"
+	})
+
+	UIManager:load({
+		[CTX.BATTLE] = newBattleScene(),
+	})
 
 	updateScreenTransform()
 	GAMESTATE[GameCtx]:load()
@@ -59,20 +69,38 @@ end
 
 function love.resize(width, height)
 	updateScreenTransform()
+	shaderManager:resize(width, height)
 end
 
 function love.update(dt)
+	shaderManager:update(dt)
+
 	GAMESTATE[GameCtx]:update(dt)
 	UIManager:update(dt)
 end
 
 function love.draw()
+	shaderManager:begin()
+
 	love.graphics.push()
-	love.graphics.translate(SCREEN_OFFSET_X, SCREEN_OFFSET_Y)
-	love.graphics.scale(SCREEN_SCALE, SCREEN_SCALE)
+
+	love.graphics.translate(
+			SCREEN_OFFSET_X,
+			SCREEN_OFFSET_Y
+	)
+
+	love.graphics.scale(
+			SCREEN_SCALE,
+			SCREEN_SCALE
+	)
+
 	GAMESTATE[GameCtx]:draw()
 	UIManager:draw()
+
 	love.graphics.pop()
+
+	shaderManager:finish()
+	shaderManager:draw()
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -91,6 +119,10 @@ function love.keypressed(key, scancode, isrepeat)
 
 	if key == "u" then
 		SetGameCtx(CTX.UPGRADES)
+	end
+
+	if key == "9" then
+		shaderManager:toggle()
 	end
 
 	if GAMESTATE[GameCtx].keypressed then

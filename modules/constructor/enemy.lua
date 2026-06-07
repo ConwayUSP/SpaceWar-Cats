@@ -21,7 +21,7 @@ function newShooterEnemy(x, y)
     }
     local proj = Projectile.new("blaster-ball", moveDirection, nil, eProjectiles, projConfig)
 
-    local function moveBasic(self, dt)
+    local function move(self, dt)
         local error = (VIRTUAL_WIDTH - 50) - self.body:getX()
         local vx = error * dt * 100
         local vy = 1000 * math.cos(self.timer * math.pi * 0.2) * dt
@@ -34,7 +34,7 @@ function newShooterEnemy(x, y)
         shootsUntilCd = 3,
         cd = 4
     }
-    local enemy = Enemy.new("drone", vec(x, y), moveBasic, proj, nil, config)
+    local enemy = Enemy.new("drone", vec(x, y), move, proj, nil, config)
     local flyingConfig = newAnimSetting(4, { width = 32, height = 32 }, 0.1, true, 1)
     enemy:addAnimations(flyingConfig)
     return enemy
@@ -53,7 +53,12 @@ function newCatSwimmer(x, y)
         size = 12,
         fireRate = 3,
         shootsUntilCd = 5,
-        cd = 3
+        cd = 3,
+        hb = {
+            type = "rectangle",
+            width = 22,
+            height = 18
+        }
     }
     local enemy = Enemy.new("cat-swimmer", vec(x, y), move, nil, nil, config)
     local flyingConfig = newAnimSetting(9, { width = 32, height = 32 }, 0.1, true, 1)

@@ -24,6 +24,10 @@ function Enemy.new(name, spawnPos, move, weapon, customShot, config)
   enemy.shootsUntilCd = config.shootsUntilCd or 1
   enemy.cd = config.cd or 1
   enemy.fireRate = config.fireRate or 1
+  enemy.hb = config.hb or {
+    type = "circle",
+    radius = enemy.size
+  }
 
   enemy.name = name
   enemy.move = move                               -- função de movimento do inimigo
@@ -31,7 +35,7 @@ function Enemy.new(name, spawnPos, move, weapon, customShot, config)
   enemy.weapon = weapon
   enemy.customShot = customShot
   enemy.body = love.physics.newBody(Physics.world, enemy.initialPos.x, enemy.initialPos.y, "dynamic")
-  enemy.shape = love.physics.newCircleShape(enemy.size * 1.3)
+  enemy.shape = getRightHitbox(enemy.hb)
   enemy.fixture = love.physics.newFixture(enemy.body, enemy.shape)
   enemy.fixture:setUserData(enemy)
   enemy.fixture:setFilterData(

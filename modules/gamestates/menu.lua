@@ -24,7 +24,6 @@ function MenuState:load()
 	Physics:load()
 	planet:load()
 	p1:load()
-	particleManager:load()
 	
 	-- texts
 	self.texts.play = TextPhysical.new(
@@ -52,6 +51,7 @@ function MenuState:update(dt)
   p1:update(dt)
 	pProjectiles:update(dt)
 	planet:update(dt)
+	particleManager:update(dt)
 	updateTexts(self.texts, dt)
 
 	cleanUpTexts(self.texts)
@@ -61,6 +61,7 @@ function MenuState:draw()
 	planet:draw()
   p1:draw()
 	pProjectiles:draw()
+	particleManager:draw()
 
 	drawTexts(self.texts)
 

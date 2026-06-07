@@ -4,36 +4,35 @@
 require("modules.engine.particleManager")
 
 ----------------------------------------
--- Entidade Particle
+-- Entidade ParticleAnim
 ----------------------------------------
 
-Particle = {}
-Particle.__index = Particle
-Particle.type = "Particle"
+ParticleAnim = {}
+ParticleAnim.__index = ParticleAnim
+ParticleAnim.type = "ParticleAnim"
 
-function Particle.new(name, pos, animation)
-  local self = setmetatable({}, Particle)
+function ParticleAnim.new(name, pos, animation)
+  local self = setmetatable({}, ParticleAnim)
   self.name = name
   self.pos = vec(pos.x, pos.y)
   self.active = true
   self.state = INTACT
   self:addAnimations(animation)
 
-  particleManager:add(self)
+  particleManager:addAnim(self)
   return self
 end
 
-function Particle:addAnimations(animConfig)
+function ParticleAnim:addAnimations(animConfig)
 	----------------- INTACT -----------------
 	local path = pngPathFormat({ "assets", "animations", "particles", self.name, INTACT })
 	addAnimation(self, path, INTACT, animConfig)
   self.animations[INTACT].onFinish = function()
     self.active = false
-    -- particleManager:remove(self)
   end
 end
 
-function Particle:update(dt)
+function ParticleAnim:update(dt)
   if not self.active then
     return
   end
@@ -45,7 +44,7 @@ end
 -- Renderização
 ----------------------------------------
 
-function Particle:draw()
+function ParticleAnim:draw()
   if not self.active then
     return
   end
@@ -61,4 +60,51 @@ function Particle:draw()
   love.graphics.draw(self.spriteSheets[self.state], quad, self.pos.x, self.pos.y, 0, VIRTUAL_SCALE, VIRTUAL_SCALE, offset.x, offset.y)
 
   love.graphics.setColor(1, 1, 1)
+end
+
+----------------------------------------
+-- Entidade Particle
+----------------------------------------
+
+Particle = {}
+Particle.__index = Particle
+Particle.type = "Particle"
+
+function Particle.new(module, pos)
+  local self = setmetatable({}, Particle)
+
+  self.module = module
+  self.active = true
+  self.initialPos = vec(pos.x, pos.y)
+
+  self:setPosition(pos.x, pos.y)
+  particleManager:add(self)
+
+  return self
+end
+
+function Particle:update(dt)
+  for _, emitter in ipairs(self.module) do
+    emitter.system:update(dt)
+  end
+end
+
+function Particle:setPosition(x, y)
+  for _, emitter in ipairs(self.module) do
+    emitter.system:setPosition(x, y)
+  end
+end
+
+function Particle:moveTo(x, y)
+  for _, emitter in ipairs(self.module) do
+    x, y = screenToGamePosition(x, y)
+    emitter.system:moveTo(x, y)
+  end
+end
+
+function Particle:draw()
+  for _, emitter in ipairs(self.module) do
+    local x, y = emitter.system:getPosition()
+    love.graphics.draw(emitter.system, x, y)
+  end
 end

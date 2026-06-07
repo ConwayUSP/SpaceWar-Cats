@@ -63,6 +63,8 @@ function love.load()
 		[CTX.BATTLE] = newBattleScene(),
 	})
 
+	particleManager:load()
+
 	updateScreenTransform()
 	GAMESTATE[GameCtx]:load()
 end

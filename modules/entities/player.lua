@@ -47,6 +47,9 @@ function Player:load()
     0
   )
   self.fixture:setSensor(true)
+  
+  self.boostOffset = vec(-10, 0)
+  self.boostParticle = newBoostParticle(addVec(self.initialPos, self.boostOffset))
 
   self.firerate = 3
   self.firerateTimer = 0
@@ -79,6 +82,12 @@ function Player:update(dt)
   self:updateMotion(dt)
   self:updateShooting(dt)
   self:updateState(dt)
+  self:updateParticles(dt)
+end
+
+function Player:updateParticles(dt)
+  local vec = addVec(vec(self.body:getPosition()), self.boostOffset)
+  self.boostParticle:moveTo(vec.x, vec.y)
 end
 
 function Player:updateDead(dt)
@@ -123,6 +132,10 @@ function Player:updateShooting(dt)
 end
 
 function Player:updateMotion(dt)
+  if self.isDead then
+    return
+  end
+  
   local _, mouseY = screenToGamePosition(love.mouse.getPosition())
   local limit = 20
   local y = clamp(self.body:getY(), limit, VIRTUAL_HEIGHT - limit)

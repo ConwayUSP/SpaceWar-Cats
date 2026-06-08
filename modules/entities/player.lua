@@ -16,42 +16,35 @@ require("modules.constructor.projectile")
 -- Entidade Player
 ----------------------------------------
 
+local baseConfigs = {
+  speed = 40000,                -- projetil
+  damage = 40,                  -- projetil
+  size = 5,                     -- player
+  scale = 1,                    -- player
+  criticalChance = 0.90,        -- projetil
+  criticalMultiplier = 1.5,     -- projetil
+  hb = {                        -- projetil
+    type = "rectangle",
+    width = 10,
+    height = 5
+  },
+  firerate = 3,                 -- projetil
+  planetRegen = 0.0,            -- planet
+}
+
 local Player = {}
 Player.__index = Player
 Player.type = "Player"
 
 function Player:load()
   self.initialPos = vec(50, VIRTUAL_HEIGHT / 2)
-  self.size = 7
-  self.weapon = Projectile.new("blaster-tune", moveDirection, nil, pProjectiles, {
-    speed = 40000,
-    damage = 40,
-    size = 4,
-    hb = {
-      type = "rectangle",
-      width = 10,
-      height = 5
-    }
-  })
-  self.customShot = nil
-  -- self.customShot = defaultCircularAttackFunc(-1, 1, math.rad(5))
 
   self.body = love.physics.newBody(Physics.world, self.initialPos.x, self.initialPos.y, "dynamic")
   self.body:setFixedRotation(true)
-  self.shape = love.physics.newCircleShape(self.size * 0.7)
-  self.fixture = love.physics.newFixture(self.body, self.shape)
-  self.fixture:setUserData(self)
-  self.fixture:setFilterData(
-    CATEGORY.PLAYER, 
-    CATEGORY.ENEMY_BULLET + CATEGORY.ENEMY + CATEGORY.TEXT, 
-    0
-  )
-  self.fixture:setSensor(true)
   
   self.boostOffset = vec(-10, 0)
   self.boostParticle = newBoostParticle(addVec(self.initialPos, self.boostOffset))
 
-  self.firerate = 3
   self.firerateTimer = 0
   self.respawnCd = 1
   self.respawnTimer = 0
@@ -63,8 +56,63 @@ function Player:load()
   self.isDead = false
   self.state = FLYING
 
+  self:resetStats()
   self:addAnimations()
 
+end
+
+function Player:resetStats()
+  self.speed = baseConfigs.speed
+  self.damage = baseConfigs.damage
+  self.size = baseConfigs.size
+  self.scale = baseConfigs.scale
+  self.criticalChance = baseConfigs.criticalChance
+  self.criticalMultiplier = baseConfigs.criticalMultiplier
+  self.hb = baseConfigs.hb
+  self.firerate = baseConfigs.firerate
+  self.planetRegen = baseConfigs.planetRegen
+
+  self:newHitbox()
+  self:attWeapon()
+  
+  self.customShot = nil
+end
+
+function Player:newHitbox()
+  self.shape = love.physics.newCircleShape(self.size)
+  if self.fixture then
+    self.fixture:destroy()
+  end
+  self.fixture = love.physics.newFixture(self.body, self.shape)
+  self.fixture:setUserData(self)
+  self.fixture:setFilterData(
+    CATEGORY.PLAYER, 
+    CATEGORY.ENEMY_BULLET + CATEGORY.ENEMY + CATEGORY.TEXT, 
+    0
+  )
+  self.fixture:setSensor(true)
+end
+
+function Player:attWeapon(newStats)
+  newStats = newStats or {}
+  
+  if self.weapon then
+    self.weapon:changeStats({
+      speed = newStats.speed or self.speed,
+      damage = newStats.damage or self.damage,
+      hb = newStats.hb or self.hb,
+      criticalChance = newStats.criticalChance or self.criticalChance,
+      criticalMultiplier = newStats.criticalMultiplier or self.criticalMultiplier
+    })
+  else
+    self.weapon = Projectile.new("blaster-tune", moveDirection, nil, pProjectiles, {
+      speed = newStats.speed or self.speed,
+      damage = newStats.damage or self.damage,
+      hb = newStats.hb or self.hb,
+      criticalChance = newStats.criticalChance or self.criticalChance,
+      criticalMultiplier = newStats.criticalMultiplier or self.criticalMultiplier
+    })
+  end
 end
 
 function Player:addAnimations()
@@ -79,9 +127,9 @@ function Player:update(dt)
     return
   end
 
+  self:updateState(dt)
   self:updateMotion(dt)
   self:updateShooting(dt)
-  self:updateState(dt)
   self:updateParticles(dt)
 end
 
@@ -223,7 +271,7 @@ function Player:draw()
 		x = animation.frameDim.width / 2 - 4,
 		y = animation.frameDim.height / 2,
 	}
-  love.graphics.draw(self.spriteSheets[self.state], quad, x, y, self.angle, VIRTUAL_SCALE, VIRTUAL_SCALE, offset.x, offset.y)
+  love.graphics.draw(self.spriteSheets[self.state], quad, x, y, self.angle, self.scale, self.scale, offset.x, offset.y)
   -- love.graphics.circle("fill", x, y, 20)
 
   debugRender(self)

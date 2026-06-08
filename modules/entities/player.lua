@@ -96,6 +96,7 @@ function Player:updateDead(dt)
     self.isDead = false
     self.respawnTimer = 0
     self.invulrabilityTimer = self.invulnerabilityCd
+    self.boostParticle:play()
   end
 end
 
@@ -150,6 +151,7 @@ end
 function Player:die()
   self.isDead = true
   self.body:setPosition(self.initialPos.x, self.initialPos.y)
+  self.boostParticle:stop()
   -- self.body:destroy()
   -- self.weapon:destroy()
 end

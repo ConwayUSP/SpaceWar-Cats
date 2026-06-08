@@ -101,6 +101,18 @@ function Particle:moveTo(x, y)
   end
 end
 
+function Particle:stop()
+  for _, emitter in ipairs(self.module) do
+    emitter.system:stop()
+  end
+end
+
+function Particle:play()
+  for _, emitter in ipairs(self.module) do
+    emitter.system:start()
+  end
+end
+
 function Particle:draw()
   for _, emitter in ipairs(self.module) do
     love.graphics.draw(emitter.system)

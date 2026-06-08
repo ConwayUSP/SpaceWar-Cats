@@ -20,6 +20,7 @@ function Projectile.new(name, trajectory, customHit, projManager, config)
     projectile.speed = config.speed or 20000
     projectile.hb = config.hb or { type = "circle", radius = 5 }
     projectile.scale = config.scale or 1
+    projectile.sound = config.sound
     projectile.criticalChance = config.criticalChance or 0
     projectile.criticalMultiplier = config.criticalMultiplier or 1.5
     
@@ -47,6 +48,7 @@ end
 
 function Projectile:shot(attacker, origin, dir)
     local shotEvent = ShotEvent.new(self, attacker, origin, dir)
+    SoundManager:play(self.sound)
     table.insert(self.events, shotEvent)
 end
 

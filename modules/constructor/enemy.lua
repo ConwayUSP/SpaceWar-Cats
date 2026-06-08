@@ -17,7 +17,8 @@ function newShooterEnemy(x, y)
         hb = {
             type = "circle",
             radius = 3
-        }
+        },
+        sound = "tiro1"
     }
     local proj = Projectile.new("blaster-ball", moveDirection, nil, eProjectiles, projConfig)
 
@@ -78,7 +79,8 @@ function newTankEnemy(x, y)
         hb = {
             type = "circle",
             radius = 3
-        }
+        },
+        sound = "tiro2"
     }
     local proj = Projectile.new("blaster-ball", moveDirection, nil, eProjectiles, projConfig)
     local function moveTank(self, dt)

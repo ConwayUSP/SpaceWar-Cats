@@ -125,11 +125,15 @@ function Enemy:die()
   if self.isDead then
     return
   end
-
   self.isDead = true
   self.body:destroy()
   if self.weapon then
     self.weapon:destroy()
+  end
+  if self.name == "cat-swimmer" then
+    soundManager:play("morte1")
+  else
+    soundManager:play("morte2")
   end
 end
 

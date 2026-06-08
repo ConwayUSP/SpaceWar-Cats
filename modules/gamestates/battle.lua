@@ -5,6 +5,7 @@ require("modules.engine.text")
 require("modules.utils.utils")
 require("modules.engine.physics")
 require("modules.entities.enemy")
+require("modules.entities.sfx")
 require("modules.engine.uiManager")
 require("modules.constructor.scenes")
 

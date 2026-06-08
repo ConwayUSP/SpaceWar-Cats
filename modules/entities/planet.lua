@@ -18,6 +18,11 @@ local Planet = {}
 Planet.__index = Planet
 Planet.type = "Planet"
 
+local baseConfigs = {
+  maxHp = 500,
+  regen = 0.0
+}
+
 function Planet:load()
   self.width = 20
   self.pos = vec(self.width / 2, VIRTUAL_HEIGHT / 2)
@@ -27,20 +32,26 @@ function Planet:load()
   self.shape = love.physics.newRectangleShape(20, VIRTUAL_HEIGHT)
   self.fixture = love.physics.newFixture(self.body, self.shape)
   self.fixture:setUserData(self)
+  self.fixture:setSensor(true)
+
+  self.damagedTimer = 0
+
+  self:reset()
+  self:addAnimations()
+
+end
+
+function Planet:reset()
+  self.maxHp = baseConfigs.maxHp
+  self.regen = baseConfigs.regen
+  self.hp = self.maxHp
+  self.state = INTACT
+  self.isDead = false
   self.fixture:setFilterData(
     CATEGORY.PLANET, 
     CATEGORY.ENEMY, 
     0
   )
-  self.fixture:setSensor(true)
-  self.state = INTACT
-
-  self.damagedTimer = 0
-  self.maxHp = 500
-  self.hp = 500
-
-  self:addAnimations()
-
 end
 
 function Planet:addAnimations()

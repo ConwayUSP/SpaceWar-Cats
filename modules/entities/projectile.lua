@@ -18,10 +18,13 @@ function Projectile.new(name, trajectory, customHit, projManager, config)
     local projectile = setmetatable({}, Projectile)
     projectile.dmg = config.damage or 10
     projectile.speed = config.speed or 20000
-    projectile.turnSpeed = config.turnSpeed or 0
-    projectile.size = config.size or 5
-    projectile.hb = config.hb or { type = "circle", radius = projectile.size }
 
+    projectile.hb = config.hb or { type = "circle", radius = 5 }
+    projectile.scale = config.scale or 1
+    projectile.criticalChance = config.criticalChance or 0
+    projectile.criticalMultiplier = config.criticalMultiplier or 1.5
+    projectile.turnSpeed = config.turnSpeed or 0
+    
     projectile.name = name
     projectile.trajectory = trajectory -- função que define a trajetória do projétil
     projectile.customHit = customHit   -- função executada toda vez que um projétil acertar um alvo
@@ -33,6 +36,15 @@ function Projectile.new(name, trajectory, customHit, projManager, config)
 
     projectile.events = {}
     return projectile
+end
+
+function Projectile:changeStats(newStats)
+    self.dmg = newStats.damage or self.dmg
+    self.speed = newStats.speed or self.speed
+    self.hb = newStats.hb or self.hb
+    self.scale = newStats.scale or self.scale
+    self.criticalChance = newStats.criticalChance or self.criticalChance
+    self.criticalMultiplier = newStats.criticalMultiplier or self.criticalMultiplier
 end
 
 function Projectile:shot(attacker, origin, dir)
@@ -68,7 +80,7 @@ function Projectile:draw()
         local shot = self.events[i]
         if shot.active then
             local x, y = shot.body:getPosition()
-            love.graphics.draw(self.image, x, y, 0, 1, 1, self.image:getWidth() / 2, self.image:getHeight() / 2)
+            love.graphics.draw(self.image, x, y, 0, self.scale, self.scale, self.image:getWidth() / 2, self.image:getHeight() / 2)
             debugRender(shot)
         end
     end
@@ -88,13 +100,17 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
     shot.initialPos = origin
     shot.attacker = attacker
     shot.dir = dir
+
     shot.projectileState = projectileState
     shot.trajectory = projectileState.trajectory
     shot.turnSpeed = projectileState.turnSpeed
     shot.speed = projectileState.speed
     shot.dmg = projectileState.dmg
+    shot.criticalMultiplier = projectileState.criticalMultiplier
+    shot.criticalChance = projectileState.criticalChance
     shot.customHit = projectileState.customHit
     shot.category = projectileState.category
+
     shot.active = true
 
     shot.body = love.physics.newBody(Physics.world, shot.initialPos.x, shot.initialPos.y, "dynamic")
@@ -123,14 +139,26 @@ function ShotEvent:onHit(target)
         self:customHit(target)
     end
 
-    target:takeDamage(self.dmg)
+    local dmg, color = self:calculateDamage(self.dmg)
 
+    target:takeDamage(dmg)
+    
     if target.type == "Enemy" then
         local pos = vec(self.body:getPosition())
-        newAscendingTextParticle(addVec(pos, vec(math.random(-10, 10), -20)), self.dmg, { 1, 0.8, 0.3, 1 })
+        pos = addVec(pos, vec(math.random(-10, 10), -20))
+        newAscendingTextParticle(pos, math.floor(dmg), color)
     end
 
     self:destroy()
+end
+
+function ShotEvent:calculateDamage(dmg)
+    local rand = math.random()
+    if rand <= self.criticalChance then
+        return dmg * self.criticalMultiplier, {0.7, 0.1, 0.07, 1}
+    else
+        return dmg, {1, 0.8, 0.3, 1}
+    end
 end
 
 function ShotEvent:destroy(i)

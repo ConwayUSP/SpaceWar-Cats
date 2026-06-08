@@ -226,14 +226,16 @@ function UpgradesState:pickRandomUpgrade(pool)
 	local total = 0
 
 	for _, upgrade in ipairs(pool) do
-		total = total + upgrade.weight
+		local weight = weights[upgrade.rarity]
+		total = total + weight
 	end
 
 	local r = math.random(total)
 	local acc = 0
 
 	for i, upgrade in ipairs(pool) do
-		acc = acc + upgrade.weight
+		local weight = weights[upgrade.rarity]
+		acc = acc + weight
 
 		if acc >= r then
 			return i
@@ -242,7 +244,11 @@ function UpgradesState:pickRandomUpgrade(pool)
 end
 
 function UpgradesState:applyUpgrade(upgrade)
-	upgrade.apply()
+	upgrade.apply({
+		player = p1,
+		planet = planet,
+	})
+	print("Applied upgrade:", upgrade.name)
 	SetGameCtx(CTX.BATTLE)
 end
 

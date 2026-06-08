@@ -164,7 +164,7 @@ function Enemy:draw()
   end
   
   if self.damagedTimer > 0 then
-    applyWhiteShader(drawFunc)
+    applyColorShader(drawFunc)
   else
     drawFunc()
   end

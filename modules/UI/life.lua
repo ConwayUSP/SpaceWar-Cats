@@ -40,7 +40,6 @@ end
 ----------------------------------------
 
 function LifeBarBg:draw()
-  love.graphics.setColor(1, 1, 1, 0.5)
   local animation = self.animations[self.state]
 	local quad = animation.frames[animation.currFrame]
   local offset = {
@@ -48,8 +47,6 @@ function LifeBarBg:draw()
 		y = animation.frameDim.height / 2,
 	}
   love.graphics.draw(self.spriteSheets[self.state], quad, self.pos.x, self.pos.y, 0, VIRTUAL_SCALE, VIRTUAL_SCALE, offset.x, offset.y)
-
-  love.graphics.setColor(1, 1, 1, 1)
 end
 
 ----------------------------------------
@@ -63,7 +60,9 @@ LifeBarFront.type = "LifeBarFront"
 function LifeBarFront:load(pos)
   self.pos = vec(pos.x, pos.y)
   self.state = INTACT
-  self.target = 1
+  self.frontTarget = 1
+  self.backTarget = 1
+  self.percent = 1
 
   local path = pngPathFormat({ "assets", "sprites", "life", "front" })
   self.image = love.graphics.newImage(path)
@@ -71,19 +70,44 @@ function LifeBarFront:load(pos)
 end
 
 function LifeBarFront:update(dt)
-  self.target = lerp(self.target, math.max(0, (planet.hp / planet.maxHp)), 4 * dt)
+  local oldPercent = self.percent
+  self.percent = math.max(0, (planet.hp / planet.maxHp))
+
+  if oldPercent ~= self.percent then
+    print("opa")
+    if self.percent < oldPercent  then
+      self.frontTarget = self.percent
+    else
+      self.backTarget = self.percent
+    end
+  end
+
+  if math.abs(self.frontTarget - self.percent) > 0.00005 then
+    print("frente ta indo")
+    self.frontTarget = lerp(self.frontTarget, self.percent, 4 * dt)
+  end
+
+  if math.abs(self.backTarget - self.percent) > 0.00005 then
+    print("tras ta indo")
+    self.backTarget = lerp(self.backTarget, self.percent, 4 * dt)
+  end
+
 end
 
 function LifeBarFront:draw()
-  love.graphics.setColor(1, 1, 1, 0.5)
-  love.graphics.setScissor(0, 0, self.target * SCREEN_WIDTH, VIRTUAL_HEIGHT)
   local offset = {
     x = self.image:getWidth() / 2,
     y = self.image:getHeight() / 2,
   }
+
+  love.graphics.setScissor(0, 0, self.backTarget * SCREEN_WIDTH, VIRTUAL_HEIGHT)
+  local drawFunc = function () love.graphics.draw(self.image, self.pos.x, self.pos.y, 0, VIRTUAL_SCALE, VIRTUAL_SCALE, offset.x, offset.y) end
+  applyColorShader(drawFunc)
+  love.graphics.setScissor()
+
+  love.graphics.setScissor(0, 0, self.frontTarget * SCREEN_WIDTH, VIRTUAL_HEIGHT)
   love.graphics.draw(self.image, self.pos.x, self.pos.y, 0, VIRTUAL_SCALE, VIRTUAL_SCALE, offset.x, offset.y)
   love.graphics.setScissor()
-  love.graphics.setColor(1, 1, 1, 1)
 end
 
 
@@ -125,7 +149,9 @@ function LifeBarWrapper:update(dt)
 end
 
 function LifeBarWrapper:draw()
+  love.graphics.setColor(1, 1, 1, 0.5)
   self.lifeBar:draw()
   self.lifeBarFront:draw()
   drawTexts({ self.text })
+    love.graphics.setColor(1, 1, 1, 1)
 end

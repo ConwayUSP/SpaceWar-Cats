@@ -130,6 +130,14 @@ function love.keypressed(key, scancode, isrepeat)
 		shaderManager:toggle()
 	end
 
+	if key == "d" then
+		planet:takeDamage(10)
+	end
+
+	if key == "h" then
+		planet:heal(10)
+	end
+
 	if GAMESTATE[GameCtx].keypressed then
 		GAMESTATE[GameCtx]:keypressed(key, scancode, isrepeat)
 	end

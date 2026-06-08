@@ -35,6 +35,9 @@ function Planet:load()
   self.fixture:setSensor(true)
 
   self.damagedTimer = 0
+  self.healTimer = 0
+
+  self.cureTimer = 1
 
   self:reset()
   self:addAnimations()
@@ -68,6 +71,16 @@ function Planet:update(dt)
   if self.damagedTimer > 0 then
     self.damagedTimer = self.damagedTimer - dt
   end
+  if self.healTimer > 0 then
+    self.healTimer = self.healTimer - dt
+  end
+  if self.regen > 0 and self.cureTimer > 0 then
+    self.cureTimer = self.cureTimer - dt
+    if self.cureTimer <= 0 and not self.isDead then
+      self.cureTimer = 1
+      self:heal(self.regen)
+    end
+  end
 end
 
 function Planet:die()
@@ -77,11 +90,24 @@ function Planet:die()
 end
 
 function Planet:takeDamage(damage)
-  self.hp = self.hp - damage
+  if self.isDead then 
+    return 
+  end
+
+  self.hp = math.max(0, self.hp - damage)
   self.damagedTimer = 0.1
-  if self.hp <= 0 and not self.isDead then
+  if self.hp <= 0 then
     self:die()
   end
+end
+
+function Planet:heal(amount)
+  if self.isDead or self.hp >= self.maxHp then 
+    return 
+  end
+
+  self.healTimer = 0.1
+  self.hp = math.min(self.hp + amount, self.maxHp)
 end
 
 ----------------------------------------
@@ -103,7 +129,9 @@ function Planet:draw()
   end
 
   if self.damagedTimer > 0 then
-    applyWhiteShader(drawFunc)
+    applyColorShader(drawFunc)
+  elseif self.healTimer > 0 then
+    applyColorShader(drawFunc, { 0.565, 0.941, 0.486, 1.0 })
   else
     drawFunc()
   end

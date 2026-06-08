@@ -118,6 +118,10 @@ function love.keypressed(key, scancode, isrepeat)
 	if key == "0" then
 		debugMode = not debugMode
 	end
+		
+	if key == "p" then
+		WaveManager:debugSkipWave()
+	end
 
 	if key == "u" then
 		SetGameCtx(CTX.UPGRADES)

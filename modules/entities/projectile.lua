@@ -18,12 +18,13 @@ function Projectile.new(name, trajectory, customHit, projManager, config)
     local projectile = setmetatable({}, Projectile)
     projectile.dmg = config.damage or 10
     projectile.speed = config.speed or 20000
+    projectile.turnSpeed = config.turnSpeed or 0
     projectile.size = config.size or 5
     projectile.hb = config.hb or { type = "circle", radius = projectile.size }
 
     projectile.name = name
     projectile.trajectory = trajectory -- função que define a trajetória do projétil
-    projectile.customHit = customHit           -- função executada toda vez que um projétil acertar um alvo
+    projectile.customHit = customHit   -- função executada toda vez que um projétil acertar um alvo
     projectile.projManager = projManager
     projectile.category = projManager.category
     projectile.projManager:add(projectile)
@@ -49,7 +50,7 @@ end
 function Projectile:update(dt)
     for i = #self.events, 1, -1 do
         local shot = self.events[i]
-        
+
         if not shot.active then
             table.remove(self.events, i)
         else
@@ -89,6 +90,7 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
     shot.dir = dir
     shot.projectileState = projectileState
     shot.trajectory = projectileState.trajectory
+    shot.turnSpeed = projectileState.turnSpeed
     shot.speed = projectileState.speed
     shot.dmg = projectileState.dmg
     shot.customHit = projectileState.customHit
@@ -103,8 +105,8 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
     local mask = (projectileState.category == CATEGORY.PLAYER_BULLET) and CATEGORY.ENEMY or CATEGORY.PLAYER
     mask = mask + CATEGORY.TEXT
     shot.fixture:setFilterData(
-        projectileState.category, 
-        mask, 
+        projectileState.category,
+        mask,
         0
     )
     shot.fixture:setSensor(true)
@@ -122,10 +124,10 @@ function ShotEvent:onHit(target)
     end
 
     target:takeDamage(self.dmg)
-    
+
     if target.type == "Enemy" then
         local pos = vec(self.body:getPosition())
-        newAscendingTextParticle(addVec(pos, vec(math.random(-10, 10), -20)), self.dmg, {1, 0.8, 0.3, 1})
+        newAscendingTextParticle(addVec(pos, vec(math.random(-10, 10), -20)), self.dmg, { 1, 0.8, 0.3, 1 })
     end
 
     self:destroy()

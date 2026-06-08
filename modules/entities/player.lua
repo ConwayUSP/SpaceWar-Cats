@@ -25,7 +25,7 @@ function Player:load()
   self.size = 7
   self.weapon = Projectile.new("blaster-tune", moveDirection, nil, pProjectiles, {
     speed = 40000,
-    damage = 40,
+    damage = 10,
     size = 4,
     hb = {
       type = "rectangle",
@@ -34,7 +34,7 @@ function Player:load()
     }
   })
   self.customShot = nil
-  -- self.customShot = defaultCircularAttackFunc(-1, 1, math.rad(5))
+  -- self.customShot = defaultConicalAttackFunc(-1, 1, math.rad(5))
 
   self.body = love.physics.newBody(Physics.world, self.initialPos.x, self.initialPos.y, "dynamic")
   self.body:setFixedRotation(true)

@@ -65,6 +65,7 @@ function love.load()
 
 	UIManager:load({
 		[CTX.BATTLE] = newBattleScene(),
+		[CTX.UPGRADES] = newUpgradeScene(),
 	})
 
 	particleManager:load()

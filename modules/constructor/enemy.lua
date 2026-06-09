@@ -68,7 +68,7 @@ function newCatSwimmer(x, y, vx)
             height = 18
         }
     }
-    local enemy = Enemy.new("cat-swimmer", vec(x, y), move, nil, nil, config)
+    local enemy = Enemy.new("swimmer", vec(x, y), move, nil, nil, config)
     local flyingConfig = newAnimSetting(9, { width = 32, height = 32 }, 0.1, true, 1)
     enemy:addAnimations(flyingConfig)
     return enemy
@@ -146,8 +146,8 @@ function newCatMage(x, y, cd)
             height = 18
         }
     }
-    local enemy = Enemy.new("cat-swimmer", vec(x, y), move, proj, nil, config)
-    local flyingConfig = newAnimSetting(9, { width = 32, height = 32 }, 0.1, true, 1)
+    local enemy = Enemy.new("mage", vec(x, y), move, proj, nil, config)
+    local flyingConfig = newAnimSetting(6, { width = 32, height = 32 }, 0.1, true, 1)
     enemy:addAnimations(flyingConfig)
     return enemy
 end

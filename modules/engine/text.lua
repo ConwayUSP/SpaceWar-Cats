@@ -62,8 +62,8 @@ function Text:draw()
 	local content = self.content or ""
 	local width, height = self:getDimensions()
 
-	local x = self.pos[1]
-	local y = self.pos[2]
+	local x = self.pos.x
+	local y = self.pos.y
 	local rotation = self.rotation or 0
 	local scale = self.scale or 1
 	local ox, oy = 0, 0
@@ -76,7 +76,7 @@ function Text:draw()
 	local color = self.color or { 1, 1, 1, 1 }
 	love.graphics.setColor(color[1], color[2], color[3], color[4])
 	if self.maxWidth then
-		love.graphics.printf(content, x, y, self.maxWidth, self.align or "left", rotation, scale, scale, ox, oy)
+		love.graphics.printf(content, x, y, self.maxWidth, self.align, rotation, scale, scale, ox, oy)
 	else
 		love.graphics.print(content, x, y, rotation, scale, scale, ox, oy)
 	end
@@ -95,7 +95,7 @@ function TextPhysical.new(content, size, color, pos, rotation, centerOffset, lif
 
 	local w, h = text:getDimensions()
 
-	text.body = love.physics.newBody(Physics.world, pos[1], pos[2], "dynamic")
+	text.body = love.physics.newBody(Physics.world, pos.x, pos.y, "dynamic")
 	text.body:setFixedRotation(true)
 	text.realSize = { width = w, height = h }
 	text.shape = love.physics.newRectangleShape(w, h)

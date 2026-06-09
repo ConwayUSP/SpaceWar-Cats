@@ -28,9 +28,9 @@ function MenuState:load()
 	-- texts
 	self.texts.play = TextPhysical.new(
 		"PLAY",
-		32,
+		48,
 		{ 1, 1, 1, 1 },
-		{ width / 2, height / 2 },
+		vec(width / 2, height / 2),
 		0,
 		true,
 		math.huge,

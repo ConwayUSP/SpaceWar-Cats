@@ -135,7 +135,7 @@ function ParticleText.new(pos, textConfig)
     textConfig.content,
     textConfig.size,
     textConfig.color,
-    {self.initialPos.x, self.initialPos.y},
+    vec(self.initialPos.x, self.initialPos.y),
     textConfig.rotation,
     textConfig.centered,
     textConfig.lifetime,

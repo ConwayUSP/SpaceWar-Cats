@@ -58,7 +58,7 @@ function UpgradesSlot.new(upgrade, x, y, width, height, delay)
 		upgrade.name,
 		16,
 		color,
-		{self.width/2, self.paddingY},
+		vec(self.width/2, self.paddingY),
 		0,
 		true
 	)
@@ -67,7 +67,7 @@ function UpgradesSlot.new(upgrade, x, y, width, height, delay)
 		upgrade.description,
 		14,
 		{0.85, 0.85, 0.85, 1},
-		{self.paddingX, self.paddingY + 34},
+		vec(self.paddingX, self.paddingY + 34),
 		0,
 		false,
 		math.huge,

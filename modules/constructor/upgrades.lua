@@ -139,10 +139,10 @@ upgradesList = {
     rarity = COMMON,
     description = {
       colors.base, "Planet regenerates ",
-      colors.highlight, "+5 HP/s "
+      colors.highlight, "+1 HP/s "
     },
     apply = function(ctx)
-      ctx.planet.regen = ctx.planet.regen + 5
+      ctx.planet.regen = ctx.planet.regen + 1
     end
   },
   {

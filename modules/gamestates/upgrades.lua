@@ -201,7 +201,7 @@ function UpgradesState:setSlots(upgrades)
 				y,
 				slotWidth,
 				slotHeight,
-				0.1 * (i - 1)
+				0.15 * (i - 1)
 			)
 
 			table.insert(self.slots, slot)
@@ -264,7 +264,7 @@ function UpgradesState:applyUpgrade(upgrade)
 
 	local rand = math.random(1, 2)
 	soundManager:play("buy" .. rand)
-	
+
 	self.state = TRANSITION
 end
 

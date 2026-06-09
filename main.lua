@@ -57,6 +57,7 @@ end
 function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
+	SoundSFX:loadAll(soundManager)
 	bg:load()
 	shaderManager:load({
     "scanlines",

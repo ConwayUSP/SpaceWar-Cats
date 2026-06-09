@@ -39,7 +39,6 @@ function UpgradesSlot.new(upgrade, x, y, width, height, delay)
 	self.angle = 0
 
 	self.canvas = love.graphics.newCanvas(width, height)
-	print(width, height)
 
 	self.initialDelay = delay
 	self.delay = self.initialDelay

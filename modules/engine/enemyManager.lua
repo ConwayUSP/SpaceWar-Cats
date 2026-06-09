@@ -18,9 +18,10 @@ function EnemyManager:update(dt)
 end
 function EnemyManager:draw()
     for _, enemy in ipairs(self.list) do
-        local alpha = enemy.alpha or 1
+        local alpha = enemy.alpha
         love.graphics.setColor(1, 1, 1, alpha)
         enemy:draw()
+        love.graphics.setColor(1, 1, 1, 1)
     end
 end
 

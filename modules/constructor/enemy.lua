@@ -150,26 +150,32 @@ function newCatMage(x, y, cd)
 
     local cdTimer = cd
     local function move(self, dt)
-        self.fadeState = self.fadeState or "idle"
-        self.alpha = self.alpha or 1
+        self.fadeState = self.fadeState or "fadeIn"
+        self.alpha = self.alpha or 0
         self.fadeSpeed = 2
         if self.fadeState == "idle" then
             cdTimer = cdTimer - dt
             if cdTimer <= 0 then
                 self.fadeState = "fadeOut"
+            else
+                local k = 0.4
+                local vx = -400 * math.cos(self.timer * math.pi * k) * (math.pi * k) * dt
+                local vy = 400 * math.cos(self.timer * math.pi * 2*k) * (math.pi * 2*k) * dt
+                self.body:setLinearVelocity(vx, vy)
             end
         end
 
         if self.fadeState == "fadeOut" then
+            self.body:setLinearVelocity(0, 0)
             self.alpha = self.alpha - (self.fadeSpeed * dt)
             if self.alpha <= 0 then
                 self.alpha = 0
-                x = math.random(VIRTUAL_WIDTH / 5, VIRTUAL_WIDTH * 4 / 5)
-                y = math.random(VIRTUAL_HEIGHT / 5, VIRTUAL_HEIGHT * 4 / 5)
-                self.body:setPosition(x, y)
+                local x1, y1 = randomPosInside()
+                self.body:setPosition(x1, y1)
                 self.fadeState = "fadeIn"
             end
         elseif self.fadeState == "fadeIn" then
+            self.body:setLinearVelocity(0, 0)
             self.alpha = self.alpha + (self.fadeSpeed * dt)
             if self.alpha >= 1 then
                 self.alpha = 1
@@ -190,7 +196,7 @@ function newCatMage(x, y, cd)
             height = 18
         }
     }
-    local enemy = Enemy.new("mage", vec(x, y), move, proj, nil, config)
+    local enemy = Enemy.new("mage", vec(x, y), move, proj, nil, config, 0)
     local flyingConfig = newAnimSetting(6, { width = 32, height = 32 }, 0.1, true, 1)
     enemy:addAnimations(flyingConfig)
     return enemy

@@ -16,7 +16,7 @@ Enemy = {}
 Enemy.__index = Enemy
 Enemy.type = "Enemy"
 
-function Enemy.new(name, spawnPos, move, weapon, customShot, config)
+function Enemy.new(name, spawnPos, move, weapon, customShot, config, initialAlpha)
   local enemy = setmetatable({}, Enemy)
 
   enemy.size = config.size or 30                               
@@ -52,6 +52,7 @@ function Enemy.new(name, spawnPos, move, weapon, customShot, config)
   enemy.shoots = 0
   enemy.currentShot = nil
   enemy.state = FLYING
+  enemy.alpha = initialAlpha or 1
 
   enemyManager:add(enemy)
 

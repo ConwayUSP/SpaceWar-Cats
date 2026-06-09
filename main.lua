@@ -28,6 +28,7 @@ world = Physics
 debugMode = false
 isFullscreen = false
 
+bg = require("modules.entities.background")
 p1 = require("modules.entities.player")
 planet = require("modules.entities.planet")
 enemyManager = require("modules.engine.enemyManager")
@@ -56,6 +57,7 @@ end
 function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
+	bg:load()
 	shaderManager:load({
     "scanlines",
     "crt"
@@ -63,6 +65,7 @@ function love.load()
 
 	UIManager:load({
 		[CTX.BATTLE] = newBattleScene(),
+		[CTX.UPGRADES] = newUpgradeScene(),
 	})
 
 	particleManager:load()
@@ -78,9 +81,10 @@ end
 
 function love.update(dt)
 	shaderManager:update(dt)
-
+	
 	GAMESTATE[GameCtx]:update(dt)
 	UIManager:update(dt)
+	bg:update(dt)
 end
 
 function love.draw()
@@ -88,16 +92,10 @@ function love.draw()
 
 	love.graphics.push()
 
-	love.graphics.translate(
-			SCREEN_OFFSET_X,
-			SCREEN_OFFSET_Y
-	)
+	love.graphics.translate(SCREEN_OFFSET_X, SCREEN_OFFSET_Y)
+	love.graphics.scale(SCREEN_SCALE, SCREEN_SCALE)
 
-	love.graphics.scale(
-			SCREEN_SCALE,
-			SCREEN_SCALE
-	)
-
+	bg:draw()
 	GAMESTATE[GameCtx]:draw()
 	UIManager:draw()
 
@@ -131,6 +129,14 @@ function love.keypressed(key, scancode, isrepeat)
 
 	if key == "9" then
 		shaderManager:toggle()
+	end
+
+	if key == "d" then
+		planet:takeDamage(10)
+	end
+
+	if key == "h" then
+		planet:heal(10)
 	end
 
 	if GAMESTATE[GameCtx].keypressed then

@@ -50,6 +50,7 @@ function Enemy.new(name, spawnPos, move, weapon, customShot, config)
   enemy.damagedTimer = 0
   enemy.timer = 0
   enemy.shoots = 0
+  enemy.currentShot = nil
   enemy.state = FLYING
 
   enemyManager:add(enemy)
@@ -87,37 +88,71 @@ end
 
 function Enemy:updateShooting(dt)
   if not self.weapon then
-    return
+      return
   end
+
+  -- cooldown
   if self.cooldownTimer > 0 then
     self.cooldownTimer = self.cooldownTimer - dt
+
     if self.cooldownTimer <= 0 then
       self.cooldownTimer = 0
       self.shoots = 0
       self.shootTimer = 0
     end
+
     return
   end
 
-  self.shootTimer = self.shootTimer + dt
-  if self.shootTimer >= (1 / self.fireRate) and 
-     self.shoots < self.shootsUntilCd 
-  then
-    local x, y = self.body:getPosition()
-    x = x - self.size/2
-    if self.customShot then
-      self.customShot(self.weapon, self, vec(x, y), math.rad(180))
-    else
-      local origin = vec(x, y)
-      self.weapon:shot(self, origin, math.rad(180))
-    end
-    
-    self.shootTimer = 0
-    self.shoots = self.shoots + 1
+  -- existe um ataque em andamento?
+  if self.currentShot then
+    local finished = self.currentShot(dt)
 
-    if self.shoots >= self.shootsUntilCd then
-      self.cooldownTimer = self.cd
+    if finished then
+      self.currentShot = nil
     end
+
+    return
+  end
+
+  -- controla a cadência de disparo
+  self.shootTimer = self.shootTimer + dt
+
+  if self.shootTimer < (1 / self.fireRate) then
+    return
+  end
+
+  if self.shoots >= self.shootsUntilCd then
+    self.cooldownTimer = self.cd
+    return
+  end
+
+  local x, y = self.body:getPosition()
+  x = x - self.size / 2
+
+  local origin = vec(x, y)
+  local direction = math.rad(180)
+
+  if self.customShot then
+    self.currentShot = self.customShot(
+      self.weapon,
+      self,
+      origin,
+      direction
+    )
+  else
+    self.weapon:shot(
+      self,
+      origin,
+      direction
+    )
+  end
+
+  self.shootTimer = 0
+  self.shoots = self.shoots + 1
+
+  if self.shoots >= self.shootsUntilCd then
+    self.cooldownTimer = self.cd
   end
 end
 
@@ -130,11 +165,8 @@ function Enemy:die()
   if self.weapon then
     self.weapon:destroy()
   end
-  if self.name == "cat-swimmer" then
-    soundManager:play("morte1")
-  else
-    soundManager:play("morte2")
-  end
+  local r = math.random(1, 3)
+  soundManager:play("morte" .. r, true)
 end
 
 function Enemy:takeDamage(damage)
@@ -164,7 +196,7 @@ function Enemy:draw()
   end
   
   if self.damagedTimer > 0 then
-    applyWhiteShader(drawFunc)
+    applyColorShader(drawFunc)
   else
     drawFunc()
   end

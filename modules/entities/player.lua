@@ -21,7 +21,7 @@ local baseConfigs = {
   damage = 40,                  -- projetil
   size = 5,                     -- player
   scale = 1,                    -- player
-  criticalChance = 0.90,        -- projetil
+  criticalChance = 0.02,        -- projetil
   criticalMultiplier = 1.5,     -- projetil
   hb = {                        -- projetil
     type = "rectangle",
@@ -229,7 +229,8 @@ function Player:shoot()
     self.weapon:shot(self, origin, self.angle)
   end
   
-  SoundManager:play("tiro3")
+  local r = math.random(1, 2)
+  soundManager:play("tiro" .. r, true)
   self.canShoot = false
   self.firerateTimer = 0
 end

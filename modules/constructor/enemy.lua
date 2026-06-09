@@ -68,7 +68,7 @@ function newCatSwimmer(x, y, vx)
             height = 18
         }
     }
-    local enemy = Enemy.new("cat-swimmer", vec(x, y), move, nil, nil, config)
+    local enemy = Enemy.new("swimmer", vec(x, y), move, nil, nil, config)
     local flyingConfig = newAnimSetting(9, { width = 32, height = 32 }, 0.1, true, 1)
     enemy:addAnimations(flyingConfig)
     return enemy
@@ -88,11 +88,15 @@ function newTankEnemy(x, y)
         },
         sound = "tiro2"
     }
-    local proj = Projectile.new("blaster-ball", moveDirection, nil, eProjectiles, projConfig)
+    local moveProj = function (e, dt)
+        local vx = -e.speed * (6^(e.timer-1) + 1) * dt
+        e.body:setLinearVelocity(vx, 0)
+    end
+    local proj = Projectile.new("blaster-ball", moveProj, nil, eProjectiles, projConfig)
     local function move(self, dt)
         local vx, vy = self.body:getLinearVelocity()
         vy = vy + math.cos(self.timer) * 62.5 * dt
-        self.body:setLinearVelocity(-16, vy)
+        self.body:setLinearVelocity(-900 * dt, vy)
     end
     local config = {
         hp = 70 * hpMultipler(),
@@ -101,9 +105,27 @@ function newTankEnemy(x, y)
         shootsUntilCd = 3,
         cd = 4
     }
-    local customShot = defaultConicalAttackFunc(-1, 1, math.rad(10))
+    local customShot = function(atk, attacker, origin, direction)
+        local timer = 0
+        local delay = 0.3
+
+        return function(dt)
+            local x1, y1 = attacker.body:getPosition()
+            if timer == 0 then
+                atk:shot(attacker, addVec(vec(x1, y1), vec(-10, -8)), direction)
+            end
+
+            timer = timer + dt
+            if timer >= delay then
+                atk:shot(attacker, addVec(vec(x1, y1), vec(-5, -8)), direction)
+                return true
+            end
+            return false
+        end
+    end
+    -- local customShot = defaultConicalAttackFunc(-1, 1, math.rad(10))
     local flyingConfig = newAnimSetting(4, { width = 32, height = 32 }, 0.1, true, 1)
-    local enemy = Enemy.new("drone", vec(x, y), move, proj, customShot, config)
+    local enemy = Enemy.new("tank", vec(x, y), move, proj, customShot, config)
     enemy:addAnimations(flyingConfig)
     return enemy
 end
@@ -128,8 +150,8 @@ function newCatMage(x, y, cd)
     local function move(self, dt)
         cdTimer = cdTimer - dt
         if cdTimer <= 0 then
-            x = math.random(100, SCREEN_WIDTH - 100)
-            y = math.random(50, 60)
+            x = math.random(VIRTUAL_WIDTH / 5, VIRTUAL_WIDTH * 4 / 5)
+            y = math.random(VIRTUAL_HEIGHT / 5, VIRTUAL_HEIGHT * 4 / 5)
             self.body:setPosition(x, y)
             cdTimer = cd
         end
@@ -146,8 +168,8 @@ function newCatMage(x, y, cd)
             height = 18
         }
     }
-    local enemy = Enemy.new("cat-swimmer", vec(x, y), move, proj, nil, config)
-    local flyingConfig = newAnimSetting(9, { width = 32, height = 32 }, 0.1, true, 1)
+    local enemy = Enemy.new("mage", vec(x, y), move, proj, nil, config)
+    local flyingConfig = newAnimSetting(6, { width = 32, height = 32 }, 0.1, true, 1)
     enemy:addAnimations(flyingConfig)
     return enemy
 end

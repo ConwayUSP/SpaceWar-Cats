@@ -21,6 +21,8 @@ local function beginContact(a, b, coll)
       table.insert(Physics.delayedFunctions, function() 
         target:onHit()
         pProjectile:destroy()
+        local r = math.random(1, 3)
+        soundManager:play("morte" .. r, true)
       end)
     end
 

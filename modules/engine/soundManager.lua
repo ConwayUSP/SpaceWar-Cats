@@ -33,8 +33,14 @@ function SoundManager:load(name, path, category)
     return soundObj
 end
 
-function SoundManager:play(name)
+function SoundManager:play(name, randPitch)
     if self.sounds[name] then
+        if randPitch then
+            local k = 1.2
+            local min, max = 1/k, k
+            local r = math.random() * (max - min) + min
+            self.sounds[name].source:setPitch(r)
+        end
         self.sounds[name]:play()
     end
 end

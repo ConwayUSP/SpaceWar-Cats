@@ -23,6 +23,7 @@ UIScene.scene = nil
 function UIScene.new()
   local self = setmetatable({}, UIScene)
   self.elements = {}
+  self.texts = {}
   return self
 end
 
@@ -32,11 +33,16 @@ function UIScene:update(dt)
       element:update(dt)
     end
   end
+  updateTexts(self.texts, dt)
 end
 
 function UIScene:add(element)
   table.insert(self.elements, element)
   element.active = true
+end
+
+function UIScene:addText(text)
+  table.insert(self.texts, text)
 end
 
 ----------------------------------------
@@ -51,6 +57,7 @@ function UIScene:draw()
       element:draw()
     end
   end
+  drawTexts(self.texts)
 
   love.graphics.setColor(1, 1, 1)
 end

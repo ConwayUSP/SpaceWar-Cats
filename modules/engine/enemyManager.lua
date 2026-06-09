@@ -16,7 +16,6 @@ function EnemyManager:update(dt)
         end
     end
 end
-
 function EnemyManager:draw()
     for _, enemy in ipairs(self.list) do
         enemy:draw()

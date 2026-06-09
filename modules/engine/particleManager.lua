@@ -20,7 +20,6 @@ end
 function ParticleManager:update(dt)
   for i = #self.particlesAnim, 1, -1 do
     local particle = self.particlesAnim[i]
-
     if particle.active then
       particle:update(dt)
     else

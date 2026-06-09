@@ -24,6 +24,7 @@ function MenuState:load()
 	Physics:load()
 	planet:load()
 	p1:load()
+	SoundSFX:loadAll(soundManager)
 	
 	-- texts
 	self.texts.play = TextPhysical.new(

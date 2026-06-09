@@ -200,6 +200,7 @@ function Player:die()
   self.isDead = true
   self.body:setPosition(self.initialPos.x, self.initialPos.y)
   self.boostParticle:stop()
+  SoundManager:play("morte3")
   -- self.body:destroy()
   -- self.weapon:destroy()
 end
@@ -227,7 +228,8 @@ function Player:shoot()
   else
     self.weapon:shot(self, origin, self.angle)
   end
-
+  
+  SoundManager:play("tiro3")
   self.canShoot = false
   self.firerateTimer = 0
 end

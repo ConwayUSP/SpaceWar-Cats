@@ -6,5 +6,6 @@ CTX = {}
 CTX.MENU = "menu"
 CTX.BATTLE = "battle"
 CTX.UPGRADES = "upgrades"
+CTX.PAUSE = "pause"
 -- CTX.DEATH_SCREEN = "death screen"
 -- CTX.VICTORY_SCREEN = "victory screen"

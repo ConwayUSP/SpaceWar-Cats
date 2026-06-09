@@ -130,11 +130,8 @@ function Enemy:die()
   if self.weapon then
     self.weapon:destroy()
   end
-  if self.name == "cat-swimmer" then
-    soundManager:play("morte1")
-  else
-    soundManager:play("morte2")
-  end
+  local r = math.random(1, 3)
+  soundManager:play("morte" .. r, true)
 end
 
 function Enemy:takeDamage(damage)

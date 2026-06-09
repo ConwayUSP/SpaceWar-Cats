@@ -229,7 +229,7 @@ function Player:shoot()
     self.weapon:shot(self, origin, self.angle)
   end
   
-  SoundManager:play("tiro3")
+  soundManager:play("tiro3", true)
   self.canShoot = false
   self.firerateTimer = 0
 end

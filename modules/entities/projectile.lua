@@ -50,7 +50,7 @@ end
 
 function Projectile:shot(attacker, origin, dir)
     local shotEvent = ShotEvent.new(self, attacker, origin, dir)
-    SoundManager:play(self.sound)
+    soundManager:play(self.sound, true)
     table.insert(self.events, shotEvent)
 end
 
@@ -68,6 +68,7 @@ function Projectile:update(dt)
         if not shot.active then
             table.remove(self.events, i)
         else
+            shot.timer = shot.timer + dt
             shot:trajectory(dt)
             local x, y = shot.body:getPosition()
             if (x > VIRTUAL_WIDTH + 100) or (x < -100) or (y > VIRTUAL_HEIGHT + 100) or (y < -100) then
@@ -114,6 +115,7 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
     shot.category = projectileState.category
 
     shot.active = true
+    shot.timer = 0
 
     shot.body = love.physics.newBody(Physics.world, shot.initialPos.x, shot.initialPos.y, "dynamic")
     shot.shape = getRightHitbox(projectileState.hb)

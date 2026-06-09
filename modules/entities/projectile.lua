@@ -18,15 +18,17 @@ function Projectile.new(name, trajectory, customHit, projManager, config)
     local projectile = setmetatable({}, Projectile)
     projectile.dmg = config.damage or 10
     projectile.speed = config.speed or 20000
+
     projectile.hb = config.hb or { type = "circle", radius = 5 }
     projectile.scale = config.scale or 1
     projectile.sound = config.sound
     projectile.criticalChance = config.criticalChance or 0
     projectile.criticalMultiplier = config.criticalMultiplier or 1.5
+    projectile.turnSpeed = config.turnSpeed or 0
     
     projectile.name = name
     projectile.trajectory = trajectory -- função que define a trajetória do projétil
-    projectile.customHit = customHit           -- função executada toda vez que um projétil acertar um alvo
+    projectile.customHit = customHit   -- função executada toda vez que um projétil acertar um alvo
     projectile.projManager = projManager
     projectile.category = projManager.category
     projectile.projManager:add(projectile)
@@ -62,7 +64,7 @@ end
 function Projectile:update(dt)
     for i = #self.events, 1, -1 do
         local shot = self.events[i]
-        
+
         if not shot.active then
             table.remove(self.events, i)
         else
@@ -103,6 +105,7 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
 
     shot.projectileState = projectileState
     shot.trajectory = projectileState.trajectory
+    shot.turnSpeed = projectileState.turnSpeed
     shot.speed = projectileState.speed
     shot.dmg = projectileState.dmg
     shot.criticalMultiplier = projectileState.criticalMultiplier
@@ -120,8 +123,8 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
     local mask = (projectileState.category == CATEGORY.PLAYER_BULLET) and CATEGORY.ENEMY or CATEGORY.PLAYER
     mask = mask + CATEGORY.TEXT
     shot.fixture:setFilterData(
-        projectileState.category, 
-        mask, 
+        projectileState.category,
+        mask,
         0
     )
     shot.fixture:setSensor(true)

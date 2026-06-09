@@ -4,15 +4,31 @@ WaveManager = {}
 
 WaveManager.list = {
     initWave1(),
-    initWave2()
+    initWave2(),
+    initWave3(),
+    initWave4(),
+    initWave5(),
+    initWave6(),
+    initWave7()
 
 }
 WaveManager.currentWaveIndex = 1
 WaveManager.type = "WaveManager"
-WaveManager.transitionTimer = 2
+WaveManager.transitionTimer = 0.5
 
 function WaveManager:load()
     self.isTransitioning = true
+end
+
+function WaveManager:debugSkipWave()
+    GAMESTATE[CTX.BATTLE]:startTransition()
+    self.isTransitioning = true
+    self.transitionTimer = 0.5
+    self.currentWaveIndex = self.currentWaveIndex + 1
+    for i = #EnemyManager.list, 1, -1 do
+        local e = EnemyManager.list[i]
+        e:die()
+    end
 end
 
 function WaveManager:update(dt)
@@ -33,12 +49,11 @@ function WaveManager:update(dt)
 
     local currentWave = self.list[self.currentWaveIndex]
     currentWave:update(dt)
-
     if currentWave.isFinished and #EnemyManager.list == 0 then
         print("Wave " .. self.currentWaveIndex .. " finished!")
         GAMESTATE[CTX.BATTLE]:startTransition()
         self.isTransitioning = true
-        self.transitionTimer = 2
+        self.transitionTimer = 0.5
         self.currentWaveIndex = self.currentWaveIndex + 1
     end
 end

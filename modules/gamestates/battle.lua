@@ -46,9 +46,9 @@ function BattleState:update(dt)
 
 	dt = self.isTransitioning and dt * 0.5 or dt
 
-  Physics:update(dt)
-  p1:update(dt)
-	
+	Physics:update(dt)
+	p1:update(dt)
+
 	enemyManager:update(dt)
 	waveManager:update(dt)
 	particleManager:update(dt)
@@ -64,7 +64,7 @@ end
 
 function BattleState:draw()
 	planet:draw()
-  p1:draw()
+	p1:draw()
 	enemyManager:draw()
 	pProjectiles:draw()
 	eProjectiles:draw()
@@ -78,7 +78,7 @@ function BattleState:keypressed(key, scancode, isrepeat)
 	p1:keypressed(key, scancode, isrepeat)
 end
 
-function BattleState:mousepressed( x, y, button, istouch, presses )
+function BattleState:mousepressed(x, y, button, istouch, presses)
 	p1:mousepressed(x, y, button, istouch, presses)
 end
 

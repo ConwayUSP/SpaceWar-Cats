@@ -51,8 +51,8 @@ function SetGameCtx(newCtx)
 		end
 	end
 
-  GameCtx = newCtx
-  GAMESTATE[GameCtx]:load()
+	GameCtx = newCtx
+	GAMESTATE[GameCtx]:load()
 	UIManager:changeScene(GameCtx)
 end
 
@@ -79,8 +79,8 @@ function love.load()
 	SoundSFX:loadAll(soundManager)
 	bg:load()
 	shaderManager:load({
-    "scanlines",
-    "crt"
+		"scanlines",
+		"crt"
 	})
 
 	UIManager:load({
@@ -102,7 +102,7 @@ end
 
 function love.update(dt)
 	shaderManager:update(dt)
-	
+
 	GAMESTATE[GameCtx]:update(dt)
 	UIManager:update(dt)
 	bg:update(dt)
@@ -131,7 +131,12 @@ function love.keypressed(key, scancode, isrepeat)
 		love.event.quit()
 	end
 
-	if key == "f" then 
+	if key == "p" then
+		local savedWave = WaveManager
+		SetGameCtx(CTX.PAUSE)
+	end
+
+	if key == "f" then
 		isFullscreen = not isFullscreen
 		love.window.setFullscreen(isFullscreen)
 	end
@@ -139,8 +144,8 @@ function love.keypressed(key, scancode, isrepeat)
 	if key == "0" then
 		debugMode = not debugMode
 	end
-		
-	if key == "p" then
+
+	if key == "n" then
 		WaveManager:debugSkipWave()
 	end
 
@@ -165,7 +170,7 @@ function love.keypressed(key, scancode, isrepeat)
 	end
 end
 
-function love.mousepressed( x, y, button, istouch, presses )
+function love.mousepressed(x, y, button, istouch, presses)
 	if GAMESTATE[GameCtx].mousepressed then
 		GAMESTATE[GameCtx]:mousepressed(x, y, button, istouch, presses)
 	end

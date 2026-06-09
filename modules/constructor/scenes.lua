@@ -83,3 +83,24 @@ function newDeathScene()
     deathScene:add(StatsDisplay.new(runStats.stats, vec(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 + 20), 300))
     return deathScene
 end
+
+function newPauseScene()
+    local pauseScene = UIScene.new()
+    local txt = Text.new(
+        "SETTINGS",
+        26,
+        { 1, 1, 1, 1 },
+        vec(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 6),
+        0,
+        true,
+        math.huge,
+        function (self)
+            self.rotation = math.sin(love.timer.getTime() * 1.5) * 0.01
+            self.scale = 1 + math.sin(love.timer.getTime() * 2.2) * 0.01
+        end,
+        nil,
+        "center"
+    )
+    pauseScene:addText(txt)
+    return pauseScene
+end

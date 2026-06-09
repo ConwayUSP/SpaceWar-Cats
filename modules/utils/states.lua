@@ -14,3 +14,9 @@ LEGENDARY = "Legendary"
 
 BUYING = "buying"
 TRANSITION = "transition"
+
+TOGGLE = "toggle"
+LIST = "list"
+
+SFX = "sfx"
+MUSIC = "music"

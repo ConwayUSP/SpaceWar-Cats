@@ -155,6 +155,10 @@ function ShotEvent:onHit(target)
 
     self:destroy()
 
+    if target.hp > 0 then
+        soundManager:play("hit1", true)
+    end
+
     return dmg
 end
 

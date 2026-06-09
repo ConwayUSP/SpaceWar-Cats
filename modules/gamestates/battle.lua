@@ -76,6 +76,10 @@ end
 
 function BattleState:keypressed(key, scancode, isrepeat)
 	p1:keypressed(key, scancode, isrepeat)
+
+	if key == "p" or key == "escape" and not isrepeat then
+		SetGameCtx(CTX.PAUSE)
+	end
 end
 
 function BattleState:mousepressed(x, y, button, istouch, presses)

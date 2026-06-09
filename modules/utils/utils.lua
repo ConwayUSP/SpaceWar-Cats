@@ -193,7 +193,7 @@ end
 -- Renderização
 ----------------------------------------
 
-function printDots(x1, y1, x2, y2, size, step)
+function renderDots(x1, y1, x2, y2, size, step)
   step = step or 5
   size = size or 4
 

@@ -25,6 +25,7 @@ SCREEN_OFFSET_X = 0
 SCREEN_OFFSET_Y = 0
 
 GameCtx = CTX.MENU
+LastGameCtx = nil
 world = Physics
 debugMode = false
 isFullscreen = false
@@ -51,6 +52,7 @@ function SetGameCtx(newCtx)
 		end
 	end
 
+	LastGameCtx = GameCtx
 	GameCtx = newCtx
 	GAMESTATE[GameCtx]:load()
 	UIManager:changeScene(GameCtx)
@@ -74,9 +76,12 @@ end
 function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
+	Physics:load()
+	planet:load()
+	p1:load()
 	waveManager:load()
 	runStats:load()
-	SoundSFX:loadAll(soundManager)
+	soundManager:load()
 	bg:load()
 	shaderManager:load({
 		"scanlines",
@@ -86,7 +91,8 @@ function love.load()
 	UIManager:load({
 		[CTX.BATTLE] = newBattleScene(),
 		[CTX.UPGRADES] = newUpgradeScene(),
-		[CTX.DEATH_SCREEN] = newDeathScene()
+		[CTX.DEATH_SCREEN] = newDeathScene(),
+		[CTX.PAUSE] = newPauseScene()
 	})
 
 	particleManager:load()
@@ -127,19 +133,17 @@ function love.draw()
 end
 
 function love.keypressed(key, scancode, isrepeat)
-	if key == "escape" then
-		love.event.quit()
+	if GAMESTATE[GameCtx].keypressed then
+		GAMESTATE[GameCtx]:keypressed(key, scancode, isrepeat)
 	end
 
-	if key == "p" then
-		local savedWave = WaveManager
-		SetGameCtx(CTX.PAUSE)
+	if key == "f" or key == "f11" then
+		toggleFullscreen()
 	end
 
-	if key == "f" then
-		isFullscreen = not isFullscreen
-		love.window.setFullscreen(isFullscreen)
-	end
+	-- if not debugMode then
+	-- 	return
+	-- end
 
 	if key == "0" then
 		debugMode = not debugMode
@@ -165,9 +169,6 @@ function love.keypressed(key, scancode, isrepeat)
 		planet:heal(10)
 	end
 
-	if GAMESTATE[GameCtx].keypressed then
-		GAMESTATE[GameCtx]:keypressed(key, scancode, isrepeat)
-	end
 end
 
 function love.mousepressed(x, y, button, istouch, presses)

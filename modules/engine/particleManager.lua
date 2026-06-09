@@ -12,9 +12,18 @@ ParticleManager.__index = ParticleManager
 ParticleManager.type = "ParticleManager"
 
 function ParticleManager:load()
+  self.active = true
   self.particlesAnim = {}
   self.particlesText = {}
   self.particles = {}
+end
+
+function ParticleManager:toggle()
+  self.active = not self.active
+end
+
+function ParticleManager:isActive()
+  return self.active
 end
 
 function ParticleManager:update(dt)
@@ -42,14 +51,23 @@ function ParticleManager:update(dt)
 end
 
 function ParticleManager:addAnim(particleAnim)
+  if not self.active then
+    return
+  end
   table.insert(self.particlesAnim, particleAnim)
 end
 
 function ParticleManager:add(particle)
+  if not self.active then
+    return
+  end
   table.insert(self.particles, particle)
 end
 
 function ParticleManager:addText(particleText)
+  if not self.active then
+    return
+  end
   table.insert(self.particlesText, particleText)
 end
 
@@ -71,6 +89,10 @@ end
 ----------------------------------------
 
 function ParticleManager:draw()
+  if not self.active then
+    return
+  end
+
   for _, particle in ipairs(self.particlesAnim) do
     particle:draw()
   end

@@ -58,7 +58,7 @@ function StatsDisplay:draw()
     local rowHeight = row.label.font:getHeight()
     local rowY = self.topLeft.y + (i - 1) * self.rowHeight + rowHeight/2
 
-    printDots(startX, rowY, endX, rowY, 3)
+    renderDots(startX, rowY, endX, rowY, 3)
     row.label:draw()
     row.value:draw()
   end

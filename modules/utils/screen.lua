@@ -12,3 +12,8 @@ function updateScreenTransform()
 	SCREEN_OFFSET_X = (SCREEN_WIDTH - VIRTUAL_WIDTH * SCREEN_SCALE) / 2
 	SCREEN_OFFSET_Y = (SCREEN_HEIGHT - VIRTUAL_HEIGHT * SCREEN_SCALE) / 2
 end
+
+function toggleFullscreen()
+	isFullscreen = not isFullscreen
+	love.window.setFullscreen(isFullscreen)
+end

@@ -168,7 +168,6 @@ UpgradesState.keyPressed = nil
 UpgradesState.allUpgrades = upgradesList
 
 function UpgradesState:load()
-	UIManager:changeScene(nil)
 	self.state = BUYING
 	self.timer = 0
 

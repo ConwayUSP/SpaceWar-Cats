@@ -20,10 +20,6 @@ MenuState.timer = 0
 
 function MenuState:load()
 	local width, height = VIRTUAL_WIDTH, VIRTUAL_HEIGHT
-
-	Physics:load()
-	planet:load()
-	p1:load()
 	
 	-- texts
 	self.texts.play = TextPhysical.new(
@@ -44,7 +40,6 @@ function MenuState:load()
 	)
 
 	love.mouse.setCursor(cursors.crosshair)
-	UIManager:changeScene(nil)
 end
 
 function MenuState:update(dt)
@@ -53,8 +48,8 @@ function MenuState:update(dt)
 	pProjectiles:update(dt)
 	planet:update(dt)
 	particleManager:update(dt)
-	updateTexts(self.texts, dt)
 
+	updateTexts(self.texts, dt)
 	cleanUpTexts(self.texts)
 end
 
@@ -66,15 +61,14 @@ function MenuState:draw()
 
 	drawTexts(self.texts)
 
-	-- reset de cor
 	love.graphics.setColor(1, 1, 1, 1)
 end
 
 function MenuState:keypressed(key, scancode, isrepeat)
 	p1:keypressed(key, scancode, isrepeat)
 
-	if key == "return" then
-		SetGameCtx(CTX.BATTLE)
+	if key == "p" or key == "escape" and not isrepeat then
+		SetGameCtx(CTX.PAUSE)
 	end
 end
 

@@ -56,7 +56,7 @@ function WaveManager:update(dt)
         if self.transitionTimer <= 0 then
             self.isTransitioning = false
             -- Inicia a wave atual
-            print("Starting " .. self.list[self.currentWaveIndex].name)
+            -- print("Starting " .. self.list[self.currentWaveIndex].name)
             self.list[self.currentWaveIndex]:start()
         end
         return
@@ -65,7 +65,7 @@ function WaveManager:update(dt)
     local currentWave = self.list[self.currentWaveIndex]
     currentWave:update(dt)
     if currentWave.isFinished and #EnemyManager.list == 0 then
-        print("Wave " .. self.currentWaveIndex .. " finished!")
+        -- print("Wave " .. self.currentWaveIndex .. " finished!")
         GAMESTATE[CTX.BATTLE]:startTransition()
         self.isTransitioning = true
         self.transitionTimer = 0.5

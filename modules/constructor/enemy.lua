@@ -88,8 +88,8 @@ function newTankEnemy(x, y)
         },
         sound = "tiro2"
     }
-    local moveProj = function (e, dt)
-        local vx = -e.speed * (6^(e.timer-1) + 1) * dt
+    local moveProj = function(e, dt)
+        local vx = -e.speed * (6 ^ (e.timer - 1) + 1) * dt
         e.body:setLinearVelocity(vx, 0)
     end
     local proj = Projectile.new("blaster-ball", moveProj, nil, eProjectiles, projConfig)
@@ -146,18 +146,40 @@ function newCatMage(x, y, cd)
         turnSpeed = math.rad(360) * 0.8
     }
     local proj = Projectile.new("blaster-ball", moveCircular, nil, eProjectiles, projConfig)
+
+
     local cdTimer = cd
     local function move(self, dt)
-        cdTimer = cdTimer - dt
-        if cdTimer <= 0 then
-            x = math.random(VIRTUAL_WIDTH / 5, VIRTUAL_WIDTH * 4 / 5)
-            y = math.random(VIRTUAL_HEIGHT / 5, VIRTUAL_HEIGHT * 4 / 5)
-            self.body:setPosition(x, y)
-            cdTimer = cd
+        self.fadeState = self.fadeState or "idle"
+        self.alpha = self.alpha or 1
+        self.fadeSpeed = 2
+        if self.fadeState == "idle" then
+            cdTimer = cdTimer - dt
+            if cdTimer <= 0 then
+                self.fadeState = "fadeOut"
+            end
+        end
+
+        if self.fadeState == "fadeOut" then
+            self.alpha = self.alpha - (self.fadeSpeed * dt)
+            if self.alpha <= 0 then
+                self.alpha = 0
+                x = math.random(VIRTUAL_WIDTH / 5, VIRTUAL_WIDTH * 4 / 5)
+                y = math.random(VIRTUAL_HEIGHT / 5, VIRTUAL_HEIGHT * 4 / 5)
+                self.body:setPosition(x, y)
+                self.fadeState = "fadeIn"
+            end
+        elseif self.fadeState == "fadeIn" then
+            self.alpha = self.alpha + (self.fadeSpeed * dt)
+            if self.alpha >= 1 then
+                self.alpha = 1
+                self.fadeState = "idle"
+                cdTimer = cd
+            end
         end
     end
     local config = {
-        hp = 150 * hpMultipler(),
+        hp = 120 * hpMultipler(),
         size = 12,
         fireRate = 3,
         shootsUntilCd = 1,

@@ -181,8 +181,7 @@ function Enemy:draw()
   -- if self.isDead then
   --   return
   -- end
-
-  love.graphics.setColor(1, 1, 1, 1)
+  -- love.graphics.setColor(1, 1, 1, 1)
 
   local x, y = self.body:getPosition()
   local drawFunc = function()
@@ -202,6 +201,5 @@ function Enemy:draw()
   end
   
   debugRender(self)
-
   love.graphics.setColor(1, 1, 1, 1)
 end

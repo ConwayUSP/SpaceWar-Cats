@@ -11,6 +11,7 @@ require("modules.engine.projectileManager")
 require("modules.engine.soundManager")
 require("modules.engine.uiManager")
 require("modules.utils.screen")
+require("modules.system.runStats")
 
 
 VIRTUAL_WIDTH = 640
@@ -36,6 +37,7 @@ waveManager = require("modules.engine.waveManager")
 particleManager = require("modules.engine.particleManager")
 shaderManager = require("modules.engine.shaderManager")
 soundManager = require("modules.engine.soundManager")
+runStats = require("modules.system.runStats")
 
 pProjectiles = ProjectileManager.new(CATEGORY.PLAYER_BULLET)
 eProjectiles = ProjectileManager.new(CATEGORY.ENEMY_BULLET)
@@ -54,9 +56,26 @@ function SetGameCtx(newCtx)
 	UIManager:changeScene(GameCtx)
 end
 
+function resetGame()
+	pProjectiles:clear()
+	eProjectiles:clear()
+
+	p1:reset()
+	planet:reset()
+	enemyManager:reset()
+	waveManager:reset()
+	
+	runStats:reset()
+	soundManager:stopAll()
+
+	SetGameCtx(CTX.BATTLE)
+end
+
 function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
+	waveManager:load()
+	runStats:load()
 	SoundSFX:loadAll(soundManager)
 	bg:load()
 	shaderManager:load({
@@ -67,6 +86,7 @@ function love.load()
 	UIManager:load({
 		[CTX.BATTLE] = newBattleScene(),
 		[CTX.UPGRADES] = newUpgradeScene(),
+		[CTX.DEATH_SCREEN] = newDeathScene()
 	})
 
 	particleManager:load()
@@ -133,7 +153,7 @@ function love.keypressed(key, scancode, isrepeat)
 	end
 
 	if key == "d" then
-		planet:takeDamage(10)
+		planet:takeDamage(100)
 	end
 
 	if key == "h" then

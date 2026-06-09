@@ -2,22 +2,38 @@ require("modules.constructor.wave")
 
 WaveManager = {}
 
-WaveManager.list = {
-    initWave1(),
-    initWave2(),
-    initWave3(),
-    initWave4(),
-    initWave5(),
-    initWave6(),
-    initWave7()
-
-}
+WaveManager.list = {}
 WaveManager.currentWaveIndex = 1
 WaveManager.type = "WaveManager"
 WaveManager.transitionTimer = 0.5
 
 function WaveManager:load()
+    self:buildWaves()
+end
+
+function WaveManager:buildWaves()
+    self.list = {
+        initWave1(),
+        initWave2(),
+        initWave3(),
+        initWave4(),
+        initWave5(),
+        initWave6(),
+        initWave7()
+    }
+end
+
+function WaveManager:startWave()
     self.isTransitioning = true
+    self.transitionTimer = 0.5
+end
+
+function WaveManager:reset()
+    self:buildWaves()
+
+    self.currentWaveIndex = 1
+    self.isTransitioning = true
+    self.transitionTimer = 0.5
 end
 
 function WaveManager:debugSkipWave()

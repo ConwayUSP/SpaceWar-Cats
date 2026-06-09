@@ -16,7 +16,10 @@ local function beginContact(a, b, coll)
   if pProjectile then
     local target = (objA == pProjectile) and objB or objA
     if target.type == "Enemy" then
-      table.insert(Physics.delayedFunctions, function() pProjectile:onHit(target) end)
+      table.insert(Physics.delayedFunctions, function() 
+        local dmg = pProjectile:onHit(target)
+        runStats:add(TDD, dmg)
+      end)
     elseif target.type == "Text" then
       table.insert(Physics.delayedFunctions, function() 
         target:onHit()
@@ -36,23 +39,27 @@ local function beginContact(a, b, coll)
   if eProjectile then
     local target = (objA == eProjectile) and objB or objA
     if target.type == "Player" then
-      table.insert(Physics.delayedFunctions, function() eProjectile:onHit(target) end)
-    elseif target.type == "Planet" then
       table.insert(Physics.delayedFunctions, function() 
-        target:takeDamage(eProjectile.dmg)
-        eProjectile:destroy()
+        eProjectile:onHit(target)
       end)
+    -- elseif target.type == "Planet" then
+    --   table.insert(Physics.delayedFunctions, function() 
+    --     target:takeDamage(eProjectile.dmg)
+    --     eProjectile:destroy()
+    --   end)
     end
   end
 
-  -- ENEMY vs PLANET
+  -- ENEMY vs (PLAYER or PLANET)
   local enemy = (objA.type == "Enemy") and objA or ((objB.type == "Enemy") and objB or nil)
 
   if enemy then
     local target = (objA == enemy) and objB or objA
     if target.type == "Planet" then
       table.insert(Physics.delayedFunctions, function() 
-        target:takeDamage(20)
+        local dmg = 20
+        runStats:add(TDT, dmg)
+        target:takeDamage(dmg)
         enemy:die()
       end)
     elseif target.type == "Player" then

@@ -60,6 +60,12 @@ function ParticleManager:remove(particleAnim)
   end
 end
 
+function ParticleManager:reset()
+  self.particlesAnim = {}
+  self.particlesText = {}
+  self.particles = {}
+end
+
 ----------------------------------------
 -- Renderização
 ----------------------------------------

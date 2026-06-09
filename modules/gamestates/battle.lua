@@ -29,8 +29,7 @@ BattleState.transitioningCd = 1
 function BattleState:load()
 	self.isTransitioning = false
 	self.transitionTimer = 0
-	waveManager:load()
-	-- particleManager:load()
+	waveManager:startWave()
 	love.mouse.setCursor(cursors.crosshair)
 end
 
@@ -56,9 +55,6 @@ function BattleState:update(dt)
 	pProjectiles:update(dt)
 	eProjectiles:update(dt)
 	planet:update(dt)
-
-	updateTexts(self.texts, dt)
-	cleanUpTexts(self.texts)
 end
 
 function BattleState:startTransition()
@@ -73,8 +69,6 @@ function BattleState:draw()
 	pProjectiles:draw()
 	eProjectiles:draw()
 	particleManager:draw()
-
-  drawTexts(self.texts)
 
 	-- reset de cor
 	love.graphics.setColor(1, 1, 1, 1)

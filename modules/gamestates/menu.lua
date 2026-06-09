@@ -38,6 +38,7 @@ function MenuState:load()
 		nil,
 		function(text)
 			text.fixture:destroy()
+			runStats:set(RST, love.timer.getTime())
 			SetGameCtx(CTX.BATTLE)
 		end
 	)

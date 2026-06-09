@@ -54,11 +54,24 @@ function Player:load()
   self.maxHp = 1
   self.hp = self.maxHp
   self.isDead = false
+  self.isDefeated = false
   self.state = FLYING
 
   self:resetStats()
   self:addAnimations()
 
+end
+
+function Player:reset()
+  self.weapon = nil
+  self:resetStats()
+  self.body:setPosition(self.initialPos.x, self.initialPos.y)
+  self.body:setLinearVelocity(0, 0)
+  self.isDead = false
+  self.isDefeated = false
+  self.respawnTimer = 0
+  self.invulrabilityTimer = 0
+  self.boostParticle:play()
 end
 
 function Player:resetStats()
@@ -139,6 +152,10 @@ function Player:updateParticles(dt)
 end
 
 function Player:updateDead(dt)
+  if self.isDefeated then
+    return
+  end
+
   self.respawnTimer = self.respawnTimer + dt
   if self.respawnTimer >= self.respawnCd then
     self.isDead = false
@@ -196,13 +213,18 @@ function Player:updateMotion(dt)
   self.body:setLinearVelocity(0, vy)
 end
 
+function Player:defeat()
+  self:die()
+  self.isDefeated = true
+end
+
 function Player:die()
   self.isDead = true
   self.body:setPosition(self.initialPos.x, self.initialPos.y)
+  self.body:setLinearVelocity(0, 0)
   self.boostParticle:stop()
+
   SoundManager:play("morte3")
-  -- self.body:destroy()
-  -- self.weapon:destroy()
 end
 
 function Player:takeDamage(damage)
@@ -229,8 +251,6 @@ function Player:shoot()
     self.weapon:shot(self, origin, self.angle)
   end
   
-  local r = math.random(1, 2)
-  soundManager:play("tiro" .. r, true)
   self.canShoot = false
   self.firerateTimer = 0
 end

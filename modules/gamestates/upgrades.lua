@@ -159,12 +159,6 @@ end
 local UpgradesState = {}
 UpgradesState.__index = UpgradesState
 
-UpgradesState.sprites = {}
-UpgradesState.texts = {}
-
-UpgradesState.titleFont = nil
-UpgradesState.promptFont = nil
-UpgradesState.sounds = {}
 UpgradesState.timer = 0
 UpgradesState.slots = {}
 UpgradesState.slotsCount = 3
@@ -180,6 +174,85 @@ function UpgradesState:load()
 
 	local upgrades = self:getRandomUpgrades()
 	self:setSlots(upgrades)
+end
+
+function UpgradesState:update(dt)
+	if self.state == BUYING then
+		self:updateSlots(dt)		
+	else
+		self:updateExit(dt)
+	end
+end
+
+
+function UpgradesState:updateExit(dt)
+	self.timer = self.timer + dt
+
+	for i, slot in ipairs(self.slots) do
+		if i == self.slotActive then
+			slot.speed = 6
+			slot.targetPos = vec(VIRTUAL_WIDTH/2 - slot.width/2, slot.y - 20)
+			slot.scale = lerp(slot.scale, 1.4, dt)
+			slot.angle = math.sin(love.timer.getTime() * 5) * 0.02
+		else
+			slot.scale = lerp(slot.scale, 0.8, 10 * dt)
+			slot.alpha = lerp(slot.alpha, 0, 10 * dt)
+			slot.angle = 0
+		end
+		slot:update(dt)
+	end
+
+	if self.timer >= 1.5 then
+		SetGameCtx(CTX.BATTLE)
+	end
+end
+
+function UpgradesState:updateSlots(dt)
+	local isHover = false
+	local idx = 0
+	for i, slot in ipairs(self.slots) do
+		slot:update(dt)
+		local mouseX, mouseY = love.mouse.getPosition()
+		if slot:mouseOver(mouseX, mouseY) then
+			isHover = true
+			idx = i
+		end
+	end
+
+	if isHover then
+		if not self.triggerHover or idx ~= self.slotActive then
+			self.triggerHover = true
+			self:selectSlot(idx)
+		end
+		love.mouse.setCursor(cursors.hand)
+		self.keyPressed = nil
+	else
+		love.mouse.setCursor(cursors.arrow)
+		self.triggerHover = false
+		if not self.keyPressed then
+			self.slotActive = self.slotsCount + 1
+		end
+	end
+
+	for i, slot in ipairs(self.slots) do
+		slot.isHover = (i == self.slotActive)
+	end
+end
+
+function UpgradesState:draw()
+	love.graphics.setColor(1, 1, 1, 1)
+	planet:draw()
+  p1:draw()
+	pProjectiles:draw()
+	particleManager:draw()
+
+	love.graphics.setColor(0.08, 0.05, 0.14, 0.8)
+	love.graphics.rectangle("fill", 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
+	love.graphics.setColor(1, 1, 1, 1)
+
+	for _, slot in ipairs(self.slots) do
+		slot:draw()
+	end
 end
 
 function UpgradesState:setSlots(upgrades)
@@ -267,92 +340,14 @@ function UpgradesState:applyUpgrade(upgrade)
 	self.state = TRANSITION
 end
 
-function UpgradesState:update(dt)
-  -- Physics:update(dt)
-	planet:update(dt)
-
-	if self.state == BUYING then
-		self:updateSlots(dt)		
-	else
-		self:updateExit(dt)
-	end
-
-	updateTexts(self.texts, dt)
-	cleanUpTexts(self.texts)
-end
-
-function UpgradesState:updateExit(dt)
-	self.timer = self.timer + dt
-
-	for i, slot in ipairs(self.slots) do
-		if i == self.slotActive then
-			slot.speed = 6
-			slot.targetPos = vec(VIRTUAL_WIDTH/2 - slot.width/2, slot.y - 20)
-			slot.scale = lerp(slot.scale, 1.4, dt)
-			slot.angle = math.sin(love.timer.getTime() * 5) * 0.02
-		else
-			slot.scale = lerp(slot.scale, 0.8, 10 * dt)
-			slot.alpha = lerp(slot.alpha, 0, 10 * dt)
-			slot.angle = 0
-		end
-		slot:update(dt)
-	end
-
-	if self.timer >= 1.5 then
-		SetGameCtx(CTX.BATTLE)
-	end
-end
-
-function UpgradesState:updateSlots(dt)
-	local isHover = false
-	local idx = 0
-	for i, slot in ipairs(self.slots) do
-		slot:update(dt)
-		local mouseX, mouseY = love.mouse.getPosition()
-		if slot:mouseOver(mouseX, mouseY) then
-			isHover = true
-			idx = i
-		end
-	end
-
-	if isHover then
-		if not self.triggerHover or idx ~= self.slotActive then
-			self.triggerHover = true
-			self:selectSlot(idx)
-		end
-		love.mouse.setCursor(cursors.hand)
-		self.keyPressed = nil
-	else
-		love.mouse.setCursor(cursors.arrow)
-		self.triggerHover = false
-		if not self.keyPressed then
-			self.slotActive = self.slotsCount + 1
-		end
-	end
-
-	for i, slot in ipairs(self.slots) do
-		slot.isHover = (i == self.slotActive)
-	end
-end
-
 function UpgradesState:selectSlot(idx)
 	self.slotActive = idx
 	soundManager:play("select1")
 end
 
-function UpgradesState:draw()
-	love.graphics.setColor(1, 1, 1, 1)
-	planet:draw()
-  p1:draw()
-
-	love.graphics.setColor(0.08, 0.05, 0.14, 0.8)
-	love.graphics.rectangle("fill", 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
-	love.graphics.setColor(1, 1, 1, 1)
-
-	for _, slot in ipairs(self.slots) do
-		slot:draw()
-	end
-end
+-----------------------------------------
+--- Handlers de Input
+-----------------------------------------
 
 function UpgradesState:keypressed(key, scancode, isrepeat)
 	-- p1:keypressed(key, scancode, isrepeat)

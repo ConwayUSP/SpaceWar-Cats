@@ -18,7 +18,7 @@ function randomPosOutside()
 end
 
 function randomPosInside()
-    local startX = math.random(50, VIRTUAL_WIDTH - 50)
+    local startX = math.random(VIRTUAL_WIDTH * 2 / 5, VIRTUAL_WIDTH - 50)
     local startY = math.random(VIRTUAL_HEIGHT / 4, VIRTUAL_HEIGHT * 3 / 4)
     return startX, startY
 end

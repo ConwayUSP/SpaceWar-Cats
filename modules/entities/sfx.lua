@@ -4,12 +4,15 @@
 require("modules.engine.soundManager")
 
 local SFX_ASSETS = {
-  morte1 = "assets/audios/sounds-effects/mortes/mortes-1.wav",
-  morte2 = "assets/audios/sounds-effects/mortes/mortes-2.wav",
-  morte3 = "assets/audios/sounds-effects/mortes/mortes-3.wav",
-  tiro1 = "assets/audios/sounds-effects/tiros/tiros-1.wav",
-  tiro2 = "assets/audios/sounds-effects/tiros/tiros-2.wav",
-  tiro3 = "assets/audios/sounds-effects/tiros/tiros-3.wav"
+  morte1 = "assets/sounds/sfx/mortes/mortes-1.wav",
+  morte2 = "assets/sounds/sfx/mortes/mortes-2.wav",
+  morte3 = "assets/sounds/sfx/mortes/mortes-3.wav",
+  tiro1 = "assets/sounds/sfx/tiros/tiros-1.wav",
+  tiro2 = "assets/sounds/sfx/tiros/tiros-2.wav",
+  tiro3 = "assets/sounds/sfx/tiros/tiros-3.wav",
+  buy1 = "assets/sounds/sfx/buy/buy-1.mp3",
+  buy2 = "assets/sounds/sfx/buy/buy-2.mp3",
+  select1 = "assets/sounds/sfx/select/select-1.wav",
 }
 
 ----------------------------------------

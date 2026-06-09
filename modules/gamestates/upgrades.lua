@@ -248,6 +248,8 @@ function UpgradesState:applyUpgrade(upgrade)
 		player = p1,
 		planet = planet,
 	})
+	local rand = math.random(1, 2)
+	soundManager:play("buy" .. rand)
 	print("Applied upgrade:", upgrade.name)
 	SetGameCtx(CTX.BATTLE)
 end
@@ -268,11 +270,15 @@ function UpgradesState:update(dt)
 	end
 
 	if isHover then
+		if not self.triggerHover or idx ~= self.slotActive then
+			self.triggerHover = true
+			self:selectSlot(idx)
+		end
 		love.mouse.setCursor(cursors.hand)
-		self.slotActive = idx
 		self.keyPressed = nil
 	else
 		love.mouse.setCursor(cursors.arrow)
+		self.triggerHover = false
 		if not self.keyPressed then
 			self.slotActive = self.slotsCount + 1
 		end
@@ -284,6 +290,11 @@ function UpgradesState:update(dt)
 
 	updateTexts(self.texts, dt)
 	cleanUpTexts(self.texts)
+end
+
+function UpgradesState:selectSlot(idx)
+	self.slotActive = idx
+	soundManager:play("select1")
 end
 
 function UpgradesState:draw()
@@ -304,10 +315,10 @@ function UpgradesState:keypressed(key, scancode, isrepeat)
 	-- p1:keypressed(key, scancode, isrepeat)
 	if key == "a" or key == "left" then
 		self.keyPressed = key
-		self.slotActive = (self.slotActive - 2) % self.slotsCount + 1
+		self:selectSlot((self.slotActive - 2) % self.slotsCount + 1) 
 	elseif key == "d" or key == "right" then
 		self.keyPressed = key
-		self.slotActive = (self.slotActive == self.slotsCount + 1) and 1 or (self.slotActive) % self.slotsCount + 1
+		self:selectSlot((self.slotActive == self.slotsCount + 1) and 1 or (self.slotActive) % self.slotsCount + 1)
 	end
 
 	if key == "space" or key == "return" then

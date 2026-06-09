@@ -9,7 +9,6 @@ local SFX_ASSETS = {
   morte3 = "assets/sounds/sfx/mortes/mortes-3.wav",
   tiro1 = "assets/sounds/sfx/tiros/tiros-1.wav",
   tiro2 = "assets/sounds/sfx/tiros/tiros-2.wav",
-  tiro3 = "assets/sounds/sfx/tiros/tiros-3.wav",
   buy1 = "assets/sounds/sfx/buy/buy-1.mp3",
   buy2 = "assets/sounds/sfx/buy/buy-2.mp3",
   select1 = "assets/sounds/sfx/select/select-1.wav",

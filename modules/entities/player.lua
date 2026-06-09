@@ -229,7 +229,8 @@ function Player:shoot()
     self.weapon:shot(self, origin, self.angle)
   end
   
-  soundManager:play("tiro3", true)
+  local r = math.random(1, 2)
+  soundManager:play("tiro" .. r, true)
   self.canShoot = false
   self.firerateTimer = 0
 end

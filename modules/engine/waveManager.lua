@@ -15,10 +15,7 @@ WaveManager.list = {
 WaveManager.currentWaveIndex = 1
 WaveManager.type = "WaveManager"
 WaveManager.transitionTimer = 0.5
-
-function WaveManager:load()
-    self.isTransitioning = true
-end
+WaveManager.isTransitioning = true
 
 function WaveManager:debugSkipWave()
     GAMESTATE[CTX.BATTLE]:startTransition()
@@ -35,7 +32,6 @@ function WaveManager:update(dt)
     if self.currentWaveIndex > #self.list then
         return
     end
-
     if self.isTransitioning then
         self.transitionTimer = self.transitionTimer - dt
         if self.transitionTimer <= 0 then

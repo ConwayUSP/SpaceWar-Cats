@@ -32,6 +32,14 @@ function UpgradesSlot.new(upgrade, x, y, width, height, delay)
 	self.y = y
 	self.width = width
 	self.height = height
+	
+	self.speed = 15
+	self.alpha = 1
+	self.scale = 1
+	self.angle = 0
+
+	self.canvas = love.graphics.newCanvas(width, height)
+	print(width, height)
 
 	self.initialDelay = delay
 	self.delay = self.initialDelay
@@ -49,18 +57,18 @@ function UpgradesSlot.new(upgrade, x, y, width, height, delay)
 	local color = rarityColors[self.upgrade.rarity] or {1, 1, 1, 1}
 	self.title = Text.new(
 		upgrade.name,
-		13,
+		16,
 		color,
-		{self.pos.x + self.width/2, self.pos.y + self.paddingY},
+		{self.width/2, self.paddingY},
 		0,
 		true
 	)
 
 	self.description = Text.new(
 		upgrade.description,
-		10,
+		14,
 		{0.85, 0.85, 0.85, 1},
-		{self.pos.x + self.paddingX, self.pos.y + self.paddingY + 34},
+		{self.paddingX, self.paddingY + 34},
 		0,
 		false,
 		math.huge,
@@ -72,17 +80,13 @@ function UpgradesSlot.new(upgrade, x, y, width, height, delay)
 	return self
 end
 
-function UpgradesSlot:attachTexts()
-	self.title.pos[1] = self.pos.x + self.width / 2
-	self.title.pos[2] = self.pos.y + self.paddingY
-	self.description.pos[1] = self.pos.x + self.paddingX
-	self.description.pos[2] = self.pos.y + self.paddingY + 34
-end
-
 function UpgradesSlot:changeUpgrade(upgrade)
-	self.delay = self.initialDelay
+	self.speed = 15
+	self.alpha = 1
+	self.scale = 1
+	self.angle = 0
 	self.pos = vec(self.initialPos.x, self.initialPos.y)
-	self:attachTexts()
+	self.delay = self.initialDelay
 	self.upgrade = upgrade
 	self.title.color = rarityColors[self.upgrade.rarity] or {1, 1, 1, 1}
 	self.title.content = upgrade.name
@@ -98,16 +102,18 @@ function UpgradesSlot:update(dt)
 	self.title:update(dt)
 	self.description:update(dt)
 
-	local speed = 15
-	self.pos.y = lerp(self.pos.y, self.targetPos.y, speed * dt)
-	self.pos.x = lerp(self.pos.x, self.targetPos.x, speed * dt)
-	self:attachTexts()
+	self.pos.y = lerp(self.pos.y, self.targetPos.y, self.speed * dt)
+	self.pos.x = lerp(self.pos.x, self.targetPos.x, self.speed * dt)
 
 	if self.isHover then
 		self.targetPos = vec(self.x, self.y - 5)
+		self.scale = lerp(self.scale, 1.05, 10 * dt)
+		self.angle = math.sin(love.timer.getTime() * 5) * 0.02
 		love.mouse.setCursor(cursors.hand)
 	else
 		self.targetPos = vec(self.x, self.y)
+		self.scale = lerp(self.scale, 1.00, 10 * dt)
+		self.angle = 0
 		love.mouse.setCursor(cursors.arrow)
 	end
 end
@@ -117,33 +123,34 @@ function UpgradesSlot:mouseOver(x, y)
 	return gameX >= self.x and gameX <= self.x + self.width and gameY >= self.y and gameY <= self.y + self.height
 end
 
-function UpgradesSlot:draw()
+function UpgradesSlot:drawCanvas()
+	love.graphics.setCanvas(self.canvas)
+	love.graphics.clear()
+
 	-- Fundo
 	love.graphics.setColor(0.15, 0.15, 0.15, 1)
-	love.graphics.rectangle(
-		"fill",
-		self.pos.x,
-		self.pos.y,
-		self.width,
-		self.height
-	)
+	love.graphics.rectangle("fill", 0, 0, self.width, self.height)
 
 	-- Borda
 	local color = rarityColors[self.upgrade.rarity] or {1, 1, 1, 1}
 	love.graphics.setColor(color[1], color[2], color[3], self.isHover and 1 or 0.6)
-	-- love.graphics.setColor(1, 1, 1, 0.2)
-	love.graphics.rectangle(
-		"line",
-		self.pos.x,
-		self.pos.y,
-		self.width,
-		self.height
-	)
+	love.graphics.rectangle("line", 0, 0, self.width, self.height)
 
 	self.title:draw()
 	self.description:draw()
 
-	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.setCanvas()
+end
+
+function UpgradesSlot:draw()
+	love.graphics.push("all")
+	love.graphics.origin()
+	self:drawCanvas()
+	love.graphics.pop()
+
+	love.graphics.setColor(1, 1, 1, self.alpha)
+	love.graphics.draw(self.canvas, self.pos.x + self.width/2, self.pos.y + self.height/2, self.angle, self.scale, self.scale, self.width/2, self.height/2)	
+	love.graphics.setColor(1,1,1,1)
 end
 
 ----------------------------------------
@@ -169,6 +176,8 @@ UpgradesState.allUpgrades = upgradesList
 
 function UpgradesState:load()
 	UIManager:changeScene(nil)
+	self.state = BUYING
+	self.timer = 0
 
 	local upgrades = self:getRandomUpgrades()
 	self:setSlots(upgrades)
@@ -176,8 +185,8 @@ end
 
 function UpgradesState:setSlots(upgrades)
 	if #self.slots == 0 then
-		local slotWidth = 120
-		local slotHeight = 130
+		local slotWidth = 130
+		local slotHeight = 100
 		local gap = 20
 
 		local startX = flexCenter(self.slotsCount, slotWidth, gap)
@@ -244,20 +253,58 @@ function UpgradesState:pickRandomUpgrade(pool)
 end
 
 function UpgradesState:applyUpgrade(upgrade)
+	if self.state ~= BUYING then
+		return
+	end
+
 	upgrade.apply({
 		player = p1,
 		planet = planet,
 	})
+
 	local rand = math.random(1, 2)
 	soundManager:play("buy" .. rand)
-	print("Applied upgrade:", upgrade.name)
-	SetGameCtx(CTX.BATTLE)
+	
+	self.state = TRANSITION
 end
 
 function UpgradesState:update(dt)
   -- Physics:update(dt)
 	planet:update(dt)
 
+	if self.state == BUYING then
+		self:updateSlots(dt)		
+	else
+		self:updateExit(dt)
+	end
+
+	updateTexts(self.texts, dt)
+	cleanUpTexts(self.texts)
+end
+
+function UpgradesState:updateExit(dt)
+	self.timer = self.timer + dt
+
+	for i, slot in ipairs(self.slots) do
+		if i == self.slotActive then
+			slot.speed = 6
+			slot.targetPos = vec(VIRTUAL_WIDTH/2 - slot.width/2, slot.y - 20)
+			slot.scale = lerp(slot.scale, 1.4, dt)
+			slot.angle = math.sin(love.timer.getTime() * 5) * 0.02
+		else
+			slot.scale = lerp(slot.scale, 0.8, 10 * dt)
+			slot.alpha = lerp(slot.alpha, 0, 10 * dt)
+			slot.angle = 0
+		end
+		slot:update(dt)
+	end
+
+	if self.timer >= 1.5 then
+		SetGameCtx(CTX.BATTLE)
+	end
+end
+
+function UpgradesState:updateSlots(dt)
 	local isHover = false
 	local idx = 0
 	for i, slot in ipairs(self.slots) do
@@ -287,9 +334,6 @@ function UpgradesState:update(dt)
 	for i, slot in ipairs(self.slots) do
 		slot.isHover = (i == self.slotActive)
 	end
-
-	updateTexts(self.texts, dt)
-	cleanUpTexts(self.texts)
 end
 
 function UpgradesState:selectSlot(idx)
@@ -330,6 +374,11 @@ function UpgradesState:keypressed(key, scancode, isrepeat)
 end
 
 function UpgradesState:mousepressed( x, y, button, istouch, presses )
+	if self.state == TRANSITION then
+		SetGameCtx(CTX.BATTLE)
+		return
+	end
+	
 	for _, slot in ipairs(self.slots) do
 		self:handleSlotClick(slot, x, y)
 	end

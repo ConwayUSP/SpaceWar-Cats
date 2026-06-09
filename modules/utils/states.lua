@@ -11,3 +11,6 @@ COMMON = "Common"
 RARE = "Rare"
 EPIC = "Epic"
 LEGENDARY = "Legendary"
+
+BUYING = "buying"
+TRANSITION = "transition"

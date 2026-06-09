@@ -74,7 +74,6 @@ function LifeBarFront:update(dt)
   self.percent = math.max(0, (planet.hp / planet.maxHp))
 
   if oldPercent ~= self.percent then
-    print("opa")
     if self.percent < oldPercent  then
       self.frontTarget = self.percent
     else
@@ -83,12 +82,10 @@ function LifeBarFront:update(dt)
   end
 
   if math.abs(self.frontTarget - self.percent) > 0.00005 then
-    print("frente ta indo")
     self.frontTarget = lerp(self.frontTarget, self.percent, 4 * dt)
   end
 
   if math.abs(self.backTarget - self.percent) > 0.00005 then
-    print("tras ta indo")
     self.backTarget = lerp(self.backTarget, self.percent, 4 * dt)
   end
 
@@ -153,5 +150,5 @@ function LifeBarWrapper:draw()
   self.lifeBar:draw()
   self.lifeBarFront:draw()
   drawTexts({ self.text })
-    love.graphics.setColor(1, 1, 1, 1)
+  love.graphics.setColor(1, 1, 1, 1)
 end

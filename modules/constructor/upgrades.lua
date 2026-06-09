@@ -1,6 +1,6 @@
 local colors = {
   base = {1, 1, 1, 1},
-  highlight = {0.7, 0.1, 0.7, 1}
+  highlight = {0.561, 0.404, 0.859, 1}
 }
 
 weights = {

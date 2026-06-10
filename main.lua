@@ -148,9 +148,9 @@ function love.keypressed(key, scancode, isrepeat)
 		debugMode = not debugMode
 	end
 
-	-- if not debugMode then
-	-- 	return
-	-- end
+	if not debugMode then
+		return
+	end
 
 
 	if key == "n" then

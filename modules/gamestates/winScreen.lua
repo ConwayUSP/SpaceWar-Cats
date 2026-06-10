@@ -3,17 +3,17 @@
 -- Estado do Upgrades
 ----------------------------------------
 
-local DeathScreen = {}
-DeathScreen.__index = DeathScreen
+local WinScreen = {}
+WinScreen.__index = WinScreen
 
-DeathScreen.timer = 0
+WinScreen.timer = 0
 
-function DeathScreen:load()
+function WinScreen:load()
 	self.timer = 0
-  soundManager:play("evil_laugh")
+  soundManager:play("win")
 end
 
-function DeathScreen:update(dt)
+function WinScreen:update(dt)
   Physics:update(dt)
 	planet:update(dt)
   enemyManager:update(dt)
@@ -23,7 +23,7 @@ function DeathScreen:update(dt)
 end
 
 
-function DeathScreen:draw()
+function WinScreen:draw()
 	love.graphics.setColor(1, 1, 1, 1)
 	planet:draw()
   enemyManager:draw()
@@ -35,7 +35,7 @@ function DeathScreen:draw()
 	love.graphics.setColor(1, 1, 1, 1)
 end
 
-function DeathScreen:keypressed(key, scancode, isrepeat)
+function WinScreen:keypressed(key, scancode, isrepeat)
 	if self.timer < 1 then
 		return
 	end
@@ -43,7 +43,7 @@ function DeathScreen:keypressed(key, scancode, isrepeat)
 	resetGame()
 end
 
-function DeathScreen:mousepressed( x, y, button, istouch, presses )
+function WinScreen:mousepressed( x, y, button, istouch, presses )
 	if self.timer < 1 then
 		return
 	end
@@ -51,4 +51,4 @@ function DeathScreen:mousepressed( x, y, button, istouch, presses )
 	resetGame()
 end
 
-return DeathScreen
+return WinScreen

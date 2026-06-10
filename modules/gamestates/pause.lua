@@ -137,6 +137,11 @@ function PauseState:getRightValue(stat)
 	end
 end
 
+function PauseState:selectOption(optionIdx)
+	self.selectedOption = optionIdx
+	soundManager:play("select1")
+end
+
 function PauseState:setOption(delta)
 	local option = self.state[self.selectedOption]
 
@@ -153,6 +158,8 @@ function PauseState:setOption(delta)
 
 		self.rows[self.selectedOption].value.content = tostring(values[nextIdx])
 	end
+	soundManager:play("select2")
+
 end
 
 function PauseState:load()
@@ -239,11 +246,11 @@ end
 function PauseState:keypressed(key, scancode, isrepeat)
 	local count = #self.options
 	if key == "up" or key == "w" then
-		self.selectedOption = (self.selectedOption - 2) % count + 1
+		self:selectOption((self.selectedOption - 2) % count + 1)
 	end
 
 	if key == "down" or key == "s" then
-		self.selectedOption = self.selectedOption % count + 1
+		self:selectOption(self.selectedOption % count + 1)
 	end
 
 	if key == "left" or key == "a" then

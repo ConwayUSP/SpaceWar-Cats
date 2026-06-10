@@ -92,6 +92,7 @@ function love.load()
 		[CTX.BATTLE] = newBattleScene(),
 		[CTX.UPGRADES] = newUpgradeScene(),
 		[CTX.DEATH_SCREEN] = newDeathScene(),
+		[CTX.WIN_SCREEN] = newWinScene(),
 		[CTX.PAUSE] = newPauseScene()
 	})
 

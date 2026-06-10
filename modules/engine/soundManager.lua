@@ -3,16 +3,19 @@
 ----------------------------------------
 
 local SFX_ASSETS = {
-  morte1 = "assets/sounds/sfx/mortes/mortes-1.wav",
-  morte2 = "assets/sounds/sfx/mortes/mortes-2.wav",
-  morte3 = "assets/sounds/sfx/mortes/mortes-3.wav",
-  tiro1 = "assets/sounds/sfx/tiros/tiros-1.mp3",
-  tiro2 = "assets/sounds/sfx/tiros/tiros-2.wav",
-  buy1 = "assets/sounds/sfx/buy/buy-1.mp3",
-  buy2 = "assets/sounds/sfx/buy/buy-2.mp3",
-  select1 = "assets/sounds/sfx/select/select-1.wav",
-  evil_laugh = "assets/sounds/sfx/evil_laugh.mp3",
-  hit1 = "assets/sounds/sfx/hit/hit-1.wav",
+    morte1 = "assets/sounds/sfx/mortes/mortes-1.wav",
+    morte2 = "assets/sounds/sfx/mortes/mortes-2.wav",
+    morte3 = "assets/sounds/sfx/mortes/mortes-3.wav",
+    tiro1 = "assets/sounds/sfx/tiros/tiros-1.mp3",
+    tiro2 = "assets/sounds/sfx/tiros/tiros-2.wav",
+    buy1 = "assets/sounds/sfx/buy/buy-1.mp3",
+    buy2 = "assets/sounds/sfx/buy/buy-2.mp3",
+    select1 = "assets/sounds/sfx/select/select-1.wav",
+    select2 = "assets/sounds/sfx/select/select-2.wav",
+    evil_laugh = "assets/sounds/sfx/evil_laugh.mp3",
+    hit1 = "assets/sounds/sfx/hit/hit-1.wav",
+    end_wave = "assets/sounds/sfx/end_wave.wav",
+    win = "assets/sounds/sfx/win.mp3"
 }
 
 ----------------------------------------------

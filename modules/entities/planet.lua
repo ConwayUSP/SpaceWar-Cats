@@ -93,8 +93,6 @@ function Planet:die()
   runStats:set(TWS, waveManager.currentWaveIndex)
   runStats:set(TRT, runStats:get(RET) - runStats:get(RST))
 
-  soundManager:play("evil_laugh")
-
   SetGameCtx(CTX.DEATH_SCREEN)
 end
 

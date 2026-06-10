@@ -49,6 +49,7 @@ end
 
 function WaveManager:update(dt)
     if self.currentWaveIndex > #self.list then
+        SetGameCtx(CTX.WIN_SCREEN)
         return
     end
     if self.isTransitioning then

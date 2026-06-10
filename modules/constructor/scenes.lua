@@ -84,6 +84,41 @@ function newDeathScene()
     return deathScene
 end
 
+function newWinScene()
+    local scene = UIScene.new()
+    local txt = Text.new(
+        "YOU WON",
+        48,
+        { 0.2, 1, 0.2, 1 },
+        vec(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 - 50),
+        0,
+        true,
+        nil,
+        function (self)
+            self.rotation = math.sin(love.timer.getTime() * 1.5) * 0.01
+            self.scale = 1 + math.sin(love.timer.getTime() * 2.2) * 0.01
+        end
+    )
+    scene:addText(txt)
+    txt = Text.new(
+        "Press any key to play again",
+        14,
+        { 1, 1, 1, 0.8 },
+        vec(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 - 25),
+        0,
+        true,
+        nil,
+        function (self)
+            self.scale = 1 + math.sin(love.timer.getTime() * 2.2) * 0.01
+            self.color[4] = 0.8 + math.sin(love.timer.getTime() * 3) * 0.2
+        end
+    )
+    scene:addText(txt)
+
+    scene:add(StatsDisplay.new(runStats.stats, vec(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 + 20), 300))
+    return scene
+end
+
 function newPauseScene()
     local pauseScene = UIScene.new()
     local txt = Text.new(

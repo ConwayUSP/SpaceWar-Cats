@@ -20,6 +20,7 @@ local SFX_ASSETS = {
 
 local MUSIC_ASSETS = {
     ambience = "assets/sounds/music/ambience.mp3",
+    battle = "assets/sounds/music/battle.wav",
 }
 
 ----------------------------------------------

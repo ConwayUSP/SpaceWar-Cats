@@ -211,6 +211,7 @@ function PauseState:load()
 	end
 
 	soundManager:play("ambience", false, true)
+	soundManager:pause("battle")
 	love.mouse.setCursor(cursors.crosshair)
 end
 

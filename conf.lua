@@ -4,7 +4,7 @@ function love.conf(t)
     t.window.height = 720
 
     t.window.title = "Space Blaster 3000"
-    -- t.window.icon = "assets/UI/menu/logo.png"
+    t.window.icon = "assets/icon.png"
     t.window.resizable = false
 
     t.console = true

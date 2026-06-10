@@ -30,6 +30,7 @@ function BattleState:load()
 	self.transitionTimer = 0
 	waveManager:startWave()
 	soundManager:pause("ambience")
+	soundManager:play("battle", false, true)
 	love.mouse.setCursor(cursors.crosshair)
 end
 
@@ -61,6 +62,7 @@ function BattleState:startTransition()
 	self.isTransitioning = true
 	self.transitionTimer = 0
 	soundManager:play("end_wave")
+	soundManager:pause("battle")
 end
 
 function BattleState:draw()

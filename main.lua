@@ -59,12 +59,12 @@ end
 function resetGame()
 	pProjectiles:clear()
 	eProjectiles:clear()
+	particleManager:reset()
 
 	p1:reset()
 	planet:reset()
 	enemyManager:reset()
 	waveManager:reset()
-	
 	runStats:reset()
 	soundManager:stopAll()
 

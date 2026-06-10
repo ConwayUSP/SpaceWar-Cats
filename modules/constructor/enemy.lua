@@ -96,7 +96,7 @@ function newTankEnemy(x, y, newVx)
     local function move(self, dt)
         local vx, vy = self.body:getLinearVelocity()
         vy = vy + math.cos(self.timer) * 62.5 * dt
-        vx = -15 or (-newVx * 15) 
+        vx = newVx and (-newVx * 15) or -15
         self.body:setLinearVelocity(vx, vy)
     end
     local config = {

@@ -22,7 +22,7 @@ function Spawner:update(dt)
     self.timer = self.timer + dt
     if self.timer >= self.interval then
         self.enemyFunc()
-        self.interval = self.intervalInit + math.random(-0.75 * self.interval, 0.75 * self.interval)
+        self.interval = self.intervalInit + math.random(-0.85 * self.interval, 0.85 * self.interval)
         self.timer = 0
     end
 end

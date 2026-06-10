@@ -11,6 +11,7 @@ DeathScreen.timer = 0
 function DeathScreen:load()
 	self.timer = 0
   soundManager:play("evil_laugh")
+	soundManager:pause("ambience")
 end
 
 function DeathScreen:update(dt)

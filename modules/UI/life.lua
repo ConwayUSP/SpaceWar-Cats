@@ -97,7 +97,6 @@ function LifeBarFront:draw(scale)
   local startX = SCREEN_WIDTH * (1 - scale) / 2
   local endX = SCREEN_WIDTH - startX
   local width = endX - startX
-  print(width)
   
   love.graphics.setScissor(startX, 0, self.backTarget * width, VIRTUAL_HEIGHT)
   applyColorShader(drawFunc)

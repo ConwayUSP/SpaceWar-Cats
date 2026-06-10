@@ -190,6 +190,7 @@ function PauseState:load()
 		self:buildRows(self.state)
 	end
 
+	soundManager:play("ambience", false, true)
 	love.mouse.setCursor(cursors.crosshair)
 end
 

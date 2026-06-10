@@ -14,8 +14,12 @@ local SFX_ASSETS = {
     select2 = "assets/sounds/sfx/select/select-2.wav",
     evil_laugh = "assets/sounds/sfx/evil_laugh.mp3",
     hit1 = "assets/sounds/sfx/hit/hit-1.wav",
-    end_wave = "assets/sounds/sfx/end_wave.wav",
+    end_wave = "assets/sounds/sfx/end_wave.mp3",
     win = "assets/sounds/sfx/win.mp3"
+}
+
+local MUSIC_ASSETS = {
+    ambience = "assets/sounds/music/ambience.mp3",
 }
 
 ----------------------------------------------
@@ -42,6 +46,11 @@ function SoundManager:load()
         local sfxInstance = SoundSFX.new(name, path, SFX)
         soundManager:add(sfxInstance)
     end
+
+    for name, path in pairs(MUSIC_ASSETS) do
+        local musicInstance = SoundMusic.new(name, path, MUSIC)
+        soundManager:add(musicInstance)
+    end
 end
 
 function SoundManager:update()
@@ -50,7 +59,7 @@ function SoundManager:update()
     end
 end
 
-function SoundManager:play(name, randPitch)
+function SoundManager:play(name, randPitch, loop)
     if self.sounds[name] then
         if randPitch then
             local k = 1.2
@@ -58,8 +67,21 @@ function SoundManager:play(name, randPitch)
             local r = math.random() * (max - min) + min
             self.sounds[name].source:setPitch(r)
         end
-        self.sounds[name]:play()
+        self.sounds[name]:play(loop)
     end
+end
+
+function SoundManager:stop(name)
+    if self.sounds[name] then
+        self.sounds[name]:stop()
+    end
+end
+
+function SoundManager:pause(name)
+    if self.sounds[name] then
+        self.sounds[name]:pause()
+    end
+    
 end
 
 function SoundManager:setSFXVolume(volume)

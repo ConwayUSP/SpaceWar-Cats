@@ -173,6 +173,7 @@ function UpgradesState:load()
 
 	local upgrades = self:getRandomUpgrades()
 	self:setSlots(upgrades)
+	soundManager:play("ambience", false, true)
 end
 
 function UpgradesState:update(dt)

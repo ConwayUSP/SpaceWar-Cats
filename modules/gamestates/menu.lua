@@ -38,6 +38,7 @@ function MenuState:load()
 			SetGameCtx(CTX.BATTLE)
 		end
 	)
+	soundManager:play("ambience", false, true)
 
 	love.mouse.setCursor(cursors.crosshair)
 end

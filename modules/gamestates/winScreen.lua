@@ -11,6 +11,7 @@ WinScreen.timer = 0
 function WinScreen:load()
 	self.timer = 0
   soundManager:play("win")
+	soundManager:pause("ambience")
 end
 
 function WinScreen:update(dt)

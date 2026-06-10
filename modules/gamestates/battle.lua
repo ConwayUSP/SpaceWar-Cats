@@ -5,7 +5,6 @@ require("modules.engine.text")
 require("modules.utils.utils")
 require("modules.engine.physics")
 require("modules.entities.enemy")
-require("modules.entities.sfx")
 require("modules.engine.uiManager")
 require("modules.constructor.scenes")
 
@@ -30,6 +29,7 @@ function BattleState:load()
 	self.isTransitioning = false
 	self.transitionTimer = 0
 	waveManager:startWave()
+	soundManager:pause("ambience")
 	love.mouse.setCursor(cursors.crosshair)
 end
 
@@ -60,6 +60,7 @@ end
 function BattleState:startTransition()
 	self.isTransitioning = true
 	self.transitionTimer = 0
+	soundManager:play("end_wave")
 end
 
 function BattleState:draw()

@@ -14,6 +14,7 @@ require("modules.entities.sfx")
 require("modules.engine.uiManager")
 require("modules.utils.screen")
 require("modules.system.runStats")
+require("modules.engine.camera")
 
 
 VIRTUAL_WIDTH = 640
@@ -44,6 +45,8 @@ runStats = require("modules.system.runStats")
 
 pProjectiles = ProjectileManager.new(CATEGORY.PLAYER_BULLET)
 eProjectiles = ProjectileManager.new(CATEGORY.ENEMY_BULLET)
+
+camera = Camera.new()
 
 -- Função auxiliar para trocar de contexto e carregar o novo estado
 function SetGameCtx(newCtx)
@@ -115,6 +118,7 @@ function love.update(dt)
 	GAMESTATE[GameCtx]:update(dt)
 	UIManager:update(dt)
 	bg:update(dt)
+	camera:update(dt)	
 end
 
 function love.draw()
@@ -125,9 +129,11 @@ function love.draw()
 	love.graphics.translate(SCREEN_OFFSET_X, SCREEN_OFFSET_Y)
 	love.graphics.scale(SCREEN_SCALE, SCREEN_SCALE)
 
-	bg:draw()
-	GAMESTATE[GameCtx]:draw()
-	UIManager:draw()
+	camera:attach()
+		bg:draw()
+		GAMESTATE[GameCtx]:draw()
+		UIManager:draw()
+	camera:detach()
 
 	love.graphics.pop()
 

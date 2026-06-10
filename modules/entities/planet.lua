@@ -105,6 +105,9 @@ function Planet:takeDamage(damage)
   self.damagedTimer = 0.1
   if self.hp <= 0 then
     self:die()
+    camera:shake(4, 0.5)
+  else
+    camera:shake(damage / 100, 0.08)
   end
 end
 

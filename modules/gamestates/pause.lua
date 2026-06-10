@@ -53,6 +53,26 @@ PauseState.options = {
 			toggleFullscreen()
 		end
 	},
+	-- {
+	-- 	type = TOGGLE,
+	-- 	label = "VSync",
+	-- 	get = function()
+	-- 		return love.window.getVSync()
+	-- 	end,
+	-- 	set = function()
+	-- 		love.window.setVSync(not love.window.getVSync())
+	-- 	end
+	-- },
+	{
+		type = TOGGLE,
+		label = "Shake",
+		get = function()
+			return camera:isShakeEnabled()
+		end,
+		set = function()
+			camera:toggleShake()
+		end
+	},
 	{
 		type = TOGGLE,
 		label = "CRT Shader",

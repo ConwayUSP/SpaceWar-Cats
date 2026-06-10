@@ -80,6 +80,10 @@ function Enemy:updateState(dt)
 end
 
 function Enemy:updateMotion(dt)
+  if self.isDead then
+    return
+  end
+
   self.timer = self.timer + dt
   
   if self.move then
@@ -88,7 +92,7 @@ function Enemy:updateMotion(dt)
 end
 
 function Enemy:updateShooting(dt)
-  if not self.weapon then
+  if not self.weapon or self.isDead then
       return
   end
 
@@ -188,9 +192,9 @@ function Enemy:takeDamage(damage)
 end
 
 function Enemy:draw()
-  -- if self.isDead then
-  --   return
-  -- end
+  if self.isDead then
+    return
+  end
   -- love.graphics.setColor(1, 1, 1, 1)
 
   local x, y = self.body:getPosition()

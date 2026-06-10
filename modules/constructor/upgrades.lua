@@ -114,7 +114,7 @@ upgradesList = {
   },
   {
     name = "SIZE I",
-    rarity = RARE,
+    rarity = COMMON,
     description = {
       colors.base, "Spaceship size is ",
       colors.highlight, "10% ",
@@ -198,7 +198,7 @@ upgradesList = {
   },
     {
     name = "REGEN II",
-    rarity = EPIC,
+    rarity = RARE,
     description = {
       colors.base, "Planet regenerates ",
       colors.highlight, "+2 HP/s "

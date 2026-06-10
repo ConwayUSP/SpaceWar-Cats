@@ -10,6 +10,25 @@ require("modules.UI.statsDisplay")
 --- BattleScene
 ----------------------------------------
 
+function newMenuScene()
+    local menuScene = UIScene.new()
+    local txt = Text.new(
+        "Press Escape for Settings",
+        12,
+        { 1, 1, 1, 1 },
+        vec(VIRTUAL_WIDTH - 180, VIRTUAL_HEIGHT - 20),
+        0,
+        false,
+        math.huge,
+        function (self)
+            self.scale = 1 + math.sin(love.timer.getTime() * 2.2) * 0.01
+            self.color[4] = 0.6 + math.sin(love.timer.getTime() * 3) * 0.2
+        end
+    )
+    menuScene:addText(txt)
+    return menuScene
+end
+
 function newBattleScene()
     local battleScene = UIScene.new()
     battleScene:add(LifeBarWrapper.new())

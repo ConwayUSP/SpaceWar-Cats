@@ -50,13 +50,6 @@ camera = Camera.new()
 
 -- Função auxiliar para trocar de contexto e carregar o novo estado
 function SetGameCtx(newCtx)
-	local sounds = GAMESTATE[GameCtx].sounds
-	if sounds then
-		for _, sound in pairs(sounds) do
-			sound:stop()
-		end
-	end
-
 	LastGameCtx = GameCtx
 	GameCtx = newCtx
 	GAMESTATE[GameCtx]:load()
@@ -94,6 +87,7 @@ function love.load()
 	})
 
 	UIManager:load({
+		[CTX.MENU] = newMenuScene(),
 		[CTX.BATTLE] = newBattleScene(),
 		[CTX.UPGRADES] = newUpgradeScene(),
 		[CTX.DEATH_SCREEN] = newDeathScene(),
@@ -104,7 +98,7 @@ function love.load()
 	particleManager:load()
 
 	updateScreenTransform()
-	GAMESTATE[GameCtx]:load()
+	SetGameCtx(CTX.MENU)
 end
 
 function love.resize(width, height)
@@ -150,9 +144,9 @@ function love.keypressed(key, scancode, isrepeat)
 		toggleFullscreen()
 	end
 
-	-- if not debugMode then
-	-- 	return
-	-- end
+	if not debugMode then
+		return
+	end
 
 	if key == "0" then
 		debugMode = not debugMode

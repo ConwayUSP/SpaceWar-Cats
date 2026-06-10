@@ -21,23 +21,24 @@ MenuState.timer = 0
 function MenuState:load()
 	local width, height = VIRTUAL_WIDTH, VIRTUAL_HEIGHT
 	
-	-- texts
-	self.texts.play = TextPhysical.new(
-		"PLAY",
-		48,
-		{ 1, 1, 1, 1 },
-		vec(width / 2, height / 2),
-		0,
-		true,
-		math.huge,
-		nil,
-		nil,
-		function(text)
-			text.fixture:destroy()
-			runStats:set(RST, love.timer.getTime())
-			SetGameCtx(CTX.BATTLE)
-		end
-	)
+	if not self.texts.play then
+		self.texts.play = TextPhysical.new(
+			"PLAY",
+			48,
+			{ 1, 1, 1, 1 },
+			vec(width / 2, height / 2),
+			0,
+			true,
+			math.huge,
+			nil,
+			nil,
+			function(text)
+				text.fixture:destroy()
+				runStats:set(RST, love.timer.getTime())
+				SetGameCtx(CTX.BATTLE)
+			end
+		)
+	end
 	soundManager:play("ambience", false, true)
 
 	love.mouse.setCursor(cursors.crosshair)

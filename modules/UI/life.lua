@@ -20,33 +20,27 @@ LifeBarBg.type = "LifeBarBg"
 
 function LifeBarBg:load(pos)
   self.pos = vec(pos.x, pos.y)
-  self.state = INTACT
 
-  self:addAnimations()
-end
-
-function LifeBarBg:addAnimations()
-	----------------- INTACT -----------------
-	local path = pngPathFormat({ "assets", "animations", "life", INTACT })
-	addAnimation(self, path, INTACT, newAnimSetting(1, { width = VIRTUAL_WIDTH, height = 48 }, 0.1, false))
+  local path = pngPathFormat({ "assets", "animations", "life", "back" })
+  addAnimation(self, path, INTACT, newAnimSetting(1, { width = VIRTUAL_WIDTH, height = 64 }, 0.1, false))
 end
 
 function LifeBarBg:update(dt)
-  self.animations[self.state]:update(dt)
+  self.animations[INTACT]:update(dt)
 end
 
 ----------------------------------------
 -- Renderização
 ----------------------------------------
 
-function LifeBarBg:draw()
-  local animation = self.animations[self.state]
+function LifeBarBg:draw(scale)
+  local animation = self.animations[INTACT]
 	local quad = animation.frames[animation.currFrame]
   local offset = {
 		x = animation.frameDim.width / 2,
 		y = animation.frameDim.height / 2,
 	}
-  love.graphics.draw(self.spriteSheets[self.state], quad, self.pos.x, self.pos.y, 0, VIRTUAL_SCALE, VIRTUAL_SCALE, offset.x, offset.y)
+  love.graphics.draw(self.spriteSheets[INTACT], quad, self.pos.x, self.pos.y, 0, scale, scale, offset.x, offset.y)
 end
 
 ----------------------------------------
@@ -59,14 +53,12 @@ LifeBarFront.type = "LifeBarFront"
 
 function LifeBarFront:load(pos)
   self.pos = vec(pos.x, pos.y)
-  self.state = INTACT
   self.frontTarget = 1
   self.backTarget = 1
   self.percent = 1
 
-  local path = pngPathFormat({ "assets", "sprites", "life", "front" })
-  self.image = love.graphics.newImage(path)
-  self.image:setFilter("nearest", "nearest")
+  local path = pngPathFormat({ "assets", "animations", "life", "front" })
+  addAnimation(self, path, INTACT, newAnimSetting(1, { width = VIRTUAL_WIDTH, height = 64 }, 0.1, false))
 end
 
 function LifeBarFront:update(dt)
@@ -91,19 +83,28 @@ function LifeBarFront:update(dt)
 
 end
 
-function LifeBarFront:draw()
+function LifeBarFront:draw(scale)
+  scale = scale or 1.0
+  local animation = self.animations[INTACT]
+	local quad = animation.frames[animation.currFrame]
   local offset = {
-    x = self.image:getWidth() / 2,
-    y = self.image:getHeight() / 2,
-  }
-
-  love.graphics.setScissor(0, 0, self.backTarget * SCREEN_WIDTH, VIRTUAL_HEIGHT)
-  local drawFunc = function () love.graphics.draw(self.image, self.pos.x, self.pos.y, 0, VIRTUAL_SCALE, VIRTUAL_SCALE, offset.x, offset.y) end
+		x = animation.frameDim.width / 2,
+		y = animation.frameDim.height / 2,
+	}
+  local drawFunc = function () 
+    love.graphics.draw(self.spriteSheets[INTACT], quad, self.pos.x, self.pos.y, 0, scale, scale, offset.x, offset.y) 
+  end
+  local startX = SCREEN_WIDTH * (1 - scale) / 2
+  local endX = SCREEN_WIDTH - startX
+  local width = endX - startX
+  print(width)
+  
+  love.graphics.setScissor(startX, 0, self.backTarget * width, VIRTUAL_HEIGHT)
   applyColorShader(drawFunc)
   love.graphics.setScissor()
 
-  love.graphics.setScissor(0, 0, self.frontTarget * SCREEN_WIDTH, VIRTUAL_HEIGHT)
-  love.graphics.draw(self.image, self.pos.x, self.pos.y, 0, VIRTUAL_SCALE, VIRTUAL_SCALE, offset.x, offset.y)
+  love.graphics.setScissor(startX, 0, self.frontTarget * width, VIRTUAL_HEIGHT)
+  drawFunc()
   love.graphics.setScissor()
 end
 
@@ -122,17 +123,17 @@ function LifeBarWrapper.new()
   self.lifeBarFront = LifeBarFront
   self.pos = vec(VIRTUAL_WIDTH / 2, 27)
 
-  self.text = Text.new(
-    "EARTH LIFE",
-    14,
-    { 1, 1, 1, 0.8 },
-    vec(self.pos.x, self.pos.y - 8),
-    0,
-    true,
-    math.huge,
-    nil,
-    nil
-  )
+  -- self.text = Text.new(
+  --   "EARTH LIFE",
+  --   24,
+  --   { 1, 1, 1, 0.8 },
+  --   vec(self.pos.x, self.pos.y + 30),
+  --   0,
+  --   true,
+  --   math.huge,
+  --   nil,
+  --   nil
+  -- )
 
   self.lifeBarFront:load(self.pos)
   self.lifeBar:load(self.pos)
@@ -147,8 +148,10 @@ end
 
 function LifeBarWrapper:draw()
   love.graphics.setColor(1, 1, 1, 0.5)
-  self.lifeBar:draw()
-  self.lifeBarFront:draw()
+
+  self.lifeBar:draw(0.8)
+  self.lifeBarFront:draw(0.8)
   drawTexts({ self.text })
+
   love.graphics.setColor(1, 1, 1, 1)
 end

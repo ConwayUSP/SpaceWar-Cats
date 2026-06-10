@@ -175,9 +175,14 @@ function Enemy:destroy()
 end
 
 function Enemy:takeDamage(damage)
+  if self.isDead then
+    return
+  end
+
+  runStats:add(TDD, damage)
   self.hp = self.hp - damage
   self.damagedTimer = 0.1
-  if self.hp <= 0 and not self.isDead then
+  if self.hp <= 0 then
     self:die()
   end
 end

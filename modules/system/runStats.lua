@@ -31,8 +31,8 @@ function RunStats:get(stat)
 end
 
 function RunStats:reset()
-  for _, v in pairs(self.stats) do
-    v = 0
+  for stat, _ in pairs(self.stats) do
+    self.stats[stat] = 0
   end
 end
 

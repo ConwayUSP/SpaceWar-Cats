@@ -60,10 +60,10 @@ end
 function Planet:addAnimations()
 	----------------- INTACT -----------------
 	local path = pngPathFormat({ "assets", "animations", "planet", INTACT })
-	addAnimation(self, path, INTACT, newAnimSetting(1, { width = 100, height = VIRTUAL_HEIGHT }, 0.1, false))
+	addAnimation(self, path, INTACT, newAnimSetting(50, { width = 180, height = 180 }, 0.1, true, 1))
 	----------------- DESTROYED -----------------
   path = pngPathFormat({ "assets", "animations", "planet", DESTROYED })
-	addAnimation(self, path, DESTROYED, newAnimSetting(1, { width = 100, height = VIRTUAL_HEIGHT }, 0.1, false))
+	addAnimation(self, path, DESTROYED, newAnimSetting(50, { width = 180, height = 180 }, 0.1, true, 1))
 end
 
 function Planet:update(dt)
@@ -101,6 +101,7 @@ function Planet:takeDamage(damage)
     return 
   end
 
+  runStats:add(TDT, damage)
   self.hp = math.max(0, self.hp - damage)
   self.damagedTimer = 0.1
   if self.hp <= 0 then
@@ -130,12 +131,13 @@ function Planet:draw()
   local animation = self.animations[self.state]
 	local quad = animation.frames[animation.currFrame]
   local offset = {
-		x = animation.frameDim.width / 2,
+		x = animation.frameDim.width / 2 + 72,
 		y = animation.frameDim.height / 2,
 	}
 
   local drawFunc = function ()
-    love.graphics.draw(self.spriteSheets[self.state], quad, self.pos.x, self.pos.y, 0, VIRTUAL_SCALE, VIRTUAL_SCALE, offset.x, offset.y)
+    local k = 2.5
+    love.graphics.draw(self.spriteSheets[self.state], quad, self.pos.x, self.pos.y, 0, k, k, offset.x, offset.y)
   end
 
   if self.damagedTimer > 0 then

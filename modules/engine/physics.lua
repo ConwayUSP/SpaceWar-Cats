@@ -18,7 +18,6 @@ local function beginContact(a, b, coll)
     if target.type == "Enemy" then
       table.insert(Physics.delayedFunctions, function() 
         local dmg = pProjectile:onHit(target)
-        runStats:add(TDD, dmg)
       end)
     elseif target.type == "Text" then
       table.insert(Physics.delayedFunctions, function() 
@@ -63,7 +62,6 @@ local function beginContact(a, b, coll)
         else
           dmg = objB.hp
         end
-        runStats:add(TDT, dmg)
         target:takeDamage(dmg)
         enemy:die()
       end)

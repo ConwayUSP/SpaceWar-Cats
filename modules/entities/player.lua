@@ -38,13 +38,14 @@ Player.__index = Player
 Player.type = "Player"
 
 function Player:load()
-  self.initialPos = vec(50, VIRTUAL_HEIGHT / 2)
+  self.initialPos = vec(70, VIRTUAL_HEIGHT / 2)
 
   self.body = love.physics.newBody(Physics.world, self.initialPos.x, self.initialPos.y, "dynamic")
   self.body:setFixedRotation(true)
   
   self.boostOffset = vec(-10, 0)
   self.boostParticle = newBoostParticle(addVec(self.initialPos, self.boostOffset))
+  self.boostParticle:play()
 
   self.firerateTimer = 0
   self.respawnCd = 1
@@ -220,7 +221,14 @@ function Player:defeat()
 end
 
 function Player:die()
-  planet:takeDamage(5)
+  if self.isDead then
+    return
+  end
+
+  local x, y = self.body:getPosition()
+  newExplosionParticle(vec(x, y))
+
+  planet:takeDamage(25)
   self.isDead = true
   self.body:setPosition(self.initialPos.x, self.initialPos.y)
   self.body:setLinearVelocity(0, 0)

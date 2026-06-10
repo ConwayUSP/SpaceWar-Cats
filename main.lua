@@ -75,6 +75,7 @@ function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	Physics:load()
+	particleManager:load()
 	planet:load()
 	p1:load()
 	waveManager:load()
@@ -95,7 +96,6 @@ function love.load()
 		[CTX.PAUSE] = newPauseScene()
 	})
 
-	particleManager:load()
 
 	updateScreenTransform()
 	SetGameCtx(CTX.MENU)
@@ -148,9 +148,9 @@ function love.keypressed(key, scancode, isrepeat)
 		debugMode = not debugMode
 	end
 
-	if not debugMode then
-		return
-	end
+	-- if not debugMode then
+	-- 	return
+	-- end
 
 
 	if key == "n" then

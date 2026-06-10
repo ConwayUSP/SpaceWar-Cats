@@ -9,7 +9,7 @@ require("modules.system.shots")
 
 function hpMultipler()
     wave = WaveManager.currentWaveIndex
-    return (1 + (wave * 0.05) + math.exp(wave - 5))
+    return (1 + (wave * 0.1) + math.exp(3*(wave - 10) / wave))
 end
 
 ----------------------------------------
@@ -77,7 +77,7 @@ end
 ----------------------------------------
 -- INIMIGO 3
 ----------------------------------------
-function newTankEnemy(x, y)
+function newTankEnemy(x, y, newVx)
     local projConfig = {
         speed = 8000,
         damage = 30,
@@ -96,10 +96,11 @@ function newTankEnemy(x, y)
     local function move(self, dt)
         local vx, vy = self.body:getLinearVelocity()
         vy = vy + math.cos(self.timer) * 62.5 * dt
-        self.body:setLinearVelocity(-900 * dt, vy)
+        vx = -15 or (-newVx * 15) 
+        self.body:setLinearVelocity(vx, vy)
     end
     local config = {
-        hp = 70 * hpMultipler(),
+        hp = 100 * hpMultipler(),
         size = 20,
         fireRate = 1,
         shootsUntilCd = 3,
@@ -185,7 +186,7 @@ function newCatMage(x, y, cd)
         end
     end
     local config = {
-        hp = 120 * hpMultipler(),
+        hp = 60 * hpMultipler(),
         size = 12,
         fireRate = 3,
         shootsUntilCd = 1,

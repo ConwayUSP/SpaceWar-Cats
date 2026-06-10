@@ -17,8 +17,8 @@ end
 function DeathScreen:update(dt)
   Physics:update(dt)
 	planet:update(dt)
-  enemyManager:update(dt)
-  particleManager:update(dt)
+--   enemyManager:update(dt)
+--   particleManager:update(dt)
 
 	self.timer = self.timer + dt
 end

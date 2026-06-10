@@ -57,7 +57,12 @@ local function beginContact(a, b, coll)
     local target = (objA == enemy) and objB or objA
     if target.type == "Planet" then
       table.insert(Physics.delayedFunctions, function() 
-        local dmg = 20
+        local dmg
+        if objB.hp > 150 then
+          dmg = 150
+        else
+          dmg = objB.hp
+        end
         runStats:add(TDT, dmg)
         target:takeDamage(dmg)
         enemy:die()
@@ -66,7 +71,6 @@ local function beginContact(a, b, coll)
       table.insert(Physics.delayedFunctions, function() 
         local x, y = target.body:getPosition()
         newExplosionParticle(vec(x, y))
-        
         target:takeDamage(math.huge)
         enemy:takeDamage(math.huge)
       end)

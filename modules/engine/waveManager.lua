@@ -19,7 +19,15 @@ function WaveManager:buildWaves()
         initWave4(),
         initWave5(),
         initWave6(),
-        initWave7()
+        initWave7(),
+        initWave8(),
+        initWave9(),
+        initWave10(),
+        initWave11(),
+        initWave12(),
+        initWave13(),
+        initWave14(),
+        initWave15()
     }
 end
 
@@ -30,7 +38,6 @@ end
 
 function WaveManager:reset()
     self:buildWaves()
-
     self.currentWaveIndex = 1
     self.isTransitioning = true
     self.transitionTimer = 0.5

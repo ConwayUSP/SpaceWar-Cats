@@ -11,6 +11,7 @@ require("modules.system.shots")
 require("modules.entities.projectile")
 require("modules.utils.states")
 require("modules.constructor.projectile")
+local planet = require("modules.entities.planet")
 
 ----------------------------------------
 -- Entidade Player
@@ -219,6 +220,7 @@ function Player:defeat()
 end
 
 function Player:die()
+  planet:takeDamage(5)
   self.isDead = true
   self.body:setPosition(self.initialPos.x, self.initialPos.y)
   self.body:setLinearVelocity(0, 0)

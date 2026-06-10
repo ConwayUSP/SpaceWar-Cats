@@ -76,6 +76,10 @@ end
 ----------------------------------------
 -- Funções matemáticas
 ----------------------------------------
+---
+function truncate(number)
+    return number >= 0 and math.floor(number) or math.ceil(number)
+end
 
 ---@param x number
 ---@param a number

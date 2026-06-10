@@ -1,3 +1,5 @@
+require("modules.utils.utils")
+
 local RunStats = {}
 RunStats.__index = RunStats
 
@@ -20,7 +22,7 @@ end
 
 function RunStats:add(stat, amount)
   if self.stats[stat] then
-    self.stats[stat] = (self.stats[stat] or 0) + amount
+    self.stats[stat] = (self.stats[stat] or 0) + truncate(amount)
   end
 end
 

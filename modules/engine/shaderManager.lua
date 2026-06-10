@@ -6,7 +6,6 @@ ShaderManager.canvasA = nil
 ShaderManager.canvasB = nil
 
 ShaderManager.shaders = {}
-ShaderManager.pipeline = {}
 
 ShaderManager.time = 0
 
@@ -23,13 +22,14 @@ function ShaderManager:load(shaderOrder)
 
   self:loadShaders()
 
-  selfpipeline = {}
+  self.pipeline = {}
 
   for _, name in ipairs(shaderOrder) do
-    table.insert(
-        self.pipeline,
-        self.shaders[name]
-    )
+    table.insert(self.pipeline, {
+      name = name,
+      shader = self.shaders[name],
+      active = true
+    })
   end
 end
 
@@ -55,6 +55,34 @@ function ShaderManager:update(dt)
   self.time = self.time + dt
 
   self.shaders.scanlines:send("phase", 8*self.time)
+end
+
+function ShaderManager:setEnabled(name, enabled)
+  for _, shaderData in ipairs(self.pipeline) do
+    if shaderData.name == name then
+      shaderData.active = enabled
+      return
+    end
+  end
+end
+
+function ShaderManager:toggleShader(name)
+  for _, shaderData in ipairs(self.pipeline) do
+    if shaderData.name == name then
+      shaderData.active = not shaderData.active
+      return
+    end
+  end
+end
+
+function ShaderManager:isEnabled(name)
+  for _, shaderData in ipairs(self.pipeline) do
+    if shaderData.name == name then
+      return shaderData.active
+    end
+  end
+
+  return false
 end
 
 function ShaderManager:toggle()
@@ -86,18 +114,19 @@ function ShaderManager:draw()
   local source = self.canvasA
   local target = self.canvasB
 
-  for _, shader in ipairs(self.pipeline) do
+  for _, shaderData in ipairs(self.pipeline) do
+    if shaderData.active then
+      love.graphics.setCanvas(target)
+      love.graphics.clear()
 
-    love.graphics.setCanvas(target)
-    love.graphics.clear()
+      love.graphics.setShader(shaderData.shader)
+      love.graphics.draw(source)
 
-    love.graphics.setShader(shader)
-    love.graphics.draw(source)
+      love.graphics.setShader()
+      love.graphics.setCanvas()
 
-    love.graphics.setShader()
-    love.graphics.setCanvas()
-
-    source, target = target, source
+      source, target = target, source
+    end
   end
 
   love.graphics.draw(source)

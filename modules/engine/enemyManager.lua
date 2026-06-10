@@ -16,6 +16,17 @@ function EnemyManager:update(dt)
         end
     end
 end
+
+function EnemyManager:reset()
+    for i = #self.list, 1, -1 do
+        local e = self.list[i]
+        e:destroy()
+        table.remove(self.list, i)
+    end
+
+    self.list = {}
+end
+
 function EnemyManager:draw()
     for _, enemy in ipairs(self.list) do
         local alpha = enemy.alpha

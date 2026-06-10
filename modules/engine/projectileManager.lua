@@ -20,6 +20,16 @@ function ProjectileManager:update(dt)
   end
 end
 
+function ProjectileManager:clear()
+  for i = #self.projectiles, 1, -1 do
+    local p = self.projectiles[i]
+    p:destroy()
+  end
+
+  self.projectiles = {}
+
+end
+
 function ProjectileManager:remove(projectile)
   local idx = tableIndexOf(self.projectiles, projectile)
   if idx then

@@ -29,7 +29,7 @@ BattleState.transitioningCd = 1
 function BattleState:load()
 	self.isTransitioning = false
 	self.transitionTimer = 0
-	-- particleManager:load()
+	waveManager:startWave()
 	love.mouse.setCursor(cursors.crosshair)
 end
 
@@ -55,9 +55,6 @@ function BattleState:update(dt)
 	pProjectiles:update(dt)
 	eProjectiles:update(dt)
 	planet:update(dt)
-
-	updateTexts(self.texts, dt)
-	cleanUpTexts(self.texts)
 end
 
 function BattleState:startTransition()
@@ -73,14 +70,16 @@ function BattleState:draw()
 	eProjectiles:draw()
 	particleManager:draw()
 
-	drawTexts(self.texts)
-
 	-- reset de cor
 	love.graphics.setColor(1, 1, 1, 1)
 end
 
 function BattleState:keypressed(key, scancode, isrepeat)
 	p1:keypressed(key, scancode, isrepeat)
+
+	if key == "p" or key == "escape" and not isrepeat then
+		SetGameCtx(CTX.PAUSE)
+	end
 end
 
 function BattleState:mousepressed(x, y, button, istouch, presses)

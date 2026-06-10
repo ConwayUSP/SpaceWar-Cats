@@ -126,7 +126,7 @@ function LifeBarWrapper.new()
     "EARTH LIFE",
     14,
     { 1, 1, 1, 0.8 },
-    { self.pos.x, self.pos.y - 8 },
+    vec(self.pos.x, self.pos.y - 8),
     0,
     true,
     math.huge,

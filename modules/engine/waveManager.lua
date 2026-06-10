@@ -2,20 +2,39 @@ require("modules.constructor.wave")
 
 WaveManager = {}
 
-WaveManager.list = {
-    initWave1(),
-    initWave2(),
-    initWave3(),
-    initWave4(),
-    initWave5(),
-    initWave6(),
-    initWave7()
-
-}
+WaveManager.list = {}
 WaveManager.currentWaveIndex = 1
 WaveManager.type = "WaveManager"
 WaveManager.transitionTimer = 0.5
-WaveManager.isTransitioning = true
+
+function WaveManager:load()
+    self:buildWaves()
+end
+
+function WaveManager:buildWaves()
+    self.list = {
+        initWave1(),
+        initWave2(),
+        initWave3(),
+        initWave4(),
+        initWave5(),
+        initWave6(),
+        initWave7()
+    }
+end
+
+function WaveManager:startWave()
+    self.isTransitioning = true
+    self.transitionTimer = 0.5
+end
+
+function WaveManager:reset()
+    self:buildWaves()
+
+    self.currentWaveIndex = 1
+    self.isTransitioning = true
+    self.transitionTimer = 0.5
+end
 
 function WaveManager:debugSkipWave()
     GAMESTATE[CTX.BATTLE]:startTransition()
@@ -37,7 +56,7 @@ function WaveManager:update(dt)
         if self.transitionTimer <= 0 then
             self.isTransitioning = false
             -- Inicia a wave atual
-            print("Starting " .. self.list[self.currentWaveIndex].name)
+            -- print("Starting " .. self.list[self.currentWaveIndex].name)
             self.list[self.currentWaveIndex]:start()
         end
         return
@@ -46,7 +65,7 @@ function WaveManager:update(dt)
     local currentWave = self.list[self.currentWaveIndex]
     currentWave:update(dt)
     if currentWave.isFinished and #EnemyManager.list == 0 then
-        print("Wave " .. self.currentWaveIndex .. " finished!")
+        -- print("Wave " .. self.currentWaveIndex .. " finished!")
         GAMESTATE[CTX.BATTLE]:startTransition()
         self.isTransitioning = true
         self.transitionTimer = 0.5

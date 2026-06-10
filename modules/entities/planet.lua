@@ -87,6 +87,15 @@ function Planet:die()
   self.isDead = true
   self.state = DESTROYED
   self.fixture:setFilterData(0, 0, 0)
+
+  p1:defeat()
+  runStats:set(RET, love.timer.getTime())
+  runStats:set(TWS, waveManager.currentWaveIndex)
+  runStats:set(TRT, runStats:get(RET) - runStats:get(RST))
+
+  soundManager:play("evil_laugh")
+
+  SetGameCtx(CTX.DEATH_SCREEN)
 end
 
 function Planet:takeDamage(damage)

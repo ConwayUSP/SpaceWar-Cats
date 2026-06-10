@@ -189,3 +189,26 @@ function debugTable(tableName, table)
 	print("----------------------------------")
 end
 
+----------------------------------------
+-- Renderização
+----------------------------------------
+
+function renderDots(x1, y1, x2, y2, size, step)
+  step = step or 5
+  size = size or 4
+
+  local points = {}
+  local deltaX, deltaY = x2 - x1, y2 - y1
+  local len = math.max (math.abs(deltaX), math.abs(deltaY))
+
+  for iStep = 0, len do
+    if iStep % 4 == 0 then
+      table.insert (points, x1 + deltaX * iStep/len)
+      table.insert (points, y1 + deltaY * iStep/len)
+    end
+  end
+
+  love.graphics.setPointSize(size)
+  love.graphics.points(points)
+  love.graphics.setPointSize(1)
+end

@@ -50,7 +50,7 @@ end
 
 function Projectile:shot(attacker, origin, dir)
     local shotEvent = ShotEvent.new(self, attacker, origin, dir)
-    soundManager:play(self.sound, true)
+    soundManager:play(self.sound or "tiro1", true)
     table.insert(self.events, shotEvent)
 end
 
@@ -136,7 +136,7 @@ end
 
 function ShotEvent:onHit(target)
     if not self.active then
-        return
+        return 0
     end
 
     if self.customHit then
@@ -154,6 +154,12 @@ function ShotEvent:onHit(target)
     end
 
     self:destroy()
+
+    if target.hp > 0 then
+        soundManager:play("hit1", true)
+    end
+
+    return dmg
 end
 
 function ShotEvent:calculateDamage(dmg)

@@ -33,6 +33,7 @@ function UIScene:update(dt)
       element:update(dt)
     end
   end
+  cleanUpTexts(self.texts)
   updateTexts(self.texts, dt)
 end
 

@@ -3,7 +3,7 @@ function love.conf(t)
     t.window.width = 1280
     t.window.height = 720
 
-    t.window.title = "Space Blaster 3000"
+    t.window.title = "SpaceWar Cats"
     t.window.icon = "assets/icon.png"
     t.window.resizable = false
 

@@ -130,12 +130,12 @@ upgradesList = {
     rarity = COMMON,
     description = {
       colors.base, "Spaceship size is ",
-      colors.highlight, "25% ",
+      colors.highlight, "20% ",
       colors.base, "smaller!"
     },
     apply = function(ctx)
-      ctx.player.size = ctx.player.size * 0.75
-      ctx.player.scale = ctx.player.scale * 0.75
+      ctx.player.size = ctx.player.size * 0.8
+      ctx.player.scale = ctx.player.scale * 0.8
       ctx.player:newHitbox()
     end
   },

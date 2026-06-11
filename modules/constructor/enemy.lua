@@ -57,7 +57,7 @@ function newCatSwimmer(x, y, vx)
         self.body:setLinearVelocity(-7000 * dt * f * vx, 0)
     end
     local config = {
-        hp = 40 * hpMultipler(),
+        hp = 55 * hpMultipler(),
         size = 12,
         fireRate = 3,
         shootsUntilCd = 5,
@@ -104,7 +104,12 @@ function newTankEnemy(x, y, newVx)
         size = 20,
         fireRate = 1,
         shootsUntilCd = 3,
-        cd = 4
+        cd = 4,
+        hb = {
+            type = "rectangle",
+            width = 20,
+            height = 25
+        },
     }
     local customShot = function(atk, attacker, origin, direction)
         local timer = 0
@@ -193,8 +198,8 @@ function newCatMage(x, y, cd)
         cd = 3,
         hb = {
             type = "rectangle",
-            width = 22,
-            height = 18
+            width = 20,
+            height = 28
         }
     }
     local enemy = Enemy.new("mage", vec(x, y), move, proj, nil, config, 0)

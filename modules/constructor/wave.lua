@@ -28,11 +28,11 @@ function initWave1()
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newCatSwimmer(startX, startY)
-        end, 5, 0),
+        end, 1, 10, 20),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newShooterEnemy(startX, startY)
-        end, 3, 5)
+        end, 1.5, 0)
     }
     local wave1 = Wave.new("Wave 1", 30, spawners)
     return wave1
@@ -42,12 +42,12 @@ function initWave2()
     local spawners = {
         Spawner.new(function()
             local startX, startY = randomPosOutside()
-            newCatSwimmer(startX, startY, 1.2)
-        end, 3, 5),
+            newCatSwimmer(startX, startY, 1.3)
+        end, 2),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newShooterEnemy(startX, startY)
-        end, 3, 0)
+        end, 1, 5, 20)
     }
     local wave2 = Wave.new("Wave 2", 30, spawners)
 
@@ -59,15 +59,15 @@ function initWave3()
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newShooterEnemy(startX, startY)
-        end, 2, 10),
-        Spawner.new(function()
-            local startX, startY = randomPosOutside()
-            newCatSwimmer(startX, startY, 1.1)
-        end, 3, 5),
+        end, 2),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newCatSwimmer(startX, startY, 1.3)
-        end, 2, 15),
+        end, 2, 5, 20),
+        Spawner.new(function()
+            local startX, startY = randomPosOutside()
+            newCatSwimmer(startX, startY, 1.3)
+        end, 1.5, 15),
     }
     local wave3 = Wave.new("Wave 3", 30, spawners)
     return wave3
@@ -77,14 +77,14 @@ function initWave4()
     local spawners = {
         Spawner.new(function()
             local startX, startY = randomPosOutside()
-            newCatSwimmer(startX, startY, 0.5)
+            newCatSwimmer(startX, startY)
             startX, startY = randomPosOutside()
-            newCatSwimmer(startX, startY, 0.5)
-        end, 2, 10),
+            newCatSwimmer(startX, startY)
+        end, 1.8, 0, 15),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newShooterEnemy(startX, startY)
-        end, 1.5, 0),
+        end, 0.8, 5, 18),
     }
     local wave4 = Wave.new("Wave 4", 30, spawners)
     return wave4
@@ -95,27 +95,27 @@ function initWave5()
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newShooterEnemy(startX, startY)
-        end, 6, 0),
+        end, 1, 0, 20),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newTankEnemy(startX, startY)
-        end, 3, 0),
+        end, 2, 0, 25),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newCatSwimmer(startX, startY, 1.2)
-        end, 3, 15),
+        end, 1.5, 15, 30),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newTankEnemy(startX, startY)
-        end, 2, 40),
+        end, 1.5, 40),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newCatSwimmer(startX, startY, 0.5)
-        end, 3, 40),
+        end, 1, 30),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newShooterEnemy(startX, startY)
-        end, 5, 45),
+        end, 1, 45),
     }
 
     local wave5 = Wave.new("Wave 5", 60, spawners)
@@ -126,12 +126,12 @@ function initWave6()
     local spawners = {
         Spawner.new(function()
             local startX, startY = randomPosOutside()
-            newTankEnemy(startX, startY, 2.5)
-        end, 2, 0),
+            newTankEnemy(startX, startY, 2)
+        end, 1, 0, 20),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newCatSwimmer(startX, startY, 0.8)
-        end, 2.5, 10),
+        end, 1.5, 15),
     }
     local wave6 = Wave.new("Wave 6", 30, spawners)
     return wave6
@@ -142,11 +142,11 @@ function initWave7()
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newShooterEnemy(startX, startY)
-        end, 1.5, 0),
+        end, 1.5, 0, 15),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newTankEnemy(startX, startY)
-        end, 3, 15),
+        end, 2, 0),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newCatSwimmer(startX, startY, 0.3)
@@ -154,7 +154,7 @@ function initWave7()
             newCatSwimmer(startX, startY, 0.3)
             startX, startY = randomPosOutside()
             newCatSwimmer(startX, startY, 0.3)
-        end, 2, 5),
+        end, 1.2, 10),
     }
     local wave7 = Wave.new("Wave 7", 30, spawners)
     return wave7
@@ -164,14 +164,14 @@ function initWave8()
     local spawners = {
         Spawner.new(function()
             local startX, startY = randomPosOutside()
-            newTankEnemy(startX, startY, 3)
-        end, 4, 0),
+            newTankEnemy(startX, startY, 2.5)
+        end, 1.2, 0),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
-            newCatSwimmer(startX, startY)
+            newCatSwimmer(startX, startY, 0.8)
             startX, startY = randomPosOutside()
-            newCatSwimmer(startX, startY)
-        end, 2, 10),
+            newCatSwimmer(startX, startY, 0.8)
+        end, 1.5, 10, 20),
     }
     local wave8 = Wave.new("Wave 8", 30, spawners)
     return wave8
@@ -181,16 +181,16 @@ function initWave9()
     local spawners = {
         Spawner.new(function()
             local startX, startY = randomPosOutside()
-            newTankEnemy(startX, startY, 0.8)
-        end, 1.5, 0),
+            newTankEnemy(startX, startY)
+        end, 1, 10),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newShooterEnemy(startX, startY)
-        end, 3, 10),
+        end, 1, 0, 15),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newCatSwimmer(startX, startY, 2.5)
-        end, 5, 15),
+        end, 2, 15),
     }
     local wave9 = Wave.new("Wave 9", 30, spawners)
     return wave9
@@ -201,21 +201,21 @@ function initWave10()
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newTankEnemy(startX, startY)
-        end, 5, 0),
+        end, 1.5, 0, 25),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newShooterEnemy(startX, startY)
-        end, 4, 10),
+        end, 2.5, 0, 25),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
-            newCatSwimmer(startX, startY, 0.3)
+            newCatSwimmer(startX, startY, 0.6)
             startX, startY = randomPosOutside()
-            newCatSwimmer(startX, startY, 0.3)
-        end, 3, 5),
+            newCatSwimmer(startX, startY, 0.6)
+        end, 1, 30),
         Spawner.new(function()
             local startX, startY = randomPosInside()
-            newCatMage(startX, startY, 5)
-        end, 6, 15)
+            newCatMage(startX, startY, 3)
+        end, 1.5, 0)
     }
     local wave10 = Wave.new("Wave 10", 60, spawners)
     return wave10
@@ -226,15 +226,15 @@ function initWave11()
         Spawner.new(function()
             local startX, startY = randomPosInside()
             newCatMage(startX, startY, 2)
-        end, 3, 5),
+        end, 1.5),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newCatSwimmer(startX, startY, 1.5)
-        end, 3, 0),
+        end, 1, 0, 20),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
-            newCatSwimmer(startX, startY, 1.5)
-        end, 3, 15)
+            newCatSwimmer(startX, startY, 2.2)
+        end, 1, 20)
     }
 
     local wave11 = Wave.new("Wave 11", 30, spawners)
@@ -250,15 +250,15 @@ function initWave12()
             newCatSwimmer(startX, startY, 0.4)
             startX, startY = randomPosOutside()
             newCatSwimmer(startX, startY, 0.2)
-        end, 5, 10),
+        end, 1.5),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
-            newTankEnemy(startX, startY, 2)
-        end, 6, 0),
+            newTankEnemy(startX, startY, 0.6)
+        end, 1, 10, 25),
         Spawner.new(function()
             local startX, startY = randomPosInside()
             newCatMage(startX, startY, 1.5)
-        end, 2.5, 15),
+        end, 1, 0, 15),
     }
     local wave12 = Wave.new("Wave 12", 30, spawners)
     return wave12
@@ -269,16 +269,16 @@ function initWave13()
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             startX, startY = randomPosOutside()
-            newCatSwimmer(startX, startY, 1.8)
-        end, 5, 10),
+            newCatSwimmer(startX, startY, 2.2)
+        end, 1.5, 0, 20),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newShooterEnemy(startX, startY)
-        end, 3, 0),
+        end, 1.5, 5),
         Spawner.new(function()
             local startX, startY = randomPosInside()
-            newCatMage(startX, startY, 2)
-        end, 2, 15)
+            newCatMage(startX, startY, 2.5)
+        end, 1, 15)
     }
     local wave13 = Wave.new("Wave 13", 30, spawners)
     return wave13
@@ -289,20 +289,20 @@ function initWave14()
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             startX, startY = randomPosOutside()
-            newCatSwimmer(startX, startY, 2.5)
-        end, 5, 20),
+            newCatSwimmer(startX, startY, 2)
+        end, 2, 15),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newShooterEnemy(startX, startY)
-        end, 4, 0),
+        end, 2, 0),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
-            newTankEnemy(startX, startY, 2.5)
-        end, 5, 15),
+            newTankEnemy(startX, startY, 1.5)
+        end, 0.5, 10, 18),
         Spawner.new(function()
             local startX, startY = randomPosInside()
-            newCatMage(startX, startY, 2)
-        end, 2, 0)
+            newCatMage(startX, startY, 5)
+        end, 1, 15, 25)
     }
     local wave14 = Wave.new("Wave 14", 30, spawners)
     return wave14
@@ -313,30 +313,30 @@ function initWave15()
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             startX, startY = randomPosOutside()
-            newCatSwimmer(startX, startY, 1.5)
-        end, 7, 0),
+            newCatSwimmer(startX, startY)
+        end, 2.5, 0),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             startX, startY = randomPosOutside()
             newCatSwimmer(startX, startY, 2)
-        end, 15, 30),
+        end, 3, 30),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             startX, startY = randomPosOutside()
             newCatSwimmer(startX, startY, 2.5)
-        end, 5, 45),
+        end, 3.5, 40),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newShooterEnemy(startX, startY)
-        end, 5, 25),
+        end, 2.5),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newTankEnemy(startX, startY, 0.5)
-        end, 8, 20),
+        end, 2, 0),
         Spawner.new(function()
             local startX, startY = randomPosOutside()
             newCatMage(startX, startY, 1)
-        end, 8, 0),
+        end, 3.5, 0),
     }
     local wave15 = Wave.new("Wave 15", 60, spawners)
     return wave15

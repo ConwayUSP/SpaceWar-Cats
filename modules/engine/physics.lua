@@ -70,7 +70,7 @@ local function beginContact(a, b, coll)
         local x, y = target.body:getPosition()
         newExplosionParticle(vec(x, y))
         target:takeDamage(math.huge)
-        enemy:takeDamage(math.huge)
+        enemy:die()
       end)
     end
   end

@@ -9,7 +9,7 @@ require("modules.system.shots")
 
 function hpMultipler()
     wave = WaveManager.currentWaveIndex
-    return (1 + (wave * 0.1) + math.exp(3*(wave - 10) / wave))
+    return (1 + (wave * 0.05) + math.exp(3*(wave - 14) / wave))
 end
 
 ----------------------------------------

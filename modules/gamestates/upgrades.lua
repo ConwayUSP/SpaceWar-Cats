@@ -170,8 +170,21 @@ UpgradesState.allUpgrades = upgradesList
 function UpgradesState:load()
 	self.state = BUYING
 	self.timer = 0
+	local upgrades
 
-	local upgrades = self:getRandomUpgrades()
+	if waveManager.currentWaveIndex % 5 == 0 then
+		local pool = {}
+		for _, upgrade in ipairs(self.allUpgrades) do
+			if upgrade.rarity == EPIC then
+				table.insert(pool, upgrade)
+			end
+		end
+
+		upgrades = self:getRandomUpgrades(pool)
+	else
+		upgrades = self:getRandomUpgrades(self.allUpgrades)
+	end
+	
 	self:setSlots(upgrades)
 	soundManager:play("ambience", false, true)
 	soundManager:pause("battle")
@@ -286,11 +299,11 @@ function UpgradesState:setSlots(upgrades)
 	end
 end
 
-function UpgradesState:getRandomUpgrades()
+function UpgradesState:getRandomUpgrades(upgrades)
 	local result = {}
 	local pool = {}
 
-	for _, u in ipairs(self.allUpgrades) do
+	for _, u in ipairs(upgrades) do
 		table.insert(pool, u)
 	end
 

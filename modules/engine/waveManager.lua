@@ -3,7 +3,7 @@ require("modules.constructor.wave")
 WaveManager = {}
 
 WaveManager.list = {}
-WaveManager.currentWaveIndex = 1
+WaveManager.currentWaveIndex = 0
 WaveManager.type = "WaveManager"
 WaveManager.transitionTimer = 0.5
 
@@ -34,20 +34,18 @@ end
 function WaveManager:startWave()
     self.isTransitioning = true
     self.transitionTimer = 0.5
+    self.currentWaveIndex = self.currentWaveIndex + 1
 end
 
 function WaveManager:reset()
     self:buildWaves()
-    self.currentWaveIndex = 1
+    self.currentWaveIndex = 0
     self.isTransitioning = true
     self.transitionTimer = 0.5
 end
 
 function WaveManager:debugSkipWave()
     GAMESTATE[CTX.BATTLE]:startTransition()
-    self.isTransitioning = true
-    self.transitionTimer = 0.5
-    self.currentWaveIndex = self.currentWaveIndex + 1
     for i = #EnemyManager.list, 1, -1 do
         local e = EnemyManager.list[i]
         e:die()
@@ -74,10 +72,13 @@ function WaveManager:update(dt)
     currentWave:update(dt)
     if currentWave.isFinished and #EnemyManager.list == 0 then
         -- print("Wave " .. self.currentWaveIndex .. " finished!")
+        if self.currentWaveIndex >= #self.list then
+            SetGameCtx(CTX.WIN_SCREEN)
+            return
+        end
         GAMESTATE[CTX.BATTLE]:startTransition()
         self.isTransitioning = true
         self.transitionTimer = 0.5
-        self.currentWaveIndex = self.currentWaveIndex + 1
     end
 end
 

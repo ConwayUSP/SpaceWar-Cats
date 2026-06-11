@@ -22,7 +22,7 @@ local baseConfigs = {
   damage = 40,                  -- projetil
   size = 5,                     -- player
   scale = 1,                    -- player
-  criticalChance = 0.02,        -- projetil
+  criticalChance = 0.10,        -- projetil
   criticalMultiplier = 1.5,     -- projetil
   hb = {                        -- projetil
     type = "rectangle",
@@ -117,7 +117,8 @@ function Player:attWeapon(newStats)
       damage = newStats.damage or self.damage,
       hb = newStats.hb or self.hb,
       criticalChance = newStats.criticalChance or self.criticalChance,
-      criticalMultiplier = newStats.criticalMultiplier or self.criticalMultiplier
+      criticalMultiplier = newStats.criticalMultiplier or self.criticalMultiplier,
+      scale = newStats.scale or self.weapon.scale
     })
   else
     self.weapon = Projectile.new("blaster-tune", moveDirection, nil, pProjectiles, {
@@ -125,7 +126,8 @@ function Player:attWeapon(newStats)
       damage = newStats.damage or self.damage,
       hb = newStats.hb or self.hb,
       criticalChance = newStats.criticalChance or self.criticalChance,
-      criticalMultiplier = newStats.criticalMultiplier or self.criticalMultiplier
+      criticalMultiplier = newStats.criticalMultiplier or self.criticalMultiplier,
+      scale = newStats.scale or 1
     })
   end
 end

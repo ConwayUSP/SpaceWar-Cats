@@ -11,18 +11,18 @@ weights = {
 }
 
 upgradesList = {
-  {
-    name = "FIRERATE I",
-    rarity = COMMON,
-    description = {
-      colors.base, "Spaceship fires ",
-      colors.highlight, "10% ",
-      colors.base, "faster!"
-    },
-    apply = function(ctx)
-      ctx.player.firerate = ctx.player.firerate * 1.1
-    end
-  },
+  -- {
+  --   name = "FIRERATE I",
+  --   rarity = COMMON,
+  --   description = {
+  --     colors.base, "Spaceship fires ",
+  --     colors.highlight, "10% ",
+  --     colors.base, "faster!"
+  --   },
+  --   apply = function(ctx)
+  --     ctx.player.firerate = ctx.player.firerate * 1.1
+  --   end
+  -- },
   {
     name = "FIRERATE II",
     rarity = RARE,
@@ -51,44 +51,44 @@ upgradesList = {
     name = "DAMAGE I",
     rarity = COMMON,
     description = {
-      colors.base, "Projectiles deal ",
-      colors.highlight, "10% ",
-      colors.base, "more damage!"
+      colors.base, "Increases projectile damage by ",
+      colors.highlight, "8",
+      colors.base, "!"
     },
     apply = function(ctx)
-      ctx.player.damage = ctx.player.damage * 1.1
+      ctx.player.damage = ctx.player.damage + 8
       ctx.player:attWeapon()
     end
   },
-    {
+  {
     name = "DAMAGE II",
     rarity = RARE,
     description = {
-      colors.base, "Projectiles deal ",
-      colors.highlight, "15% ",
-      colors.base, "more damage!"
+      colors.base, "Increases projectile damage by ",
+      colors.highlight, "12",
+      colors.base, "!"
     },
     apply = function(ctx)
-      ctx.player.damage = ctx.player.damage * 1.15
+      ctx.player.damage = ctx.player.damage + 12
+      ctx.player:attWeapon()
+    end
+  },
+  {
+    name = "DAMAGE III",
+    rarity = EPIC,
+    description = {
+      colors.base, "Increases projectile damage by ",
+      colors.highlight, "16",
+      colors.base, "!"
+    },
+    apply = function(ctx)
+      ctx.player.damage = ctx.player.damage + 16
       ctx.player:attWeapon()
     end
   },
   {
     name = "CRITICAL I",
     rarity = COMMON,
-    description = {
-      colors.base, "Critical hit chance is ",
-      colors.highlight, "2% ",
-      colors.base, "higher!"
-    },
-    apply = function(ctx)
-      ctx.player.criticalChance = ctx.player.criticalChance + 0.02
-      ctx.player:attWeapon()
-    end
-  },
-  {
-    name = "CRITICAL II",
-    rarity = RARE,
     description = {
       colors.base, "Critical hit chance is ",
       colors.highlight, "4% ",
@@ -100,15 +100,28 @@ upgradesList = {
     end
   },
   {
+    name = "CRITICAL II",
+    rarity = RARE,
+    description = {
+      colors.base, "Critical hit chance is ",
+      colors.highlight, "8% ",
+      colors.base, "higher!"
+    },
+    apply = function(ctx)
+      ctx.player.criticalChance = ctx.player.criticalChance + 0.08
+      ctx.player:attWeapon()
+    end
+  },
+  {
     name = "CRITICAL III",
     rarity = EPIC,
     description = {
       colors.base, "Critical hit chance is ",
-      colors.highlight, "6% ",
+      colors.highlight, "12% ",
       colors.base, "higher!"
     },
     apply = function(ctx)
-      ctx.player.criticalChance = ctx.player.criticalChance + 0.06
+      ctx.player.criticalChance = ctx.player.criticalChance + 0.12
       ctx.player:attWeapon()
     end
   },
@@ -117,12 +130,12 @@ upgradesList = {
     rarity = COMMON,
     description = {
       colors.base, "Spaceship size is ",
-      colors.highlight, "10% ",
+      colors.highlight, "25% ",
       colors.base, "smaller!"
     },
     apply = function(ctx)
-      ctx.player.size = ctx.player.size * 0.9
-      ctx.player.scale = ctx.player.scale * 0.9
+      ctx.player.size = ctx.player.size * 0.75
+      ctx.player.scale = ctx.player.scale * 0.75
       ctx.player:newHitbox()
     end
   },
@@ -131,18 +144,38 @@ upgradesList = {
     rarity = COMMON,
     description = {
       colors.base, "Projectiles are ",
-      colors.highlight, "8% ",
+      colors.highlight, "15% ",
       colors.base, "larger!"
     },
     apply = function(ctx)
       ctx.player.hb = {
         type = "rectangle",
-        width = ctx.player.hb.width * 1.08,
-        height = ctx.player.hb.height * 1.08
+        width = ctx.player.hb.width * 1.15,
+        height = ctx.player.hb.height * 1.15
       }
 
       ctx.player:attWeapon({
-        scale = ctx.player.weapon.scale * 1.08
+        scale = ctx.player.weapon.scale * 1.15
+      })
+    end
+  },
+  {
+    name = "PROJECTILE II",
+    rarity = RARE,
+    description = {
+      colors.base, "Projectiles are ",
+      colors.highlight, "30% ",
+      colors.base, "larger!"
+    },
+    apply = function(ctx)
+      ctx.player.hb = {
+        type = "rectangle",
+        width = ctx.player.hb.width * 1.30,
+        height = ctx.player.hb.height * 1.30
+      }
+
+      ctx.player:attWeapon({
+        scale = ctx.player.weapon.scale * 1.30
       })
     end
   },
@@ -151,11 +184,11 @@ upgradesList = {
     rarity = COMMON,
     description = {
       colors.base, "Shots are ",
-      colors.highlight, "8% ",
+      colors.highlight, "20% ",
       colors.base, "faster!"
     },
     apply = function(ctx)
-      ctx.player.speed = ctx.player.speed * 1.08
+      ctx.player.speed = ctx.player.speed * 1.20
       ctx.player:attWeapon()
     end
   },
@@ -164,36 +197,36 @@ upgradesList = {
     rarity = RARE,
     description = {
       colors.base, "Shots are ",
-      colors.highlight, "12% ",
+      colors.highlight, "30% ",
       colors.base, "faster!"
     },
     apply = function(ctx)
-      ctx.player.speed = ctx.player.speed * 1.12
+      ctx.player.speed = ctx.player.speed * 1.30
       ctx.player:attWeapon()
     end
   },
-  {
-    name = "SPEED III",
-    rarity = EPIC,
-    description = {
-      colors.base, "Shots are ",
-      colors.highlight, "16% ",
-      colors.base, "faster!"
-    },
-    apply = function(ctx)
-      ctx.player.speed = ctx.player.speed * 1.16
-      ctx.player:attWeapon()
-    end
-  },
+  -- {
+  --   name = "SPEED III",
+  --   rarity = EPIC,
+  --   description = {
+  --     colors.base, "Shots are ",
+  --     colors.highlight, "16% ",
+  --     colors.base, "faster!"
+  --   },
+  --   apply = function(ctx)
+  --     ctx.player.speed = ctx.player.speed * 1.16
+  --     ctx.player:attWeapon()
+  --   end
+  -- },
   {
     name = "REGEN I",
     rarity = COMMON,
     description = {
       colors.base, "Planet regenerates ",
-      colors.highlight, "+1 HP/s "
+      colors.highlight, "+0.5 HP/s "
     },
     apply = function(ctx)
-      ctx.planet.regen = ctx.planet.regen + 1
+      ctx.planet.regen = ctx.planet.regen + 0.5
     end
   },
     {
@@ -201,10 +234,10 @@ upgradesList = {
     rarity = RARE,
     description = {
       colors.base, "Planet regenerates ",
-      colors.highlight, "+2 HP/s "
+      colors.highlight, "+1 HP/s "
     },
     apply = function(ctx)
-      ctx.planet.regen = ctx.planet.regen + 2
+      ctx.planet.regen = ctx.planet.regen + 1
     end
   },
   {
@@ -225,11 +258,11 @@ upgradesList = {
     rarity = EPIC,
     description = {
       colors.base, "Critical damage increases by ",
-      colors.highlight, "25%",
+      colors.highlight, "30%",
       colors.base, "!"
     },
     apply = function(ctx)
-      ctx.player.criticalMultiplier = ctx.player.criticalMultiplier + 0.25
+      ctx.player.criticalMultiplier = ctx.player.criticalMultiplier + 0.30
       ctx.player:attWeapon()
     end
   },

@@ -41,15 +41,17 @@ function WinScreen:keypressed(key, scancode, isrepeat)
 		return
 	end
 
-	resetGame()
+	if key == "space" then
+		resetGame()
+	end
 end
 
 function WinScreen:mousepressed( x, y, button, istouch, presses )
-	if self.timer < 1 then
-		return
-	end
+	-- if self.timer < 1 then
+	-- 	return
+	-- end
 
-	resetGame()
+	-- resetGame()
 end
 
 return WinScreen

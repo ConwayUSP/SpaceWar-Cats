@@ -85,7 +85,7 @@ function newDeathScene()
     )
     deathScene:addText(txt)
     txt = Text.new(
-        "Press any key to restart",
+        "Press Space to try again",
         14,
         { 1, 1, 1, 0.8 },
         vec(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 - 25),
@@ -120,7 +120,7 @@ function newWinScene()
     )
     scene:addText(txt)
     txt = Text.new(
-        "Press any key to play again",
+        "Press Space to play again",
         14,
         { 1, 1, 1, 0.8 },
         vec(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 - 25),

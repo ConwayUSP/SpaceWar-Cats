@@ -143,15 +143,14 @@ function love.keypressed(key, scancode, isrepeat)
 	if key == "f" or key == "f11" then
 		toggleFullscreen()
 	end
-	
-	if key == "0" then
-		debugMode = not debugMode
-	end
 
 	if not debugMode then
 		return
 	end
-
+	
+	if key == "0" then
+		debugMode = not debugMode
+	end
 
 	if key == "n" then
 		WaveManager:debugSkipWave()

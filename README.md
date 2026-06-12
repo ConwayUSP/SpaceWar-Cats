@@ -1,5 +1,7 @@
 # SpaceWar Cats
 
+![screenshot from game](https://i.ibb.co/0pcbFMPn/0luq-Km.png)
+
 ## About
 After centuries, Earth is entering an era of world peace. Never before has there been such rapid progress in so many years! But something has taken us by surprise: cats, it turns out, were invaders from millennia past who waited for us to develop extremely advanced technologies so they could invade and take everything for themselves! Now it’s up to you, Captain Gomes Manuel, to stop this feline invasion and restore world peace!
 

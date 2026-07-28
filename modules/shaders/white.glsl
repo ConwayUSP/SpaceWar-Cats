@@ -1,4 +1,4 @@
-extern vec4 fillColor = vec4(1.0, 1.0, 1.0, 1.0);
+extern vec4 fillColor;
 
 // passa por cada pixel da imagem e decide a cor final
 vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {

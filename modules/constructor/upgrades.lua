@@ -267,39 +267,39 @@ upgradesList = {
     end
   },
   {
-    name = "PLANET HP I",
+    name = "HEAL & HP I",
     rarity = COMMON,
     description = {
-      colors.base, "Increases planet MAX HP ",
-      colors.highlight, "+10%"
+      colors.base, "Increases planet MAX HP and heal by ",
+      colors.highlight, "10%!"
     },
     apply = function(ctx)
       ctx.planet.maxHp = ctx.planet.maxHp * 1.1
-      ctx.planet.hp = ctx.planet.hp * 1.1
+      ctx.planet:heal(ctx.planet.maxHp * 0.1)
     end
   },
   {
-    name = "PLANET HP II",
+    name = "HEAL & HP II",
     rarity = RARE,
     description = {
-      colors.base, "Increases planet MAX HP ",
-      colors.highlight, "+20%"
+      colors.base, "Increases planet MAX HP and heal by ",
+      colors.highlight, "20%!"
     },
     apply = function(ctx)
       ctx.planet.maxHp = ctx.planet.maxHp * 1.2
-      ctx.planet.hp = ctx.planet.hp * 1.2
+      ctx.planet:heal(ctx.planet.maxHp * 0.2)
     end
   },
   {
-    name = "PLANET HP III",
+    name = "HEAL & HP III",
     rarity = EPIC,
     description = {
-      colors.base, "Increases planet MAX HP ",
-      colors.highlight, "+30%"
+      colors.base, "Increases planet MAX HP and heal by ",
+      colors.highlight, "30%!"
     },
     apply = function(ctx)
       ctx.planet.maxHp = ctx.planet.maxHp * 1.3
-      ctx.planet.hp = ctx.planet.hp * 1.3
+      ctx.planet:heal(ctx.planet.maxHp * 0.3)
     end
   },
 }

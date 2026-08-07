@@ -11,6 +11,7 @@ require("modules.constructor.scenes")
 ----------------------------------------
 -- Estado do Battle
 ----------------------------------------
+local isPaused = false
 
 local BattleState = {}
 BattleState.__index = BattleState
@@ -28,10 +29,13 @@ BattleState.transitioningCd = 1
 function BattleState:load()
 	self.isTransitioning = false
 	self.transitionTimer = 0
-	waveManager:startWave()
+	if not isPaused then
+		waveManager:startWave()
+	end
 	soundManager:pause("ambience")
 	soundManager:play("battle", false, true)
 	love.mouse.setCursor(cursors.crosshair)
+	isPaused = false
 end
 
 function BattleState:update(dt)
@@ -81,6 +85,7 @@ function BattleState:keypressed(key, scancode, isrepeat)
 	p1:keypressed(key, scancode, isrepeat)
 
 	if key == "p" or key == "escape" and not isrepeat then
+		isPaused = true
 		SetGameCtx(CTX.PAUSE)
 	end
 end

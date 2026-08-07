@@ -274,8 +274,9 @@ upgradesList = {
       colors.highlight, "10%!"
     },
     apply = function(ctx)
-      ctx.planet.maxHp = ctx.planet.maxHp * 1.1
-      ctx.planet:heal(ctx.planet.maxHp * 0.1)
+      local heal = ctx.planet.maxHp * 0.1
+      ctx.planet.maxHp = ctx.planet.maxHp + heal
+      ctx.planet:heal(heal)
     end
   },
   {
@@ -286,8 +287,9 @@ upgradesList = {
       colors.highlight, "20%!"
     },
     apply = function(ctx)
-      ctx.planet.maxHp = ctx.planet.maxHp * 1.2
-      ctx.planet:heal(ctx.planet.maxHp * 0.2)
+      local heal = ctx.planet.maxHp * 0.2
+      ctx.planet.maxHp = ctx.planet.maxHp + heal
+      ctx.planet:heal(heal)
     end
   },
   {
@@ -298,8 +300,9 @@ upgradesList = {
       colors.highlight, "30%!"
     },
     apply = function(ctx)
-      ctx.planet.maxHp = ctx.planet.maxHp * 1.3
-      ctx.planet:heal(ctx.planet.maxHp * 0.3)
+      local heal = ctx.planet.maxHp * 0.3
+      ctx.planet.maxHp = ctx.planet.maxHp + heal
+      ctx.planet:heal(heal)
     end
   },
 }

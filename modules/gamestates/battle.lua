@@ -44,6 +44,7 @@ function BattleState:update(dt)
 		if self.transitionTimer >= self.transitioningCd then
 			self.isTransitioning = false
 			self.transitionTimer = 0
+			runStats:add(TWS, 1)
 			SetGameCtx(CTX.UPGRADES)
 			return
 		end

@@ -175,6 +175,7 @@ function Enemy:destroy()
   self.body:destroy()
   if self.weapon then
     self.weapon:destroy()
+    runStats:add(TEK, 1)
   end
 end
 

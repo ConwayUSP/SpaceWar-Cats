@@ -90,9 +90,8 @@ function Planet:die()
 
   p1:defeat()
   runStats:set(RET, love.timer.getTime())
-  runStats:set(TWS, waveManager.currentWaveIndex)
   runStats:set(TRT, runStats:get(RET) - runStats:get(RST))
-
+  
   SetGameCtx(CTX.DEATH_SCREEN)
 end
 

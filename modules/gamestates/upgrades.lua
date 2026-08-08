@@ -377,6 +377,7 @@ function UpgradesState:keypressed(key, scancode, isrepeat)
 		local slot = self.slots[self.slotActive]
 		if slot then
 			self:applyUpgrade(slot.upgrade)
+			runStats:add(TUP, 1)
 		end
 	end
 end
@@ -397,6 +398,7 @@ function UpgradesState:handleSlotClick(slot, x, y)
 
 	if isClicked then
 		self:applyUpgrade(slot.upgrade)
+		runStats:add(TUP, 1)
 	end
 end
 

@@ -347,6 +347,7 @@ function UpgradesState:applyUpgrade(upgrade)
 		player = p1,
 		planet = planet,
 	})
+	runStats:add(TUP, 1)
 
 	local rand = math.random(1, 2)
 	soundManager:play("buy" .. rand)

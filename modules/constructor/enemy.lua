@@ -31,7 +31,7 @@ function newShooterEnemy(x, y)
 
     local function move(self, dt)
         local error = (VIRTUAL_WIDTH - 50) - self.body:getX()
-        local vx = dt * -1500 * math.random(0.8, 1.2)
+        local vx = dt * -2500 * (math.cos(self.timer * math.pi * 0.2) ^ 4)
         local vy = 1000 * math.cos(self.timer * math.pi * 0.2) * dt
         self.body:setLinearVelocity(vx, vy)
     end

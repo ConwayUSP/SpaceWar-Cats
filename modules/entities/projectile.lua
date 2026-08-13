@@ -83,7 +83,9 @@ function Projectile:draw()
         local shot = self.events[i]
         if shot.active then
             local x, y = shot.body:getPosition()
-            love.graphics.draw(self.image, x, y, 0, self.scale, self.scale, self.image:getWidth() / 2, self.image:getHeight() / 2)
+            local vx, vy = shot.body:getLinearVelocity()
+            local angle = math.atan2(vy, vx)
+            love.graphics.draw(self.image, x, y, angle, self.scale, self.scale, self.image:getWidth() / 2, self.image:getHeight() / 2)
             debugRender(shot)
         end
     end

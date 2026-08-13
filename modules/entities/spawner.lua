@@ -29,7 +29,7 @@ function Spawner:update(dt)
         if self.totalTime < self.duration and enemyManager:getCounter(self.enemyName) < self.maxEnemiesOnScreen then
             self.enemyFunc()
         end
-        self.interval = self.intervalInit + math.random(-0.9 * self.interval, 0.9 * self.interval)
+        self.interval = self.intervalInit + math.random(-0.2 * self.interval, 0.2 * self.interval)
         self.timer = 0
     end
 end

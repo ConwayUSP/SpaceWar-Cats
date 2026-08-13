@@ -133,6 +133,8 @@ function love.draw()
 
 	shaderManager:finish()
 	shaderManager:draw()
+
+	-- love.graphics.print(string.format("FPS: %.1f  dt: %.4f", love.timer.getFPS(), love.timer.getDelta()), 10, 10)
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -144,9 +146,9 @@ function love.keypressed(key, scancode, isrepeat)
 		toggleFullscreen()
 	end
 
-	if not debugMode then
-		return
-	end
+	-- if not debugMode then
+	-- 	return
+	-- end
 	
 	if key == "0" then
 		debugMode = not debugMode

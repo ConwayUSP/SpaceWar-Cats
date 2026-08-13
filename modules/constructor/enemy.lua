@@ -34,6 +34,12 @@ function newShooterEnemy(x, y)
         local vx = dt * -2500 * (math.cos(self.timer * math.pi * 0.2) ^ 4)
         local vy = 1000 * math.cos(self.timer * math.pi * 0.2) * dt
         self.body:setLinearVelocity(vx, vy)
+        
+        -- Clamp position to screen bounds
+        local x, y = self.body:getPosition()
+        local margin = self.size * 0.5
+        y = math.max(margin, math.min(VIRTUAL_HEIGHT - margin, y))
+        self.body:setPosition(x, y)
     end
     local config = {
         hp = 50 * hpMultipler(),
@@ -99,6 +105,12 @@ function newTankEnemy(x, y, newVx)
         vy = vy + math.cos(self.timer) * 62.5 * dt
         vx = newVx and (-newVx * 15) or -15
         self.body:setLinearVelocity(vx, vy)
+        
+        -- Clamp position to screen bounds
+        local x, y = self.body:getPosition()
+        local margin = self.size*0.5
+        y = math.max(margin, math.min(VIRTUAL_HEIGHT - margin, y))
+        self.body:setPosition(x, y)
     end
     local config = {
         hp = 100 * hpMultipler(),
@@ -166,9 +178,15 @@ function newCatMage(x, y, cd)
                 self.fadeState = "fadeOut"
             else
                 local k = 0.4
-                local vx = -400 * math.cos(self.timer * math.pi * k) * (math.pi * k) * dt
-                local vy = 400 * math.cos(self.timer * math.pi * 2*k) * (math.pi * 2*k) * dt
+                local vx = -400 * math.cos(self.timer * math.pi * k) * (math.pi * k)
+                local vy = 400 * math.cos(self.timer * math.pi * 2*k) * (math.pi * 2*k)
                 self.body:setLinearVelocity(vx, vy)
+                
+                -- Clamp position to screen bounds
+                local x, y = self.body:getPosition()
+                local margin = self.size*0.5
+                y = math.max(margin, math.min(VIRTUAL_HEIGHT - margin, y))
+                self.body:setPosition(x, y)
             end
         end
 

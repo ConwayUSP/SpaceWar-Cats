@@ -178,8 +178,8 @@ function newCatMage(x, y, cd)
                 self.fadeState = "fadeOut"
             else
                 local k = 0.4
-                local vx = -400 * math.cos(self.timer * math.pi * k) * (math.pi * k)
-                local vy = 400 * math.cos(self.timer * math.pi * 2*k) * (math.pi * 2*k)
+                local vx = -400 * math.cos(self.timer * math.pi * k) * (math.pi * k) * dt
+                local vy = 400 * math.cos(self.timer * math.pi * 2*k) * (math.pi * 2*k) * dt
                 self.body:setLinearVelocity(vx, vy)
                 
                 -- Clamp position to screen bounds

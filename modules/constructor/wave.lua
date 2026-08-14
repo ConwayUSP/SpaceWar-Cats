@@ -48,7 +48,7 @@ function initWave1()
     local spawners = {
         -- Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer() end, 3, 10, 20),
         Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 3, 2, 30, 2),
-        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1.5, 30, 80, 4),
+        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1.5, 30, 30, 4),
     }
     local wave1 = Wave.new("Wave 1", 30, spawners)
     return wave1
@@ -103,7 +103,7 @@ end
 
 function initWave6()
     local spawners = {
-        Spawner.new(TANK_ENEMY, function() spawnTankEnemy() end, 1.5, 0, 120, 5),
+        Spawner.new(TANK_ENEMY, function() spawnTankEnemy() end, 1.5, 0, 120, 3),
         Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(0.8) end, 1, 10, 80, 10),
         Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(0.8) end, 1, 90, 30, 15)
     }
@@ -113,13 +113,13 @@ end
 
 function initWave7()
     local spawners = {
-        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1, 0, 140, 16),
+        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1, 0, 130, 16),
         Spawner.new(TANK_ENEMY, function() spawnTankEnemy() end, 2, 30, 90, 5),
         Spawner.new(CAT_SWIMMER, function()
             spawnCatSwimmer(0.5)
             spawnCatSwimmer(0.45)
             spawnCatSwimmer(0.55)
-        end, 5, 10, 140),
+        end, 5, 10, 130),
     }
     local wave7 = Wave.new("Wave 7", 30, spawners)
     return wave7
@@ -127,11 +127,13 @@ end
 
 function initWave8()
     local spawners = {
-        Spawner.new(TANK_ENEMY, function() spawnTankEnemy(2.5) end, 1.2, 0),
+        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1.3, 0, 130, 8),
+        Spawner.new(TANK_ENEMY, function() spawnTankEnemy(1.2) end, 1.7, 0, 60, 3),
+        Spawner.new(TANK_ENEMY, function() spawnTankEnemy(1.2) end, 1.5, 60, 80, 6),
         Spawner.new(CAT_SWIMMER, function()
+            spawnCatSwimmer()
             spawnCatSwimmer(0.8)
-            spawnCatSwimmer(0.8)
-        end, 1.5, 10, 20),
+        end, 3, 10, 120, 8),
     }
     local wave8 = Wave.new("Wave 8", 30, spawners)
     return wave8
@@ -139,9 +141,9 @@ end
 
 function initWave9()
     local spawners = {
-        Spawner.new(TANK_ENEMY, function() spawnTankEnemy() end, 1, 10),
-        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1, 0, 15),
-        Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(2.5) end, 2, 15),
+        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1.5, 0, 140, 12),
+        Spawner.new(TANK_ENEMY, function() spawnTankEnemy() end, 2, 3, 130, 5),
+        Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(1.5) end, 2, 15, 125, 6)
     }
     local wave9 = Wave.new("Wave 9", 30, spawners)
     return wave9
@@ -149,13 +151,13 @@ end
 
 function initWave10()
     local spawners = {
-        Spawner.new(TANK_ENEMY, function() spawnTankEnemy() end, 1.5, 0, 25),
-        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 2.5, 0, 25),
+        Spawner.new(TANK_ENEMY, function() spawnTankEnemy() end, 1.8, 0, 120, 4),
+        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 2.2, 0, 140, 8),
         Spawner.new(CAT_SWIMMER, function()
+            spawnCatSwimmer(0.7)
             spawnCatSwimmer(0.6)
-            spawnCatSwimmer(0.6)
-        end, 1, 30),
-        Spawner.new(CAT_MAGE, function() spawnCatMage(3) end, 1.5, 0)
+        end, 1, 30, 100, 6),
+        Spawner.new(CAT_MAGE, function() spawnCatMage(1) end, 1.5, 50, 55, 2)
     }
     local wave10 = Wave.new("Wave 10", 60, spawners)
     return wave10
@@ -163,9 +165,9 @@ end
 
 function initWave11()
     local spawners = {
-        Spawner.new(CAT_MAGE, function() spawnCatMage(2) end, 1.5),
-        Spawner.new(CAT_MAGE, function() spawnCatMage(1.5) end, 1, 0, 20),
-        Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(2.2) end, 1, 20)
+        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1.8, 0, 150, 15),
+        Spawner.new(CAT_MAGE, function() spawnCatMage(1.5) end, 1, 0, 150, 4),
+        Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(1.1) end, 1, 20, 130, 6),
     }
 
     local wave11 = Wave.new("Wave 11", 30, spawners)
@@ -178,9 +180,9 @@ function initWave12()
             spawnCatSwimmer(0.6)
             spawnCatSwimmer(0.4)
             spawnCatSwimmer(0.2)
-        end, 1.5),
-        Spawner.new(TANK_ENEMY, function() spawnTankEnemy(0.6) end, 1, 10, 25),
-        Spawner.new(CAT_MAGE, function() spawnCatMage(0.5) end, 1, 0, 15),
+        end, 1.5, 0, 150, 8),
+        Spawner.new(TANK_ENEMY, function() spawnTankEnemy(0.8) end, 1.4, 10, 140, 6),
+        Spawner.new(CAT_MAGE, function() spawnCatMage(0.7) end, 1, 0, 15, 4),
     }
     local wave12 = Wave.new("Wave 12", 30, spawners)
     return wave12
@@ -188,9 +190,9 @@ end
 
 function initWave13()
     local spawners = {
-        Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(2.2) end, 1.5, 0, 20),
-        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1.5, 5),
-        Spawner.new(CAT_MAGE, function() spawnCatMage(2.5) end, 1, 15)
+        Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(2.2) end, 1.5, 0, 130, 9),
+        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1.5, 5, 150, 15),
+        Spawner.new(CAT_MAGE, function() spawnCatMage(2.5) end, 1, 15, 130, 4)
     }
     local wave13 = Wave.new("Wave 13", 30, spawners)
     return wave13
@@ -198,24 +200,44 @@ end
 
 function initWave14()
     local spawners = {
-        Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(2) end, 2, 15),
-        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 2, 0),
-        Spawner.new(TANK_ENEMY, function() spawnTankEnemy(1.5) end, 0.5, 10, 18),
-        Spawner.new(CAT_MAGE, function() spawnCatMage(5) end, 1, 15, 25)
+        Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(2) end, 2, 15, 150, 8),
+        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 2, 0, 150, 15),
+        Spawner.new(TANK_ENEMY, function() spawnTankEnemy(1.5) end, 0.5, 10, 180, 6),
+        Spawner.new(CAT_MAGE, function() spawnCatMage(5) end, 1, 15, 130, 4)
     }
     local wave14 = Wave.new("Wave 14", 30, spawners)
     return wave14
 end
 
 function initWave15()
-    local spawners = {
-        Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer() end, 2.5, 0),
-        Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(2) end, 3, 30),
-        Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(2.5) end, 3.5, 40),
-        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 2.5),
-        Spawner.new(TANK_ENEMY, function() spawnTankEnemy(0.5) end, 2, 0),
-        Spawner.new(CAT_MAGE, function() spawnCatMage(1) end, 3.5, 0),
-    }
+    local phaseBoss = math.random(0,1)
+
+    local spawners
+    if (phaseBoss < 0.25) then
+        spawners = {
+            Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 3, 0, 180), 
+            Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 2, 10, 170),
+            Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1, 30, 150)
+        }
+    elseif (phaseBoss < 0.5) then
+        spawners = {
+            Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(0.8) end, 2.3, 0, 100),
+            Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(0.8) end, 2, 15, 160),
+            Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer(0.8) end, 1.8, 100, 80),
+        }
+    elseif (phaseBoss < 0.75) then
+        spawners = {
+            Spawner.new(TANK_ENEMY, function() spawnTankEnemy(1.3) end, 2, 0, 70),
+            Spawner.new(TANK_ENEMY, function() spawnTankEnemy(1.3) end, 2, 10, 170),
+            Spawner.new(TANK_ENEMY, function() spawnTankEnemy(1.3) end, 1.7, 70, 110)
+        }
+    else
+        spawners = {
+            Spawner.new(CAT_MAGE, function() spawnCatMage(2) end, 2.3, 0, 60),
+            Spawner.new(CAT_MAGE, function() spawnCatMage(1.5) end, 2, 30, 180),
+            Spawner.new(CAT_MAGE, function() spawnCatMage(1.5) end, 1.5, 60, 110),
+        }
+    end
     local wave15 = Wave.new("Wave 15", 60, spawners)
     return wave15
 end

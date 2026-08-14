@@ -30,7 +30,6 @@ function newShooterEnemy(x, y)
     local proj = Projectile.new("blaster-ball", moveDirection, nil, eProjectiles, projConfig)
 
     local function move(self, dt)
-        local error = (VIRTUAL_WIDTH - 50) - self.body:getX()
         local vx = dt * -2500 * (math.cos(self.timer * math.pi * 0.2) ^ 4)
         local vy = 1000 * math.cos(self.timer * math.pi * 0.2) * dt
         self.body:setLinearVelocity(vx, vy)

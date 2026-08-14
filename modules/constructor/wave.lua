@@ -13,7 +13,7 @@ require("modules.utils.types")
 ----------------------------------------
 
 function randomPosOutside()
-    local startX = VIRTUAL_WIDTH
+    local startX = VIRTUAL_WIDTH + 50
     local startY = math.random(VIRTUAL_HEIGHT / 5, VIRTUAL_HEIGHT * 5 / 6)
     return startX, startY
 end

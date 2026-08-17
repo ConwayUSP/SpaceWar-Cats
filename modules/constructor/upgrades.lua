@@ -179,32 +179,32 @@ upgradesList = {
       })
     end
   },
-  {
-    name = "SPEED I",
-    rarity = COMMON,
-    description = {
-      colors.base, "Shots are ",
-      colors.highlight, "20% ",
-      colors.base, "faster!"
-    },
-    apply = function(ctx)
-      ctx.player.speed = ctx.player.speed * 1.20
-      ctx.player:attWeapon()
-    end
-  },
-  {
-    name = "SPEED II",
-    rarity = RARE,
-    description = {
-      colors.base, "Shots are ",
-      colors.highlight, "30% ",
-      colors.base, "faster!"
-    },
-    apply = function(ctx)
-      ctx.player.speed = ctx.player.speed * 1.30
-      ctx.player:attWeapon()
-    end
-  },
+  -- {
+  --   name = "SPEED I",
+  --   rarity = COMMON,
+  --   description = {
+  --     colors.base, "Shots are ",
+  --     colors.highlight, "20% ",
+  --     colors.base, "faster!"
+  --   },
+  --   apply = function(ctx)
+  --     ctx.player.speed = ctx.player.speed * 1.20
+  --     ctx.player:attWeapon()
+  --   end
+  -- },
+  -- {
+  --   name = "SPEED II",
+  --   rarity = RARE,
+  --   description = {
+  --     colors.base, "Shots are ",
+  --     colors.highlight, "30% ",
+  --     colors.base, "faster!"
+  --   },
+  --   apply = function(ctx)
+  --     ctx.player.speed = ctx.player.speed * 1.30
+  --     ctx.player:attWeapon()
+  --   end
+  -- },
   -- {
   --   name = "SPEED III",
   --   rarity = EPIC,

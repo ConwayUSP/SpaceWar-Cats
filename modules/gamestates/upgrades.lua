@@ -198,7 +198,6 @@ function UpgradesState:update(dt)
 	end
 end
 
-
 function UpgradesState:updateExit(dt)
 	self.timer = self.timer + dt
 
@@ -308,10 +307,20 @@ function UpgradesState:getRandomUpgrades(upgrades)
 	end
 
 	for _ = 1, self.slotsCount do
-		i = self:pickRandomUpgrade(pool)
+		local i = self:pickRandomUpgrade(pool)
 
 		table.insert(result, pool[i])
-		table.remove(pool, i)
+		
+		local splitSelected = split(pool[i].name)
+		
+		for j = #pool, 1, -1 do
+			local splitTarget = split(pool[j].name)
+
+			if splitTarget[1] == splitSelected[1] then
+				table.remove(pool, j)
+			end
+		end
+
 	end
 
 	return result

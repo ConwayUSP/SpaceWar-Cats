@@ -18,7 +18,7 @@ local planet = require("modules.entities.planet")
 ----------------------------------------
 
 local baseConfigs = {
-  speed = 60000,                -- projetil
+  speed = 600,                -- projetil
   damage = 40,                  -- projetil
   size = 5,                     -- player
   scale = 1,                    -- player
@@ -212,7 +212,7 @@ function Player:updateMotion(dt)
   mouseY = clamp(mouseY, limit, VIRTUAL_HEIGHT - limit)
 
   local error = mouseY - y
-  local vy = error * 200 * dt
+  local vy = error * 2
 
   self.body:setLinearVelocity(0, vy)
 end

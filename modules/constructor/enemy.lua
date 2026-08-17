@@ -18,7 +18,7 @@ end
 ----------------------------------------
 function newShooterEnemy(x, y)
     local projConfig = {
-        speed = 15000,
+        speed = 150,
         damage = 20,
         size = 2,
         hb = {
@@ -30,8 +30,8 @@ function newShooterEnemy(x, y)
     local proj = Projectile.new("blaster-ball", moveDirection, nil, eProjectiles, projConfig)
 
     local function move(self, dt)
-        local vx = dt * -2500 * (math.cos(self.timer * math.pi * 0.2) ^ 4)
-        local vy = 1000 * math.cos(self.timer * math.pi * 0.2) * dt
+        local vx = -25 * (math.cos(self.timer * math.pi * 0.2) ^ 4)
+        local vy = 10 * math.cos(self.timer * math.pi * 0.2)
         self.body:setLinearVelocity(vx, vy)
         
         -- Clamp position to screen bounds
@@ -60,7 +60,7 @@ function newCatSwimmer(x, y, vx)
     vx = vx or 1
     local function move(self, dt)
         local f = -math.cos(self.timer * math.pi) + 1.2
-        self.body:setLinearVelocity(-4500 * dt * f * vx, 0)
+        self.body:setLinearVelocity(-45 * f * vx, 0)
     end
     local config = {
         hp = 55 * hpMultipler(),
@@ -85,7 +85,7 @@ end
 ----------------------------------------
 function newTankEnemy(x, y, newVx)
     local projConfig = {
-        speed = 8000,
+        speed = 80,
         damage = 30,
         size = 10,
         hb = {
@@ -95,13 +95,13 @@ function newTankEnemy(x, y, newVx)
         sound = "tiro2"
     }
     local moveProj = function(e, dt)
-        local vx = -e.speed * (6 ^ (e.timer - 1) + 1) * dt
+        local vx = -e.speed * (6 ^ (e.timer - 1) + 1)
         e.body:setLinearVelocity(vx, 0)
     end
     local proj = Projectile.new("blaster-ball", moveProj, nil, eProjectiles, projConfig)
     local function move(self, dt)
         local vx, vy = self.body:getLinearVelocity()
-        vy = vy + math.cos(self.timer) * 62.5 * dt
+        vy = vy + math.cos(self.timer) * .625
         vx = newVx and (-newVx * 15) or -15
         self.body:setLinearVelocity(vx, vy)
         
@@ -154,7 +154,7 @@ end
 
 function newCatMage(x, y, cd)
     local projConfig = {
-        speed = 5000,
+        speed = 50,
         damage = 20,
         size = 5,
         hb = {
@@ -177,8 +177,8 @@ function newCatMage(x, y, cd)
                 self.fadeState = "fadeOut"
             else
                 local k = 0.4
-                local vx = -400 * math.cos(self.timer * math.pi * k) * (math.pi * k) * dt
-                local vy = 400 * math.cos(self.timer * math.pi * 2*k) * (math.pi * 2*k) * dt
+                local vx = -40 * math.cos(self.timer * math.pi * k) * (math.pi * k)
+                local vy = 40 * math.cos(self.timer * math.pi * 2*k) * (math.pi * 2*k)
                 self.body:setLinearVelocity(vx, vy)
                 
                 -- Clamp position to screen bounds

@@ -18,7 +18,7 @@ local planet = require("modules.entities.planet")
 ----------------------------------------
 
 local baseConfigs = {
-  speed = 400,                -- projetil
+  speed = 600,                -- projetil
   damage = 40,                  -- projetil
   size = 5,                     -- player
   scale = 1,                    -- player

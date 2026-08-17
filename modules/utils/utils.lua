@@ -216,3 +216,18 @@ function renderDots(x1, y1, x2, y2, size, step)
   love.graphics.points(points)
   love.graphics.setPointSize(1)
 end
+
+----------------------------------------
+-- String
+----------------------------------------
+
+function split(inputstr, sep)
+	if sep == nil then
+		sep = "%s" -- Default separator is whitespace
+	end
+	local t = {}
+	for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
+		table.insert(t, str)
+	end
+	return t
+end

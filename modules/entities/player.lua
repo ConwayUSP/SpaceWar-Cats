@@ -73,6 +73,7 @@ function Player:reset()
   self.isDefeated = false
   self.respawnTimer = 0
   self.invulrabilityTimer = 0
+  self.boostParticle = newBoostParticle(addVec(self.initialPos, self.boostOffset))
   self.boostParticle:play()
 end
 

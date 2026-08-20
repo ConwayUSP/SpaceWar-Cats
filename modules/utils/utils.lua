@@ -231,3 +231,15 @@ function split(inputstr, sep)
 	end
 	return t
 end
+
+----------------------------------------
+-- System
+----------------------------------------
+
+function checkMobile()
+	local os = love.system.getOS()
+	if os == "Android" or os == "iOS" then
+		return true
+	end
+	return false
+end

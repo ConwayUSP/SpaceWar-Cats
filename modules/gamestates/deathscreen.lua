@@ -49,11 +49,11 @@ function DeathScreen:keypressed(key, scancode, isrepeat)
 end
 
 function DeathScreen:mousepressed( x, y, button, istouch, presses )
-	-- if self.timer < 1 then
-	-- 	return
-	-- end
+	if self.timer < 1 then
+		return
+	end
 
-	-- resetGame()
+	resetGame()
 end
 
 return DeathScreen

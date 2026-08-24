@@ -44,11 +44,17 @@ local function spawnCatMage(vx)
     newCatMage(startX, startY, vx)
 end
 
+local function spawnCatBox()
+    local startX, startY = randomPosOutside()
+    newCatBox(startX, startY)
+end
+
 function initWave1()
     local spawners = {
-        -- Spawner.new(CAT_SWIMMER, function() spawnCatSwimmer() end, 3, 10, 20),
-        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 3, 2, 30, 2),
-        Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1.5, 30, 30, 4),
+        Spawner.new(CAT_BOX, function() spawnCatBox() end, 3, 1, 30, 1),
+        -- Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 3, 2, 30, 2),
+        -- Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1.5, 30, 30, 4),
+
     }
     local wave1 = Wave.new("Wave 1", 30, spawners)
     return wave1
@@ -210,12 +216,12 @@ function initWave14()
 end
 
 function initWave15()
-    local phaseBoss = math.random(0,1)
+    local phaseBoss = math.random(0, 1)
 
     local spawners
     if (phaseBoss < 0.25) then
         spawners = {
-            Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 3, 0, 180), 
+            Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 3, 0, 180),
             Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 2, 10, 170),
             Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1, 30, 150)
         }

@@ -16,7 +16,7 @@ Enemy = {}
 Enemy.__index = Enemy
 Enemy.type = "Enemy"
 
-function Enemy.new(name, spawnPos, move, weapon, customShot, config, initialAlpha)
+function Enemy.new(name, spawnPos, move, onDeath, weapon, customShot, config)
   local enemy = setmetatable({}, Enemy)
 
   enemy.size = config.size or 30                               
@@ -28,9 +28,12 @@ function Enemy.new(name, spawnPos, move, weapon, customShot, config, initialAlph
     type = "circle",
     radius = enemy.size
   }
+  enemy.alpha = config.initialAlpha or 1
+
 
   enemy.name = name
   enemy.move = move                               -- função de movimento do inimigo
+  enemy.onDeath = onDeath
   enemy.initialPos = vec(spawnPos.x, spawnPos.y)  -- posição inicial
   enemy.weapon = weapon
   enemy.customShot = customShot
@@ -52,7 +55,6 @@ function Enemy.new(name, spawnPos, move, weapon, customShot, config, initialAlph
   enemy.shoots = 0
   enemy.currentShot = nil
   enemy.state = FLYING
-  enemy.alpha = initialAlpha or 1
 
   enemyManager:add(enemy)
 
@@ -72,6 +74,14 @@ function Enemy:update(dt)
 end
 
 function Enemy:updateState(dt)
+
+  if self.isDead then
+    if self.onDeath then
+      local x, y = self.body:getPosition()
+      self:onDeath(x, y)
+    end
+    self:die()
+  end
   if self.damagedTimer > 0 then
     self.damagedTimer = self.damagedTimer - dt
   end
@@ -165,10 +175,6 @@ function Enemy:die()
 end
 
 function Enemy:destroy()
-  if self.isDead then
-    return
-  end
-  self.isDead = true
   self.body:destroy()
   if self.weapon then
     self.weapon:destroy()
@@ -191,7 +197,7 @@ function Enemy:takeDamage(damage, hitPos, color)
   self.damagedTimer = 0.1
 
   if self.hp <= 0 then
-    self:die()
+    self.isDead = true
   end
 end
 

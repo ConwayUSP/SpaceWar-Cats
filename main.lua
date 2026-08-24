@@ -148,9 +148,9 @@ function love.keypressed(key, scancode, isrepeat)
 		toggleFullscreen()
 	end
 
-	if not debugMode then
-		return
-	end
+	-- if not debugMode then
+	-- 	return
+	-- end
 	
 	if key == "0" then
 		debugMode = not debugMode

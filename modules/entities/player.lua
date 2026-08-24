@@ -1,143 +1,147 @@
 ----------------------------------------
 -- Importações de Módulos
 ----------------------------------------
+
 require("table")
+
 require("modules.engine.animation")
-require("modules.utils.vec")
 require("modules.engine.physics")
 require("modules.engine.projectileManager")
+require("modules.entities.projectile")
+require("modules.entities.spaceship")
+require("modules.utils.vec")
 require("modules.system.render")
 require("modules.system.shots")
-require("modules.entities.projectile")
 require("modules.utils.states")
 require("modules.constructor.projectile")
+
 local planet = require("modules.entities.planet")
 
 ----------------------------------------
--- Entidade Player
+-- Player
 ----------------------------------------
 
-local baseConfigs = {
-  speed = 600,                -- projetil
-  damage = 40,                  -- projetil
-  size = 5,                     -- player
-  scale = 1,                    -- player
-  criticalChance = 0.10,        -- projetil
-  criticalMultiplier = 1.5,     -- projetil
-  hb = {                        -- projetil
-    type = "rectangle",
-    width = 10,
-    height = 5
-  },
-  firerate = 3,                 -- projetil
-  planetRegen = 0.0,            -- planet
-}
-
 local Player = {}
+
 Player.__index = Player
 Player.type = "Player"
+
+----------------------------------------
+-- Load
+----------------------------------------
 
 function Player:load()
   self.initialPos = vec(70, VIRTUAL_HEIGHT / 2)
 
   self.body = love.physics.newBody(Physics.world, self.initialPos.x, self.initialPos.y, "dynamic")
+
   self.body:setFixedRotation(true)
-  
+
   self.boostOffset = vec(-10, 0)
+
   self.boostParticle = newBoostParticle(addVec(self.initialPos, self.boostOffset))
+
   self.boostParticle:play()
 
   self.firerateTimer = 0
+
   self.respawnCd = 1
   self.respawnTimer = 0
+
   self.invulrabilityTimer = 0
   self.invulnerabilityCd = 2
+
   self.canShoot = true
+
+  self.hp = 1
   self.maxHp = 1
-  self.hp = self.maxHp
+
   self.isDead = false
   self.isDefeated = false
+
   self.state = FLYING
 
-  self:resetStats()
-  self:addAnimations()
-
+  -- Nave inicial
+  self:setSpaceship(Spaceship.new())
 end
 
+----------------------------------------
+-- Spaceship
+----------------------------------------
+
+function Player:setSpaceship(spaceship)
+  self.spaceship = spaceship
+
+  self.maxHp = spaceship.maxHp
+  self.hp = self.maxHp
+
+  self:newHitbox()
+
+  self.firerateTimer = 0
+  self.canShoot = true
+end
+
+----------------------------------------
+-- Reset
+----------------------------------------
+
 function Player:reset()
-  self.weapon = nil
   self:resetStats()
+
   self.body:setPosition(self.initialPos.x, self.initialPos.y)
+
   self.body:setLinearVelocity(0, 0)
+
   self.isDead = false
   self.isDefeated = false
+
   self.respawnTimer = 0
   self.invulrabilityTimer = 0
+
+  self.firerateTimer = 0
+  self.canShoot = true
+
   self.boostParticle = newBoostParticle(addVec(self.initialPos, self.boostOffset))
+
   self.boostParticle:play()
 end
 
 function Player:resetStats()
-  self.speed = baseConfigs.speed
-  self.damage = baseConfigs.damage
-  self.size = baseConfigs.size
-  self.scale = baseConfigs.scale
-  self.criticalChance = baseConfigs.criticalChance
-  self.criticalMultiplier = baseConfigs.criticalMultiplier
-  self.hb = baseConfigs.hb
-  self.firerate = baseConfigs.firerate
-  self.planetRegen = baseConfigs.planetRegen
+  self.spaceship:reset()
+
+  self.maxHp = self.spaceship.maxHp
+  self.hp = self.maxHp
 
   self:newHitbox()
-  self:attWeapon()
-  
-  self.customShot = nil
 end
 
+----------------------------------------
+-- Hitbox
+----------------------------------------
+
 function Player:newHitbox()
-  self.shape = love.physics.newCircleShape(self.size)
+  self.shape = love.physics.newCircleShape(self.spaceship.size)
+
   if self.fixture then
     self.fixture:destroy()
   end
+
   self.fixture = love.physics.newFixture(self.body, self.shape)
+
   self.fixture:setUserData(self)
+
   self.fixture:setFilterData(
-    CATEGORY.PLAYER, 
-    CATEGORY.ENEMY_BULLET + CATEGORY.ENEMY + CATEGORY.TEXT, 
+    CATEGORY.PLAYER,
+    CATEGORY.ENEMY_BULLET + CATEGORY.ENEMY + CATEGORY.TEXT,
     0
   )
+
   self.fixture:setSensor(true)
 end
 
-function Player:attWeapon(newStats)
-  newStats = newStats or {}
-  
-  if self.weapon then
-    self.weapon:changeStats({
-      speed = newStats.speed or self.speed,
-      damage = newStats.damage or self.damage,
-      hb = newStats.hb or self.hb,
-      criticalChance = newStats.criticalChance or self.criticalChance,
-      criticalMultiplier = newStats.criticalMultiplier or self.criticalMultiplier,
-      scale = newStats.scale or self.weapon.scale
-    })
-  else
-    self.weapon = Projectile.new("blaster-tune", moveDirection, nil, pProjectiles, {
-      speed = newStats.speed or self.speed,
-      damage = newStats.damage or self.damage,
-      hb = newStats.hb or self.hb,
-      criticalChance = newStats.criticalChance or self.criticalChance,
-      criticalMultiplier = newStats.criticalMultiplier or self.criticalMultiplier,
-      scale = newStats.scale or 1
-    })
-  end
-end
-
-function Player:addAnimations()
-	----------------- FLYING -----------------
-	local path = pngPathFormat({ "assets", "animations", "player", FLYING })
-	addAnimation(self, path, FLYING, newAnimSetting(4, { width = 32, height = 32 }, 0.1, true, 1))
-end
+----------------------------------------
+-- Update
+----------------------------------------
 
 function Player:update(dt)
   if self.isDead then
@@ -152,8 +156,9 @@ function Player:update(dt)
 end
 
 function Player:updateParticles(dt)
-  local vec = addVec(vec(self.body:getPosition()), self.boostOffset)
-  self.boostParticle:moveTo(vec.x, vec.y)
+  local position = addVec(vec(self.body:getPosition()), self.boostOffset)
+
+  self.boostParticle:moveTo(position.x, position.y)
 end
 
 function Player:updateDead(dt)
@@ -180,7 +185,10 @@ function Player:updateState(dt)
     self.invulrabilityTimer = self.invulrabilityTimer - dt
   end
 
-  self.animations[self.state]:update(dt)
+  local animation = self.spaceship.animations[self.state]
+  if animation then
+    animation:update(dt)
+  end
 end
 
 function Player:updateShooting(dt)
@@ -189,15 +197,11 @@ function Player:updateShooting(dt)
   end
 
   self.firerateTimer = self.firerateTimer + dt
-  if self.firerateTimer >= (1 / self.firerate) then
+  if self.firerateTimer >= (1 / self.spaceship.firerate) then
     self.canShoot = true
   end
 
-  if love.keyboard.isDown("space") then
-    self:shoot()
-  end
-
-  if love.mouse.isDown(1) then
+  if love.keyboard.isDown("space") or love.mouse.isDown(1) then
     self:shoot()
   end
 end
@@ -217,6 +221,10 @@ function Player:updateMotion(dt)
 
   self.body:setLinearVelocity(0, vy)
 end
+
+----------------------------------------
+-- Vida / Morte
+----------------------------------------
 
 function Player:defeat()
   self:die()
@@ -251,6 +259,10 @@ function Player:takeDamage(damage)
   end
 end
 
+----------------------------------------
+-- Tiro
+----------------------------------------
+
 function Player:shoot()
   if not self.canShoot or self.isDead then
     return
@@ -258,10 +270,12 @@ function Player:shoot()
 
   local x, y = self.body:getPosition()
   local origin = addVec(vec(x, y), polarToVec(self.angle, 25))
-  if self.customShot then
-    self.customShot(self.weapon, self, origin, self.angle)
+  local spaceship = self.spaceship
+
+  if spaceship.customShot then
+    spaceship.customShot(spaceship.weapon, self, origin, self.angle)
   else
-    self.weapon:shot(self, origin, self.angle)
+    spaceship.weapon:shot(self, origin, self.angle)
   end
   
   self.canShoot = false
@@ -269,7 +283,7 @@ function Player:shoot()
 end
 
 ----------------------------------------
--- Handlers de Input
+-- Input
 ----------------------------------------
 
 function Player:keypressed(key, scancode, isrepeat)
@@ -278,12 +292,11 @@ function Player:keypressed(key, scancode, isrepeat)
   end
 end
 
-function Player:mousepressed( x, y, button, istouch, presses )
+function Player:mousepressed(x, y, button, istouch, presses)
   if button == 1 then
     self:shoot()
   end
 end
-
 
 ----------------------------------------
 -- Renderização
@@ -294,23 +307,30 @@ function Player:draw()
     return
   end
 
-  if self.invulrabilityTimer > 0 and self.invulrabilityTimer % 0.2 < 0.1 then
+  if self.invulrabilityTimer > 0 and self.invulrabilityTimer % 0.2 < 0.1
+  then
     love.graphics.setColor(1, 1, 1, 0.5)
   else
     love.graphics.setColor(1, 1, 1, 1)
   end
 
   local x, y = self.body:getPosition()
-  local animation = self.animations[self.state]
-	local quad = animation.frames[animation.currFrame]
+
+  local spaceship = self.spaceship
+
+  local animation = spaceship.animations[self.state]
+
+  local quad = animation.frames[animation.currFrame]
+
   local offset = {
-		x = animation.frameDim.width / 2 - 4,
-		y = animation.frameDim.height / 2,
-	}
-  love.graphics.draw(self.spriteSheets[self.state], quad, x, y, self.angle, self.scale, self.scale, offset.x, offset.y)
-  -- love.graphics.circle("fill", x, y, 20)
+    x = animation.frameDim.width / 2 - 4,
+    y = animation.frameDim.height / 2
+  }
+
+  love.graphics.draw(spaceship.spriteSheets[self.state], quad, x, y, self.angle, spaceship.scale, spaceship.scale, offset.x, offset.y)
 
   debugRender(self)
+
   love.graphics.setColor(1, 1, 1, 1)
 end
 

@@ -60,10 +60,10 @@ end
 function Planet:addAnimations()
 	----------------- INTACT -----------------
 	local path = pngPathFormat({ "assets", "animations", "planet", INTACT })
-	addAnimation(self, path, INTACT, newAnimSetting(49, { width = 100, height = 100 }, 0.1, true, 1))
+	addAnimation(self, path, INTACT, newAnimSetting(16, { width = 360, height = 360 }, 0.4, true, 1))
 	----------------- DESTROYED -----------------
   path = pngPathFormat({ "assets", "animations", "planet", DESTROYED })
-	addAnimation(self, path, DESTROYED, newAnimSetting(49, { width = 100, height = 100 }, 0.1, true, 1))
+	addAnimation(self, path, DESTROYED, newAnimSetting(16, { width = 360, height = 360 }, 0.4, true, 1))
 end
 
 function Planet:update(dt)
@@ -130,12 +130,12 @@ function Planet:draw()
   local animation = self.animations[self.state]
 	local quad = animation.frames[animation.currFrame]
   local offset = {
-		x = animation.frameDim.width / 2 + 42,
+		x = animation.frameDim.width / 2 + 130,
 		y = animation.frameDim.height / 2,
 	}
 
   local drawFunc = function ()
-    local k = 5
+    local k = 1.5
     love.graphics.draw(self.spriteSheets[self.state], quad, self.pos.x, self.pos.y, 0, k, k, offset.x, offset.y)
   end
 

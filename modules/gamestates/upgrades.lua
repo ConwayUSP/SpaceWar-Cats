@@ -117,11 +117,6 @@ function UpgradesSlot:update(dt)
 	end
 end
 
-function UpgradesSlot:mouseOver(x, y)
-	local gameX, gameY = screenToGamePosition(x, y)
-	return gameX >= self.x and gameX <= self.x + self.width and gameY >= self.y and gameY <= self.y + self.height
-end
-
 function UpgradesSlot:drawCanvas()
 	love.graphics.setCanvas(self.canvas)
 	love.graphics.clear()
@@ -226,7 +221,7 @@ function UpgradesState:updateSlots(dt)
 	for i, slot in ipairs(self.slots) do
 		slot:update(dt)
 		local mouseX, mouseY = love.mouse.getPosition()
-		if slot:mouseOver(mouseX, mouseY) then
+		if isMouseOver(slot, mouseX, mouseY) then
 			isHover = true
 			idx = i
 		end
@@ -403,9 +398,9 @@ function UpgradesState:mousepressed( x, y, button, istouch, presses )
 end
 
 function UpgradesState:handleSlotClick(slot, x, y)
-	local isClicked = slot:mouseOver(x, y)
+	local isOver = isMouseOver(slot, x, y)
 
-	if isClicked then
+	if isOver then
 		self:applyUpgrade(slot.upgrade)
 	end
 end

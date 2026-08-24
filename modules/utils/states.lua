@@ -20,3 +20,6 @@ LIST = "list"
 
 SFX = "sfx"
 MUSIC = "music"
+
+STATIC = "static"
+HOVER = "hover"

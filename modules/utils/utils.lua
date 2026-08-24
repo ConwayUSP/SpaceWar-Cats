@@ -243,3 +243,14 @@ function checkMobile()
 	end
 	return false
 end
+
+function isMouseOver(obj, x, y, isCentered)
+	local gameX, gameY = screenToGamePosition(x, y)
+	local objX = obj.x or obj.pos.x
+	local objY = obj.y or obj.pos.y
+	if isCentered then
+		return gameX >= objX - obj.width/2 and gameX <= objX + obj.width/2 and gameY >= objY - obj.height/2 and gameY <= objY + obj.height/2
+	else
+		return gameX >= objX and gameX <= objX + obj.width and gameY >= objY and gameY <= objY + obj.height
+	end
+end

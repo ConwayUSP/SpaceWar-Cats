@@ -19,52 +19,6 @@ Spaceship = {}
 Spaceship.__index = Spaceship
 Spaceship.type = "Spaceship"
 
-local defaultConfigs = {
-  name = "default",
-
-  -- Player / nave
-  size = 5,
-  scale = 1,
-  maxHp = 1,
-
-  -- Movimento
-  speed = 600,
-
-  -- Arma / projétil
-  damage = 40,
-  criticalChance = 0.10,
-  criticalMultiplier = 1.5,
-
-  hb = {
-    type = "rectangle",
-    width = 10,
-    height = 5
-  },
-
-  firerate = 3,
-
-  -- Outros atributos da nave
-  planetRegen = 0.0,
-
-  -- Arte
-  animation = {
-    folder = "assets/animations/player",
-    state = FLYING,
-    frameWidth = 32,
-    frameHeight = 32,
-    frameDuration = 0.1,
-    frames = 4,
-    loop = true,
-    scale = 1
-  },
-
-  -- Arma
-  weapon = {
-    name = "blaster-tune",
-    scale = 1
-  }
-}
-
 ----------------------------------------
 -- Utilitários
 ----------------------------------------
@@ -83,20 +37,6 @@ local function copyTable(original)
   return copy
 end
 
-local function mergeTables(base, override)
-  local result = copyTable(base)
-
-  for key, value in pairs(override or {}) do
-    if type(value) == "table" and type(result[key]) == "table" then
-      result[key] = mergeTables(result[key], value)
-    else
-      result[key] = value
-    end
-  end
-
-  return result
-end
-
 ----------------------------------------
 -- Construtor
 ----------------------------------------
@@ -104,7 +44,7 @@ end
 function Spaceship.new(config)
   local self = setmetatable({}, Spaceship)
 
-  self.config = mergeTables(defaultConfigs, config)
+  self.config = config
 
   self.name = self.config.name
 
@@ -120,6 +60,7 @@ function Spaceship.new(config)
 
   self.hb = copyTable(self.config.hb)
 
+  self.firerateTimer = 0
   self.firerate = self.config.firerate
   self.planetRegen = self.config.planetRegen
 
@@ -133,6 +74,48 @@ function Spaceship.new(config)
   self:addAnimations()
 
   return self
+end
+
+----------------------------------------
+-- Update
+----------------------------------------
+
+function Spaceship:update(dt)
+  self:updateWeapon(dt)
+end
+
+function Spaceship:updateWeapon(dt)
+  self.weapon:update(dt)
+end
+
+function Spaceship:updateShooting(dt)
+  self.firerateTimer = self.firerateTimer + dt
+
+  if self.firerateTimer >= (1 / self.firerate) then
+    self.canShoot = true
+  end
+end
+
+----------------------------------------
+-- Shoot
+----------------------------------------
+
+function Spaceship:shoot(player)
+  if not self.weapon or not self.canShoot then
+    return
+  end
+
+  local x, y = player.body:getPosition()
+  local origin = addVec(vec(x, y), polarToVec(player.angle, 25))
+  
+  if self.weapon:press(player, origin, player.angle) then
+    self.canShoot = false
+    self.firerateTimer = 0
+  end
+end
+
+function Spaceship:getCooldownPercent()
+  return math.min(1, self.firerateTimer / (1 / self.firerate))
 end
 
 ----------------------------------------
@@ -162,6 +145,8 @@ function Spaceship:resetStats()
   self:attWeapon()
 
   self.customShot = self.config.customShot
+  self.canShoot = true
+  self.firerateTimer = math.huge
 end
 
 ----------------------------------------
@@ -177,19 +162,14 @@ function Spaceship:attWeapon(newStats)
     hb = newStats.hb or self.hb,
     criticalChance = newStats.criticalChance or self.criticalChance,
     criticalMultiplier = newStats.criticalMultiplier or self.criticalMultiplier,
-    scale = newStats.scale or self.config.weapon.scale
+    scale = newStats.scale or self.config.weapon.scale,
+    charge = newStats.charge or self.config.weapon.charge
   }
 
   if self.weapon then
     self.weapon:changeStats(weaponStats)
   else
-    self.weapon = Projectile.new(
-      self.config.weapon.name,
-      moveDirection,
-      nil,
-      pProjectiles,
-      weaponStats
-    )
+    self.weapon = Projectile.new(self.config.weapon.name, moveDirection, nil, pProjectiles, weaponStats)
   end
 end
 

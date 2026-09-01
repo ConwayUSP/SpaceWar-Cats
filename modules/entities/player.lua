@@ -4,16 +4,17 @@
 
 require("table")
 
+require("modules.constructor.projectile")
+require("modules.constructor.spaceship")
 require("modules.engine.animation")
 require("modules.engine.physics")
 require("modules.engine.projectileManager")
 require("modules.entities.projectile")
 require("modules.entities.spaceship")
+require("modules.utils.states")
 require("modules.utils.vec")
 require("modules.system.render")
 require("modules.system.shots")
-require("modules.utils.states")
-require("modules.constructor.projectile")
 
 local planet = require("modules.entities.planet")
 
@@ -43,15 +44,11 @@ function Player:load()
 
   self.boostParticle:play()
 
-  self.firerateTimer = 0
-
   self.respawnCd = 1
   self.respawnTimer = 0
 
   self.invulrabilityTimer = 0
   self.invulnerabilityCd = 2
-
-  self.canShoot = true
 
   self.hp = 1
   self.maxHp = 1
@@ -62,7 +59,8 @@ function Player:load()
   self.state = FLYING
 
   -- Nave inicial
-  self:setSpaceship(Spaceship.new())
+  -- self:setSpaceship(defaultSpaceship())
+  self:setSpaceship(bomberSpaceship())
 end
 
 ----------------------------------------
@@ -76,9 +74,6 @@ function Player:setSpaceship(spaceship)
   self.hp = self.maxHp
 
   self:newHitbox()
-
-  self.firerateTimer = 0
-  self.canShoot = true
 end
 
 ----------------------------------------
@@ -97,9 +92,6 @@ function Player:reset()
 
   self.respawnTimer = 0
   self.invulrabilityTimer = 0
-
-  self.firerateTimer = 0
-  self.canShoot = true
 
   self.boostParticle = newBoostParticle(addVec(self.initialPos, self.boostOffset))
 
@@ -153,6 +145,7 @@ function Player:update(dt)
   self:updateMotion(dt)
   self:updateShooting(dt)
   self:updateParticles(dt)
+  self.spaceship:update(dt)
 end
 
 function Player:updateParticles(dt)
@@ -196,12 +189,8 @@ function Player:updateShooting(dt)
     return
   end
 
-  self.firerateTimer = self.firerateTimer + dt
-  if self.firerateTimer >= (1 / self.spaceship.firerate) then
-    self.canShoot = true
-  end
-
-  if love.keyboard.isDown("space") or love.mouse.isDown(1) then
+  self.spaceship:updateShooting(dt)
+  if love.keyboard.isDown("space") then
     self:shoot()
   end
 end
@@ -264,22 +253,11 @@ end
 ----------------------------------------
 
 function Player:shoot()
-  if not self.canShoot or self.isDead then
+  if self.isDead then
     return
   end
 
-  local x, y = self.body:getPosition()
-  local origin = addVec(vec(x, y), polarToVec(self.angle, 25))
-  local spaceship = self.spaceship
-
-  if spaceship.customShot then
-    spaceship.customShot(spaceship.weapon, self, origin, self.angle)
-  else
-    spaceship.weapon:shot(self, origin, self.angle)
-  end
-  
-  self.canShoot = false
-  self.firerateTimer = 0
+  self.spaceship:shoot(self)
 end
 
 ----------------------------------------
@@ -294,7 +272,7 @@ end
 
 function Player:mousepressed(x, y, button, istouch, presses)
   if button == 1 then
-    self:shoot()
+    -- self:shoot()
   end
 end
 

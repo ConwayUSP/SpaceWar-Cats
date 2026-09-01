@@ -1,4 +1,5 @@
 whiteShader = love.graphics.newShader("modules/shaders/white.glsl")
+grayscaleProgress = love.graphics.newShader("modules/shaders/grayscale_progress.glsl")
 
 function applyColorShader(drawFunc, color)
   love.graphics.setShader(whiteShader)

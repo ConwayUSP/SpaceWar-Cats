@@ -25,6 +25,7 @@ function Projectile.new(name, trajectory, customHit, projManager, config)
     projectile.criticalChance = config.criticalChance or 0
     projectile.criticalMultiplier = config.criticalMultiplier or 1.5
     projectile.turnSpeed = config.turnSpeed or 0
+    projectile.charge = config.charge
     
     projectile.name = name
     projectile.trajectory = trajectory -- função que define a trajetória do projétil
@@ -48,7 +49,19 @@ function Projectile:changeStats(newStats)
     self.criticalMultiplier = newStats.criticalMultiplier or self.criticalMultiplier
 end
 
-function Projectile:shot(attacker, origin, dir)
+function Projectile:press(attacker, origin, dir)
+    if self.charge then
+        if not self.isCharging then
+            self:beginCharge()
+        end
+        return false
+    end
+
+    self:shoot(attacker, origin, dir)
+    return true
+end
+
+function Projectile:shoot(attacker, origin, dir)
     local shotEvent = ShotEvent.new(self, attacker, origin, dir)
     soundManager:play(self.sound or "tiro1", true)
     table.insert(self.events, shotEvent)
@@ -62,6 +75,10 @@ function Projectile:destroy()
 end
 
 function Projectile:update(dt)
+    if self.isCharging then
+        self.chargeTimer = math.min(self.chargeTimer + dt, self.charge.time)
+    end
+
     for i = #self.events, 1, -1 do
         local shot = self.events[i]
 
@@ -89,6 +106,46 @@ function Projectile:draw()
             debugRender(shot)
         end
     end
+end
+
+---------------------------------------
+--- Charge
+---------------------------------------
+
+function Projectile:beginCharge()
+    if not self.charge or self.isCharging then
+        return
+    end
+
+    self.isCharging = true
+    self.chargeTimer = 0
+end
+
+function Projectile:releaseCharge(attacker, origin, dir)
+    if not self.isCharging then
+        return
+    end
+
+    local ratio = self:getChargeRatio()
+
+    self.isCharging = false
+    self.chargeTimer = 0
+
+    -- local multiplier = 1
+
+    -- if self.charge then
+    --     multiplier = self.charge.minMultiplier + (self.charge.maxMultiplier - self.charge.minMultiplier) * ratio
+    -- end
+
+    self:shoot(attacker, origin, dir)
+end
+
+function Projectile:getChargeRatio()
+    if not self.charge then
+        return 0
+    end
+
+    return math.min(self.chargeTimer / self.charge.time, 1)
 end
 
 ----------------------------------------

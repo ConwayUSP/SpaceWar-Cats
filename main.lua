@@ -158,6 +158,10 @@ function love.keypressed(key, scancode, isrepeat)
 		WaveManager:debugSkipWave()
 	end
 
+	if key == "b" then
+		SetGameCtx(CTX.BATTLE)
+	end
+
 	if key == "u" then
 		SetGameCtx(CTX.UPGRADES)
 	end
@@ -177,6 +181,8 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
+	UIManager:mousepressed(x, y, button, istouch, presses)
+
 	if GAMESTATE[GameCtx].mousepressed then
 		GAMESTATE[GameCtx]:mousepressed(x, y, button, istouch, presses)
 	end

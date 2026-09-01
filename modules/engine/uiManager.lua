@@ -32,6 +32,13 @@ function UIManager:update(dt)
   end
 end
 
+function UIManager:mousepressed(x, y, button, istouch, presses)
+  if self.scene then
+    self.scene:mousepressed(x, y, button, istouch, presses)
+  end
+  
+end
+
 function UIManager:changeScene(newScene)
   if not self.scenes[newScene] then
     self.scene = nil

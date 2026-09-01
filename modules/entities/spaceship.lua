@@ -66,11 +66,12 @@ function Spaceship.new(config)
 
   self.weapon = nil
   self.customShot = nil
+  self.customHit = self.config.customHit
 
   self.animations = {}
   self.spriteSheets = {}
 
-  self:resetStats()
+  self:reset()
   self:addAnimations()
 
   return self
@@ -123,10 +124,6 @@ end
 ----------------------------------------
 
 function Spaceship:reset()
-  self:resetStats()
-end
-
-function Spaceship:resetStats()
   self.speed = self.config.speed
   self.damage = self.config.damage
   self.size = self.config.size
@@ -147,6 +144,8 @@ function Spaceship:resetStats()
   self.customShot = self.config.customShot
   self.canShoot = true
   self.firerateTimer = math.huge
+
+  self.charge = self.config.charge
 end
 
 ----------------------------------------
@@ -169,7 +168,7 @@ function Spaceship:attWeapon(newStats)
   if self.weapon then
     self.weapon:changeStats(weaponStats)
   else
-    self.weapon = Projectile.new(self.config.weapon.name, moveDirection, nil, pProjectiles, weaponStats)
+    self.weapon = Projectile.new(self.config.weapon.name, moveDirection, self.customHit, pProjectiles, weaponStats)
   end
 end
 

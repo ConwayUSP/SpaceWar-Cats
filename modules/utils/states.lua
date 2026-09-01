@@ -6,6 +6,7 @@ SEMI_DAMAGED = "semi_damaged"
 HIGHLY_DAMAGED = "highly_damaged"
 DAMAGED = "damaged"
 DESTROYED = "destroyed"
+EXPLOSION = "explosion"
 
 COMMON = "Common"
 RARE = "Rare"

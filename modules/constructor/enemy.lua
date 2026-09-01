@@ -130,12 +130,12 @@ function newTankEnemy(x, y, newVx)
         return function(dt)
             local x1, y1 = attacker.body:getPosition()
             if timer == 0 then
-                atk:shot(attacker, addVec(vec(x1, y1), vec(-10, -8)), direction)
+                atk:shoot(attacker, addVec(vec(x1, y1), vec(-10, -8)), direction)
             end
 
             timer = timer + dt
             if timer >= delay then
-                atk:shot(attacker, addVec(vec(x1, y1), vec(-5, -8)), direction)
+                atk:shoot(attacker, addVec(vec(x1, y1), vec(-5, -8)), direction)
                 return true
             end
             return false

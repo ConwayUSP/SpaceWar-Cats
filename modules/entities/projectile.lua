@@ -1,9 +1,10 @@
 ----------------------------------------
 -- Importações de Módulos
 ----------------------------------------
-require("modules.utils.utils")
-require("modules.system.render")
 require("modules.constructor.particles")
+require("modules.entities.explosion")
+require("modules.system.render")
+require("modules.utils.utils")
 require("table")
 
 ----------------------------------------
@@ -180,7 +181,7 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
     shot.shape = getRightHitbox(projectileState.hb)
     shot.fixture = love.physics.newFixture(shot.body, shot.shape)
     shot.fixture:setUserData(shot)
-
+    shot.fixture:setRestitution(0)
     local mask = (projectileState.category == CATEGORY.PLAYER_BULLET) and CATEGORY.ENEMY or CATEGORY.PLAYER
     mask = mask + CATEGORY.TEXT
     shot.fixture:setFilterData(
@@ -203,14 +204,9 @@ function ShotEvent:onHit(target)
     end
 
     local dmg, color = self:calculateDamage(self.dmg)
+    local hitPos = vec(self.body:getPosition())
 
-    target:takeDamage(dmg)
-    
-    if target.type == "Enemy" then
-        local pos = vec(self.body:getPosition())
-        pos = addVec(pos, vec(math.random(-10, 10), -20))
-        newAscendingTextParticle(pos, math.floor(dmg), color)
-    end
+    target:takeDamage(dmg, hitPos, color)
 
     self:destroy()
 
@@ -226,7 +222,7 @@ function ShotEvent:calculateDamage(dmg)
     if rand <= self.criticalChance then
         return dmg * self.criticalMultiplier, {0.7, 0.1, 0.07, 1}
     else
-        return dmg, {1, 0.8, 0.3, 1}
+        return dmg, nil
     end
 end
 
@@ -241,4 +237,55 @@ function ShotEvent:destroy(i)
     newExplosionParticle(vec(x, y))
     self.body:destroy()
     self.active = false
+end
+
+
+function ShotEvent:spawnExplosion(target)
+    local explosion = Explosion.new(vec(target.body:getX(), target.body:getY()), 64, 80, 3)
+    explosionManager:add(explosion)
+end
+
+----------------------------------------
+-- Collision
+----------------------------------------
+
+function ShotEvent:onCollision(target)
+
+    if self.category == CATEGORY.PLAYER_BULLET then
+        self:onPlayerBulletCollision(target)
+
+    elseif self.category == CATEGORY.ENEMY_BULLET then
+        self:onEnemyBulletCollision(target)
+    end
+
+end
+
+function ShotEvent:onPlayerBulletCollision(target)
+
+    if target.type == "Enemy" then
+
+        table.insert(Physics.delayedFunctions, function()
+            self:onHit(target)
+        end)
+
+    elseif target.type == "Text" then
+
+        table.insert(Physics.delayedFunctions, function()
+            target:onHit()
+            self:destroy()
+
+            local r = math.random(1, 3)
+            soundManager:play("morte" .. r, true)
+        end)
+    end
+
+end
+
+function ShotEvent:onEnemyBulletCollision(target)
+
+    if target.type == "Player" then
+        table.insert(Physics.delayedFunctions, function()
+            self:onHit(target)
+        end)
+    end
 end

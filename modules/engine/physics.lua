@@ -9,72 +9,17 @@ local function beginContact(a, b, coll)
   local objA = a:getUserData()
   local objB = b:getUserData()
 
-  -- PLAYER_BULLET vs (ENEMY or TEXT)
-  local pProjectile = (objA.type == "ShotEvent" and objA.category == CATEGORY.PLAYER_BULLET) and objA 
-                  or ((objB.type == "ShotEvent" and objB.category == CATEGORY.PLAYER_BULLET) and objB or nil)
-
-  if pProjectile then
-    local target = (objA == pProjectile) and objB or objA
-    if target.type == "Enemy" then
-      table.insert(Physics.delayedFunctions, function() 
-        local dmg = pProjectile:onHit(target)
-      end)
-    elseif target.type == "Text" then
-      table.insert(Physics.delayedFunctions, function() 
-        target:onHit()
-        pProjectile:destroy()
-        local r = math.random(1, 3)
-        soundManager:play("morte" .. r, true)
-      end)
-    end
-
+  if not objA or not objB then
     return
   end
 
-  -- ENEMY_BULLET vs (PLAYER or PLANET)
-  local eProjectile = (objA.type == "ShotEvent" and objA.category == CATEGORY.ENEMY_BULLET) and objA 
-                  or ((objB.type == "ShotEvent" and objB.category == CATEGORY.ENEMY_BULLET) and objB or nil)
-
-  if eProjectile then
-    local target = (objA == eProjectile) and objB or objA
-    if target.type == "Player" then
-      table.insert(Physics.delayedFunctions, function() 
-        eProjectile:onHit(target)
-      end)
-    -- elseif target.type == "Planet" then
-    --   table.insert(Physics.delayedFunctions, function() 
-    --     target:takeDamage(eProjectile.dmg)
-    --     eProjectile:destroy()
-    --   end)
-    end
+  if objA.onCollision then
+    objA:onCollision(objB)
   end
 
-  -- ENEMY vs (PLAYER or PLANET)
-  local enemy = (objA.type == "Enemy") and objA or ((objB.type == "Enemy") and objB or nil)
-
-  if enemy then
-    local target = (objA == enemy) and objB or objA
-    if target.type == "Planet" then
-      table.insert(Physics.delayedFunctions, function() 
-        local dmg
-        if objB.hp > 150 then
-          dmg = 150
-        else
-          dmg = objB.hp
-        end
-        target:takeDamage(dmg)
-        enemy:die()
-      end)
-    elseif target.type == "Player" then
-      table.insert(Physics.delayedFunctions, function() 
-        local x, y = target.body:getPosition()
-        newExplosionParticle(vec(x, y))
-        target:takeDamage(math.huge)
-        enemy:die()
-      end)
-    end
+  if objB.onCollision then
+    objB:onCollision(objA)
   end
-
 end
 
 function Physics:load()
@@ -109,3 +54,4 @@ CATEGORY.ENEMY         = 4
 CATEGORY.ENEMY_BULLET  = 8
 CATEGORY.TEXT          = 16
 CATEGORY.PLANET        = 32
+CATEGORY.EXPLOSION     = 64

@@ -55,6 +55,7 @@ function BattleState:update(dt)
 	Physics:update(dt)
 	p1:update(dt)
 
+	explosionManager:update(dt)
 	enemyManager:update(dt)
 	waveManager:update(dt)
 	particleManager:update(dt)
@@ -77,6 +78,7 @@ function BattleState:draw()
 	pProjectiles:draw()
 	eProjectiles:draw()
 	particleManager:draw()
+	explosionManager:draw()
 
 	-- reset de cor
 	love.graphics.setColor(1, 1, 1, 1)

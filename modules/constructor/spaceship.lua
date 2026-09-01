@@ -58,7 +58,7 @@ function bomberSpaceship()
     maxHp = 1,
 
     -- Movimento
-    speed = 200,
+    speed = 300,
 
     -- Arma / projétil
     damage = 100,
@@ -92,7 +92,11 @@ function bomberSpaceship()
     weapon = {
       name = "bomb",
       scale = 1
-    }
+    },
+
+    customHit = function(projectile, target)
+      projectile:spawnExplosion(target)
+    end
   }
 
   return Spaceship.new(config)

@@ -40,7 +40,7 @@ function Enemy.new(name, spawnPos, move, weapon, customShot, config, initialAlph
   enemy.fixture:setUserData(enemy)
   enemy.fixture:setFilterData(
     CATEGORY.ENEMY, 
-    CATEGORY.PLAYER_BULLET + CATEGORY.PLAYER + CATEGORY.PLANET,
+    CATEGORY.PLAYER_BULLET + CATEGORY.PLAYER + CATEGORY.PLANET + CATEGORY.EXPLOSION,
     0
   )
   enemy.fixture:setSensor(true)
@@ -176,14 +176,20 @@ function Enemy:destroy()
   end
 end
 
-function Enemy:takeDamage(damage)
+function Enemy:takeDamage(damage, hitPos, color)
   if self.isDead then
     return
+  end
+
+  if hitPos then
+    color = color or {1, 0.8, 0.3, 1}
+    newAscendingTextParticle(addVec(hitPos, vec(math.random(-10, 10), -20)), math.floor(damage), color)
   end
 
   runStats:add(TDD, damage)
   self.hp = self.hp - damage
   self.damagedTimer = 0.1
+
   if self.hp <= 0 then
     self:die()
   end
@@ -214,4 +220,33 @@ function Enemy:draw()
   
   debugRender(self)
   love.graphics.setColor(1, 1, 1, 1)
+end
+
+----------------------------------------
+-- Collision
+----------------------------------------
+
+function Enemy:onCollision(target)
+
+  if target.type == "Planet" then
+    table.insert(Physics.delayedFunctions, function()
+
+      local dmg = math.min(target.hp, 150)
+
+      target:takeDamage(dmg)
+      self:die()
+
+    end)
+  elseif target.type == "Player" then
+    table.insert(Physics.delayedFunctions, function()
+
+      local x, y = target.body:getPosition()
+
+      newExplosionParticle(vec(x, y))
+
+      target:takeDamage(math.huge)
+      self:die()
+    end)
+  end
+
 end

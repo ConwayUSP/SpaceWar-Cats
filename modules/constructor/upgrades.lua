@@ -11,18 +11,6 @@ weights = {
 }
 
 upgradesList = {
-  -- {
-  --   name = "FIRERATE I",
-  --   rarity = COMMON,
-  --   description = {
-  --     colors.base, "Spaceship fires ",
-  --     colors.highlight, "10% ",
-  --     colors.base, "faster!"
-  --   },
-  --   apply = function(ctx)
-  --     ctx.player.firerate = ctx.player.firerate * 1.1
-  --   end
-  -- },
   {
     name = "FIRERATE II",
     rarity = RARE,
@@ -32,7 +20,7 @@ upgradesList = {
       colors.base, "faster!"
     },
     apply = function(ctx)
-      ctx.player.firerate = ctx.player.firerate * 1.15
+      ctx.player.spaceship.firerate = ctx.player.spaceship.firerate * 1.15
     end
   },
   {
@@ -44,7 +32,7 @@ upgradesList = {
       colors.base, "faster!"
     },
     apply = function(ctx)
-      ctx.player.firerate = ctx.player.firerate * 1.2
+      ctx.player.spaceship.firerate = ctx.player.spaceship.firerate * 1.2
     end
   },
   {
@@ -56,8 +44,8 @@ upgradesList = {
       colors.base, "!"
     },
     apply = function(ctx)
-      ctx.player.damage = ctx.player.damage + 8
-      ctx.player:attWeapon()
+      ctx.player.spaceship.damage = ctx.player.spaceship.damage + 8
+      ctx.player.spaceship:attWeapon()
     end
   },
   {
@@ -69,8 +57,8 @@ upgradesList = {
       colors.base, "!"
     },
     apply = function(ctx)
-      ctx.player.damage = ctx.player.damage + 12
-      ctx.player:attWeapon()
+      ctx.player.spaceship.damage = ctx.player.spaceship.damage + 12
+      ctx.player.spaceship:attWeapon()
     end
   },
   {
@@ -82,8 +70,8 @@ upgradesList = {
       colors.base, "!"
     },
     apply = function(ctx)
-      ctx.player.damage = ctx.player.damage + 16
-      ctx.player:attWeapon()
+      ctx.player.spaceship.damage = ctx.player.spaceship.damage + 16
+      ctx.player.spaceship:attWeapon()
     end
   },
   {
@@ -95,8 +83,8 @@ upgradesList = {
       colors.base, "higher!"
     },
     apply = function(ctx)
-      ctx.player.criticalChance = ctx.player.criticalChance + 0.04
-      ctx.player:attWeapon()
+      ctx.player.spaceship.criticalChance = ctx.player.spaceship.criticalChance + 0.04
+      ctx.player.spaceship:attWeapon()
     end
   },
   {
@@ -108,8 +96,8 @@ upgradesList = {
       colors.base, "higher!"
     },
     apply = function(ctx)
-      ctx.player.criticalChance = ctx.player.criticalChance + 0.08
-      ctx.player:attWeapon()
+      ctx.player.spaceship.criticalChance = ctx.player.spaceship.criticalChance + 0.08
+      ctx.player.spaceship:attWeapon()
     end
   },
   {
@@ -121,8 +109,8 @@ upgradesList = {
       colors.base, "higher!"
     },
     apply = function(ctx)
-      ctx.player.criticalChance = ctx.player.criticalChance + 0.12
-      ctx.player:attWeapon()
+      ctx.player.spaceship.criticalChance = ctx.player.spaceship.criticalChance + 0.12
+      ctx.player.spaceship:attWeapon()
     end
   },
   {
@@ -134,8 +122,8 @@ upgradesList = {
       colors.base, "smaller!"
     },
     apply = function(ctx)
-      ctx.player.size = ctx.player.size * 0.8
-      ctx.player.scale = ctx.player.scale * 0.8
+      ctx.player.spaceship.size = ctx.player.spaceship.size * 0.8
+      ctx.player.spaceship.scale = ctx.player.spaceship.scale * 0.8
       ctx.player:newHitbox()
     end
   },
@@ -148,14 +136,14 @@ upgradesList = {
       colors.base, "larger!"
     },
     apply = function(ctx)
-      ctx.player.hb = {
+      ctx.player.spaceship.hb = {
         type = "rectangle",
-        width = ctx.player.hb.width * 1.15,
-        height = ctx.player.hb.height * 1.15
+        width = ctx.player.spaceship.hb.width * 1.15,
+        height = ctx.player.spaceship.hb.height * 1.15
       }
 
       ctx.player:attWeapon({
-        scale = ctx.player.weapon.scale * 1.15
+        scale = ctx.player.spaceship.weapon.scale * 1.15
       })
     end
   },
@@ -168,56 +156,17 @@ upgradesList = {
       colors.base, "larger!"
     },
     apply = function(ctx)
-      ctx.player.hb = {
+      ctx.player.spaceship.hb = {
         type = "rectangle",
-        width = ctx.player.hb.width * 1.30,
-        height = ctx.player.hb.height * 1.30
+        width = ctx.player.spaceship.hb.width * 1.30,
+        height = ctx.player.spaceship.hb.height * 1.30
       }
 
       ctx.player:attWeapon({
-        scale = ctx.player.weapon.scale * 1.30
+        scale = ctx.player.spaceship.weapon.scale * 1.30
       })
     end
   },
-  -- {
-  --   name = "SPEED I",
-  --   rarity = COMMON,
-  --   description = {
-  --     colors.base, "Shots are ",
-  --     colors.highlight, "20% ",
-  --     colors.base, "faster!"
-  --   },
-  --   apply = function(ctx)
-  --     ctx.player.speed = ctx.player.speed * 1.20
-  --     ctx.player:attWeapon()
-  --   end
-  -- },
-  -- {
-  --   name = "SPEED II",
-  --   rarity = RARE,
-  --   description = {
-  --     colors.base, "Shots are ",
-  --     colors.highlight, "30% ",
-  --     colors.base, "faster!"
-  --   },
-  --   apply = function(ctx)
-  --     ctx.player.speed = ctx.player.speed * 1.30
-  --     ctx.player:attWeapon()
-  --   end
-  -- },
-  -- {
-  --   name = "SPEED III",
-  --   rarity = EPIC,
-  --   description = {
-  --     colors.base, "Shots are ",
-  --     colors.highlight, "16% ",
-  --     colors.base, "faster!"
-  --   },
-  --   apply = function(ctx)
-  --     ctx.player.speed = ctx.player.speed * 1.16
-  --     ctx.player:attWeapon()
-  --   end
-  -- },
   {
     name = "REGEN I",
     rarity = COMMON,
@@ -249,8 +198,8 @@ upgradesList = {
       colors.base, "!"
     },
     apply = function(ctx)
-      ctx.player.criticalMultiplier = ctx.player.criticalMultiplier + 0.15
-      ctx.player:attWeapon()
+      ctx.player.spaceship.criticalMultiplier = ctx.player.spaceship.criticalMultiplier + 0.15
+      ctx.player.spaceship:attWeapon()
     end
   },
   {
@@ -262,8 +211,8 @@ upgradesList = {
       colors.base, "!"
     },
     apply = function(ctx)
-      ctx.player.criticalMultiplier = ctx.player.criticalMultiplier + 0.30
-      ctx.player:attWeapon()
+      ctx.player.spaceship.criticalMultiplier = ctx.player.spaceship.criticalMultiplier + 0.30
+      ctx.player.spaceship:attWeapon()
     end
   },
   {

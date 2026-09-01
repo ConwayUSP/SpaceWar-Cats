@@ -5,6 +5,7 @@
 require("modules.engine.uiScenes")
 require("modules.UI.life")
 require("modules.UI.statsDisplay")
+require("modules.UI.interactive")
 
 ----------------------------------------
 --- BattleScene
@@ -12,6 +13,10 @@ require("modules.UI.statsDisplay")
 
 function newMenuScene()
     local menuScene = UIScene.new()
+    menuScene:add(Interactive.new(40, VIRTUAL_HEIGHT - 40, 64, 64, function() 
+        p1:shoot()
+    end, "shoot"))
+
     local txt = Text.new(
         "Press Escape for Settings",
         12,
@@ -32,6 +37,10 @@ end
 function newBattleScene()
     local battleScene = UIScene.new()
     battleScene:add(LifeBarWrapper.new())
+    battleScene:add(Interactive.new(40, VIRTUAL_HEIGHT - 40, 64, 64, function() 
+        p1:shoot()
+    end, "shoot"))
+
     local txt =  Text.new(
         "WAVE ",
         24,

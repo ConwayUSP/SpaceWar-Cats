@@ -37,6 +37,14 @@ function UIScene:update(dt)
   updateTexts(self.texts, dt)
 end
 
+function UIScene:mousepressed(x, y, button, istouch, presses)
+  for _, element in pairs(self.elements) do
+    if element.active and element.mousepressed then
+      element:mousepressed(x, y, button, istouch, presses)
+    end
+  end
+end
+
 function UIScene:add(element)
   table.insert(self.elements, element)
   element.active = true

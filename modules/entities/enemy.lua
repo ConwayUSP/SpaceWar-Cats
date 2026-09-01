@@ -145,18 +145,9 @@ function Enemy:updateShooting(dt)
   local direction = math.rad(180)
 
   if self.customShot then
-    self.currentShot = self.customShot(
-      self.weapon,
-      self,
-      origin,
-      direction
-    )
+    self.currentShot = self.customShot(self.weapon, self,origin, direction)
   else
-    self.weapon:shot(
-      self,
-      origin,
-      direction
-    )
+    self.weapon:shoot(self, origin, direction)
   end
 
   self.shootTimer = 0

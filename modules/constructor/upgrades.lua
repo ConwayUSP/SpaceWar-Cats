@@ -142,7 +142,7 @@ upgradesList = {
         height = ctx.player.spaceship.hb.height * 1.15
       }
 
-      ctx.player:attWeapon({
+      ctx.player.spaceship:attWeapon({
         scale = ctx.player.spaceship.weapon.scale * 1.15
       })
     end
@@ -162,7 +162,7 @@ upgradesList = {
         height = ctx.player.spaceship.hb.height * 1.30
       }
 
-      ctx.player:attWeapon({
+      ctx.player.spaceship:attWeapon({
         scale = ctx.player.spaceship.weapon.scale * 1.30
       })
     end

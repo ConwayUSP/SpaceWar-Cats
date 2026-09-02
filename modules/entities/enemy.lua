@@ -74,14 +74,6 @@ function Enemy:update(dt)
 end
 
 function Enemy:updateState(dt)
-
-  if self.isDead then
-    if self.onDeath then
-      local x, y = self.body:getPosition()
-      self:onDeath(x, y)
-    end
-    self:die()
-  end
   if self.damagedTimer > 0 then
     self.damagedTimer = self.damagedTimer - dt
   end
@@ -197,8 +189,24 @@ function Enemy:takeDamage(damage, hitPos, color)
   self.damagedTimer = 0.1
 
   if self.hp <= 0 then
-    self.isDead = true
+    self:kill()
   end
+end
+
+function Enemy:kill()
+  if self.isDead then
+    return
+  end
+
+  self.isDead = true
+
+  local x, y = self.body:getPosition()
+
+  if self.onDeath then
+    self:onDeath(x, y)
+  end
+
+  self:die()
 end
 
 function Enemy:draw()
@@ -240,7 +248,7 @@ function Enemy:onCollision(target)
       local dmg = math.min(target.hp, 150)
 
       target:takeDamage(dmg)
-      self:die()
+      self:kill()
 
     end)
   elseif target.type == "Player" then
@@ -251,7 +259,7 @@ function Enemy:onCollision(target)
       newExplosionParticle(vec(x, y))
 
       target:takeDamage(math.huge)
-      self:die()
+      self:kill()
     end)
   end
 

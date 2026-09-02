@@ -48,7 +48,7 @@ function WaveManager:debugSkipWave()
     GAMESTATE[CTX.BATTLE]:startTransition()
     for i = #EnemyManager.list, 1, -1 do
         local e = EnemyManager.list[i]
-        e:die()
+        e:kill()
     end
 end
 

@@ -2,7 +2,7 @@ require("modules.utils.types")
 
 EnemyManager = {}
 EnemyManager.list = {}
-EnemyManager.counters = {[CAT_SWIMMER] = 0, [SHOOTER_ENEMY] = 0, [TANK_ENEMY] = 0, [CAT_MAGE] = 0, [CAT_BOX] = 0}
+EnemyManager.counters = {[CAT_SWIMMER] = 0, [SHOOTER_ENEMY] = 0, [TANK_ENEMY] = 0, [CAT_MAGE] = 0, [CAT_BOX] = 0, [PUFFER_CAT] = 0}
 EnemyManager.type = "EnemyManager"
 
 function EnemyManager:getCounter(enemyName)

@@ -49,9 +49,15 @@ local function spawnCatBox()
     newCatBox(startX, startY)
 end
 
+local function spawnPufferCat(vx)
+    local startX, startY = randomPosOutside()
+    newPufferCat(startX, startY, vx)
+end
+
 function initWave1()
     local spawners = {
         Spawner.new(CAT_BOX, function() spawnCatBox() end, 3, 1, 30, 1),
+        Spawner.new(PUFFER_CAT, function() spawnPufferCat() end, 3, 1, 30, 1),
         -- Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 3, 2, 30, 2),
         -- Spawner.new(SHOOTER_ENEMY, function() spawnShooterEnemy() end, 1.5, 30, 30, 4),
 

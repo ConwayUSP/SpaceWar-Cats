@@ -268,3 +268,95 @@ function newCatBox(x, y)
     enemy:addAnimations(flyingConfig)
     return enemy
 end
+
+----------------------------------------
+-- INIMIGO 6
+----------------------------------------
+
+function newPufferCat(x, y, vx)
+    local config = {
+        hp = 100 * hpMultipler(),
+        defense = 0,
+        size = 20,
+        fireRate = 1,
+        shootsUntilCd = 3,
+        cd = 4,
+        hb = {
+            type = "rectangle",
+            width = 20,
+            height = 25
+        },
+    }
+
+    vx = (vx or 1) * 55
+    local function updatePufferHitbox(self, isBig)
+        local newHB = isBig and {
+            type = "rectangle",
+            width = 30,
+            height = 30
+        } or {
+            type = "rectangle",
+            width = 20,
+            height = 25
+        }
+
+        if self.hb and self.hb.type == newHB.type and self.hb.width == newHB.width and self.hb.height == newHB.height then
+            return
+        end
+
+        self.hb = newHB
+        self.size = isBig and 30 or 20
+
+        if self.fixture then
+            self.fixture:destroy()
+        end
+
+        self.shape = getRightHitbox(self.hb)
+        self.fixture = love.physics.newFixture(self.body, self.shape)
+        self.fixture:setUserData(self)
+        self.fixture:setFilterData(
+            CATEGORY.ENEMY,
+            CATEGORY.PLAYER_BULLET + CATEGORY.PLAYER + CATEGORY.PLANET + CATEGORY.EXPLOSION,
+            0
+        )
+        self.fixture:setSensor(true)
+    end
+
+    local function move(self, dt)
+        local moveTime = 5
+        local pauseTime = 9
+        local cycleTime = moveTime + pauseTime
+        local phase = self.timer % cycleTime
+
+        if phase < moveTime then
+            self.state = FLYING
+            self.defense = 0
+            updatePufferHitbox(self, false)
+
+            local f = math.sin((phase / moveTime) * math.pi) ^ 2
+            self.body:setLinearVelocity(-vx * f, 0)
+        else
+            self.state = "flying_big"
+            self.defense = 0.9
+            updatePufferHitbox(self, true)
+            self.body:setLinearVelocity(0, 0)
+        end
+
+        -- Clamp position to screen bounds
+        local x, y = self.body:getPosition()
+        local margin = self.size * 0.5
+        y = math.max(margin, math.min(VIRTUAL_HEIGHT - margin, y))
+        self.body:setPosition(x, y)
+    end
+
+    local enemy = Enemy.new(PUFFER_CAT, vec(x, y), move, nil, nil, nil, config)
+    local flyingConfig = newAnimSetting(1, { width = 32, height = 32 }, 0.1, true, 1)
+    enemy:addAnimations(flyingConfig)
+
+    local flyingBigConfig = newAnimSetting(1, { width = 64, height = 64 }, 0.1, true, 1)
+    local flyingBigPath = pngPathFormat({ "assets", "animations", "enemies", enemy.name, "flying_big" })
+    enemy.animations["flying_big"] = newAnimation(flyingBigPath, flyingBigConfig)
+    enemy.spriteSheets["flying_big"] = love.graphics.newImage(flyingBigPath)
+
+    return enemy
+end

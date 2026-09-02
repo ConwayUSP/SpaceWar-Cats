@@ -4,6 +4,7 @@
 
 require("modules.engine.uiScenes")
 require("modules.UI.life")
+require("modules.UI.progress_bar")
 require("modules.UI.statsDisplay")
 require("modules.UI.interactive")
 
@@ -40,7 +41,7 @@ function newBattleScene()
     battleScene:add(Interactive.new(40, VIRTUAL_HEIGHT - 40, 64, 64, function() 
         p1:shoot()
     end, "shoot"))
-
+    
     local txt =  Text.new(
         "WAVE ",
         24,
@@ -50,10 +51,15 @@ function newBattleScene()
         true,
         math.huge,
         function(text)
-        text.content = "WAVE " .. waveManager.currentWaveIndex
+            text.content = "WAVE " .. waveManager.currentWaveIndex
         end,
         nil
     )
+    battleScene:add(WaveProgressBar.new(
+        vec(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT - 40),
+        txt,
+        2
+    ))
     battleScene:addText(txt)
     return battleScene
 end

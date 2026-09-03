@@ -44,9 +44,6 @@ function Button:update(dt)
   self.isHovered = isMouseOver(self, mouseX, mouseY, true)
   self.state = self.isHovered and HOVER or STATIC
 
-  if self.isHovered and love.mouse.isDown(1) and self.onClick then
-    self.onClick()
-  end
 end
 
 function Button:isMouseOver()

@@ -55,11 +55,7 @@ function newBattleScene()
         end,
         nil
     )
-    battleScene:add(WaveProgressBar.new(
-        vec(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT - 40),
-        txt,
-        2
-    ))
+    battleScene:add(WaveProgressBar.new(vec(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT - 40), 100, 4))
     battleScene:addText(txt)
     return battleScene
 end

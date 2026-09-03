@@ -7,6 +7,8 @@ require("modules.system.render")
 require("modules.utils.utils")
 require("table")
 
+local StatBlock = require("modules.utils.stats")
+
 ----------------------------------------
 -- Classe Projectile
 ----------------------------------------
@@ -17,22 +19,31 @@ Projectile.type = "Projectile"
 
 function Projectile.new(name, trajectory, customHit, projManager, config)
     local projectile = setmetatable({}, Projectile)
-    projectile.dmg = config.damage or 10
-    projectile.speed = config.speed or 20000
 
-    projectile.hb = config.hb or { type = "circle", radius = 5 }
-    projectile.scale = config.scale or 1
-    projectile.sound = config.sound
-    projectile.criticalChance = config.criticalChance or 0
-    projectile.criticalMultiplier = config.criticalMultiplier or 1.5
-    projectile.turnSpeed = config.turnSpeed or 0
-    projectile.charge = config.charge
-    
     projectile.name = name
     projectile.trajectory = trajectory -- função que define a trajetória do projétil
     projectile.customHit = customHit   -- função executada toda vez que um projétil acertar um alvo
     projectile.projManager = projManager
     projectile.category = projManager.category
+    projectile.sound = config.sound
+    projectile.charge = config.charge
+    projectile.hb = config.hb or { type = CIRCLE, radius = 5 }
+
+    -- Propriedades upgradeáveis via projectile:upgrade(key, value, mode)
+    projectile.stats = StatBlock.new({
+        damage = config.damage or 10,
+        bulletSpeed = config.bulletSpeed or config.speed or 600,
+        scale = config.scale or 1,
+        criticalChance = config.criticalChance or 0,
+        criticalMultiplier = config.criticalMultiplier or 1.5,
+        turnSpeed = config.turnSpeed or 0,
+        firerate = config.firerate or 4,
+    })
+
+    projectile.firerateTimer = math.huge
+    projectile.isCharging = false
+    projectile.chargeTimer = 0
+
     projectile.projManager:add(projectile)
     projectile.image = love.graphics.newImage(pngPathFormat({ "assets", "sprites", "projectiles", projectile.name }))
     projectile.image:setFilter("nearest", "nearest")
@@ -41,14 +52,42 @@ function Projectile.new(name, trajectory, customHit, projManager, config)
     return projectile
 end
 
-function Projectile:changeStats(newStats)
-    self.dmg = newStats.damage or self.dmg
-    self.speed = newStats.speed or self.speed
-    self.hb = newStats.hb or self.hb
-    self.scale = newStats.scale or self.scale
-    self.criticalChance = newStats.criticalChance or self.criticalChance
-    self.criticalMultiplier = newStats.criticalMultiplier or self.criticalMultiplier
+----------------------------------------
+-- Upgrades / Reset
+----------------------------------------
+
+function Projectile:upgrade(key, value, mode)
+    self.stats:upgrade(key, value, mode)
 end
+
+function Projectile:reset()
+    self.stats:reset()
+
+    self.firerateTimer = math.huge
+    self.isCharging = false
+    self.chargeTimer = 0
+end
+
+----------------------------------------
+-- Hitbox
+----------------------------------------
+
+function Projectile:getHitbox()
+    local baseScale = self.stats:getBase(SCALE) or 1
+    local ratio = self.stats:get(SCALE) / baseScale
+
+    if self.hb.type == CIRCLE then
+        return { type = CIRCLE, radius = self.hb.radius * ratio }
+    elseif self.hb.type == RECTANGLE then
+        return { type = RECTANGLE, width = self.hb.width * ratio, height = self.hb.height * ratio }
+    end
+
+    return self.hb
+end
+
+----------------------------------------
+-- Disparo
+----------------------------------------
 
 function Projectile:press(attacker, origin, dir)
     if self.charge then
@@ -68,14 +107,27 @@ function Projectile:shoot(attacker, origin, dir)
     table.insert(self.events, shotEvent)
 end
 
-function Projectile:destroy()
-    for _, shotEvent in pairs(self.events) do
-        shotEvent:destroy()
+function Projectile:tryShoot(attacker, origin, dir)
+    if not self.charge and self.firerateTimer < (1 / self.stats:get("firerate")) then
+        return false
     end
-    self.projManager:remove(self)
+
+    local fired = self:press(attacker, origin, dir)
+
+    if fired then
+        self.firerateTimer = 0
+    end
+
+    return fired
+end
+
+function Projectile:getCooldownPercent()
+    return math.min(1, self.firerateTimer / (1 / self.stats:get("firerate")))
 end
 
 function Projectile:update(dt)
+    self.firerateTimer = self.firerateTimer + dt
+
     if self.isCharging then
         self.chargeTimer = math.min(self.chargeTimer + dt, self.charge.time)
     end
@@ -96,6 +148,14 @@ function Projectile:update(dt)
     end
 end
 
+function Projectile:destroy()
+    for _, shotEvent in pairs(self.events) do
+        shotEvent:destroy()
+    end
+    self.events = {}
+    self.projManager:remove(self)
+end
+
 function Projectile:draw()
     for i = 1, #self.events do
         local shot = self.events[i]
@@ -103,7 +163,8 @@ function Projectile:draw()
             local x, y = shot.body:getPosition()
             local vx, vy = shot.body:getLinearVelocity()
             local angle = math.atan2(vy, vx)
-            love.graphics.draw(self.image, x, y, angle, self.scale, self.scale, self.image:getWidth() / 2, self.image:getHeight() / 2)
+            local scale = self.stats:get(SCALE)
+            love.graphics.draw(self.image, x, y, angle, scale, scale, self.image:getWidth() / 2, self.image:getHeight() / 2)
             debugRender(shot)
         end
     end
@@ -133,12 +194,13 @@ function Projectile:releaseCharge(attacker, origin, dir)
     self.chargeTimer = 0
 
     -- local multiplier = 1
-
+    --
     -- if self.charge then
     --     multiplier = self.charge.minMultiplier + (self.charge.maxMultiplier - self.charge.minMultiplier) * ratio
     -- end
 
     self:shoot(attacker, origin, dir)
+    self.firerateTimer = 0
 end
 
 function Projectile:getChargeRatio()
@@ -166,11 +228,11 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
 
     shot.projectileState = projectileState
     shot.trajectory = projectileState.trajectory
-    shot.turnSpeed = projectileState.turnSpeed
-    shot.speed = projectileState.speed
-    shot.dmg = projectileState.dmg
-    shot.criticalMultiplier = projectileState.criticalMultiplier
-    shot.criticalChance = projectileState.criticalChance
+    shot.turnSpeed = projectileState.stats:get("turnSpeed")
+    shot.speed = projectileState.stats:get("bulletSpeed")
+    shot.dmg = projectileState.stats:get("damage")
+    shot.criticalMultiplier = projectileState.stats:get("criticalMultiplier")
+    shot.criticalChance = projectileState.stats:get("criticalChance")
     shot.customHit = projectileState.customHit
     shot.category = projectileState.category
 
@@ -178,7 +240,7 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
     shot.timer = 0
 
     shot.body = love.physics.newBody(Physics.world, shot.initialPos.x, shot.initialPos.y, "dynamic")
-    shot.shape = getRightHitbox(projectileState.hb)
+    shot.shape = getRightHitbox(projectileState:getHitbox())
     shot.fixture = love.physics.newFixture(shot.body, shot.shape)
     shot.fixture:setUserData(shot)
     shot.fixture:setRestitution(0)
@@ -210,7 +272,7 @@ function ShotEvent:onHit(target)
 
     self:destroy()
 
-    if target.hp > 0 then
+    if target:getHp() > 0 then
         soundManager:play("hit1", true)
     end
 

@@ -9,7 +9,7 @@ function debugRender(obj)
 
     love.graphics.setColor(1, 0, 0)
 
-    if shapeType == "circle" then
+    if shapeType == CIRCLE then
       local radius = obj.shape:getRadius()
       love.graphics.circle("line", x, y, radius)
     elseif shapeType == "polygon" then

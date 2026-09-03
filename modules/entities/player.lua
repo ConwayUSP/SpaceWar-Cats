@@ -50,9 +50,6 @@ function Player:load()
   self.invulrabilityTimer = 0
   self.invulnerabilityCd = 2
 
-  self.hp = 1
-  self.maxHp = 1
-
   self.isDead = false
   self.isDefeated = false
 
@@ -70,10 +67,7 @@ end
 function Player:setSpaceship(spaceship)
   self.spaceship = spaceship
 
-  self.maxHp = spaceship.maxHp
-  self.hp = self.maxHp
-
-  self:newHitbox()
+  self:refreshHitbox()
 end
 
 ----------------------------------------
@@ -81,10 +75,10 @@ end
 ----------------------------------------
 
 function Player:reset()
-  self:resetStats()
+  self.spaceship:reset()
+  self:refreshHitbox()
 
   self.body:setPosition(self.initialPos.x, self.initialPos.y)
-
   self.body:setLinearVelocity(0, 0)
 
   self.isDead = false
@@ -94,25 +88,15 @@ function Player:reset()
   self.invulrabilityTimer = 0
 
   self.boostParticle = newBoostParticle(addVec(self.initialPos, self.boostOffset))
-
   self.boostParticle:play()
-end
-
-function Player:resetStats()
-  self.spaceship:reset()
-
-  self.maxHp = self.spaceship.maxHp
-  self.hp = self.maxHp
-
-  self:newHitbox()
 end
 
 ----------------------------------------
 -- Hitbox
 ----------------------------------------
 
-function Player:newHitbox()
-  self.shape = love.physics.newCircleShape(self.spaceship.size)
+function Player:refreshHitbox()
+  self.shape = love.physics.newCircleShape(self.spaceship.stats:get(SIZE))
 
   if self.fixture then
     self.fixture:destroy()
@@ -143,9 +127,9 @@ function Player:update(dt)
 
   self:updateState(dt)
   self:updateMotion(dt)
+  self.spaceship:update(dt, self.state)
   self:updateShooting(dt)
   self:updateParticles(dt)
-  self.spaceship:update(dt)
 end
 
 function Player:updateParticles(dt)
@@ -177,11 +161,6 @@ function Player:updateState(dt)
   if self.invulrabilityTimer > 0 then
     self.invulrabilityTimer = self.invulrabilityTimer - dt
   end
-
-  local animation = self.spaceship.animations[self.state]
-  if animation then
-    animation:update(dt)
-  end
 end
 
 function Player:updateShooting(dt)
@@ -189,7 +168,6 @@ function Player:updateShooting(dt)
     return
   end
 
-  self.spaceship:updateShooting(dt)
   if love.keyboard.isDown("space") then
     self:shoot()
   end
@@ -199,14 +177,14 @@ function Player:updateMotion(dt)
   if self.isDead then
     return
   end
-  
+
   local _, mouseY = screenToGamePosition(love.mouse.getPosition())
   local limit = 20
   local y = clamp(self.body:getY(), limit, VIRTUAL_HEIGHT - limit)
   mouseY = clamp(mouseY, limit, VIRTUAL_HEIGHT - limit)
 
   local error = mouseY - y
-  local vy = error * 2
+  local vy = error * self.spaceship.stats:get("speed")
 
   self.body:setLinearVelocity(0, vy)
 end
@@ -242,10 +220,15 @@ function Player:takeDamage(damage)
     return
   end
 
-  self.hp = self.hp - damage
-  if self.hp <= 0 and not self.isDead then
+  local died = self.spaceship:takeDamage(damage)
+
+  if died then
     self:die()
   end
+end
+
+function Player:getHp()
+  return self.spaceship.hp
 end
 
 ----------------------------------------
@@ -293,19 +276,7 @@ function Player:draw()
   end
 
   local x, y = self.body:getPosition()
-
-  local spaceship = self.spaceship
-
-  local animation = spaceship.animations[self.state]
-
-  local quad = animation.frames[animation.currFrame]
-
-  local offset = {
-    x = animation.frameDim.width / 2 - 4,
-    y = animation.frameDim.height / 2
-  }
-
-  love.graphics.draw(spaceship.spriteSheets[self.state], quad, x, y, self.angle, spaceship.scale, spaceship.scale, offset.x, offset.y)
+  self.spaceship:draw(x, y, self.angle, self.state)
 
   debugRender(self)
 

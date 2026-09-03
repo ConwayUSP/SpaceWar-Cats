@@ -10,32 +10,15 @@ require("modules.entities.projectile")
 require("modules.utils.states")
 require("modules.constructor.projectile")
 
+local StatBlock = require("modules.utils.stats")
+
 ----------------------------------------
 -- Entidade Spaceship
 ----------------------------------------
 
 Spaceship = {}
-
 Spaceship.__index = Spaceship
 Spaceship.type = "Spaceship"
-
-----------------------------------------
--- Utilitários
-----------------------------------------
-
-local function copyTable(original)
-  local copy = {}
-
-  for key, value in pairs(original) do
-    if type(value) == "table" then
-      copy[key] = copyTable(value)
-    else
-      copy[key] = value
-    end
-  end
-
-  return copy
-end
 
 ----------------------------------------
 -- Construtor
@@ -45,31 +28,23 @@ function Spaceship.new(config)
   local self = setmetatable({}, Spaceship)
 
   self.config = config
+  self.name = config.name
+  self.animation = config.animation
+  self.customHit = config.customHit
 
-  self.name = self.config.name
-
-  self.speed = self.config.speed
-  self.damage = self.config.damage
-  self.size = self.config.size
-  self.scale = self.config.scale
-
-  self.maxHp = self.config.maxHp
-
-  self.criticalChance = self.config.criticalChance
-  self.criticalMultiplier = self.config.criticalMultiplier
-
-  self.hb = copyTable(self.config.hb)
-
-  self.firerateTimer = 0
-  self.firerate = self.config.firerate
-  self.planetRegen = self.config.planetRegen
-
-  self.weapon = nil
-  self.customShot = nil
-  self.customHit = self.config.customHit
+  -- Propriedades "de nave", upgradeáveis via self:upgrade(...)
+  self.stats = StatBlock.new({
+    maxHp = config.maxHp,
+    size = config.size,
+    scale = config.scale,
+    speed = config.speed,
+    planetRegen = 0,
+  })
 
   self.animations = {}
   self.spriteSheets = {}
+
+  self.weapon = Projectile.new(config.weapon.name, moveDirection, self.customHit, pProjectiles, config.weapon)
 
   self:reset()
   self:addAnimations()
@@ -81,42 +56,53 @@ end
 -- Update
 ----------------------------------------
 
-function Spaceship:update(dt)
-  self:updateWeapon(dt)
-end
-
-function Spaceship:updateWeapon(dt)
+function Spaceship:update(dt, state)
   self.weapon:update(dt)
-end
 
-function Spaceship:updateShooting(dt)
-  self.firerateTimer = self.firerateTimer + dt
-
-  if self.firerateTimer >= (1 / self.firerate) then
-    self.canShoot = true
+  local animation = self.animations[state]
+  if animation then
+    animation:update(dt)
   end
 end
 
 ----------------------------------------
--- Shoot
+-- Vida
+----------------------------------------
+
+function Spaceship:takeDamage(damage)
+  self.hp = self.hp - damage
+  return self.hp <= 0
+end
+
+function Spaceship:heal(amount)
+  self.hp = math.min(self.hp + amount, self.stats:get("maxHp"))
+end
+
+----------------------------------------
+-- Tiro
 ----------------------------------------
 
 function Spaceship:shoot(player)
-  if not self.weapon or not self.canShoot then
-    return
-  end
-
   local x, y = player.body:getPosition()
   local origin = addVec(vec(x, y), polarToVec(player.angle, 25))
-  
-  if self.weapon:press(player, origin, player.angle) then
-    self.canShoot = false
-    self.firerateTimer = 0
-  end
+
+  self.weapon:tryShoot(player, origin, player.angle)
 end
 
 function Spaceship:getCooldownPercent()
-  return math.min(1, self.firerateTimer / (1 / self.firerate))
+  return self.weapon:getCooldownPercent()
+end
+
+----------------------------------------
+-- Upgrades
+----------------------------------------
+
+function Spaceship:upgrade(key, value, mode)
+  self.stats:upgrade(key, value, mode)
+end
+
+function Spaceship:upgradeWeapon(key, value, mode)
+  self.weapon:upgrade(key, value, mode)
 end
 
 ----------------------------------------
@@ -124,52 +110,10 @@ end
 ----------------------------------------
 
 function Spaceship:reset()
-  self.speed = self.config.speed
-  self.damage = self.config.damage
-  self.size = self.config.size
-  self.scale = self.config.scale
+  self.stats:reset()
+  self.hp = self.stats:get("maxHp")
 
-  self.maxHp = self.config.maxHp
-
-  self.criticalChance = self.config.criticalChance
-  self.criticalMultiplier = self.config.criticalMultiplier
-
-  self.hb = copyTable(self.config.hb)
-
-  self.firerate = self.config.firerate
-  self.planetRegen = self.config.planetRegen
-
-  self:attWeapon()
-
-  self.customShot = self.config.customShot
-  self.canShoot = true
-  self.firerateTimer = math.huge
-
-  self.charge = self.config.charge
-end
-
-----------------------------------------
--- Arma
-----------------------------------------
-
-function Spaceship:attWeapon(newStats)
-  newStats = newStats or {}
-
-  local weaponStats = {
-    speed = newStats.speed or self.speed,
-    damage = newStats.damage or self.damage,
-    hb = newStats.hb or self.hb,
-    criticalChance = newStats.criticalChance or self.criticalChance,
-    criticalMultiplier = newStats.criticalMultiplier or self.criticalMultiplier,
-    scale = newStats.scale or self.config.weapon.scale,
-    charge = newStats.charge or self.config.weapon.charge
-  }
-
-  if self.weapon then
-    self.weapon:changeStats(weaponStats)
-  else
-    self.weapon = Projectile.new(self.config.weapon.name, moveDirection, self.customHit, pProjectiles, weaponStats)
-  end
+  self.weapon:reset()
 end
 
 ----------------------------------------
@@ -177,9 +121,29 @@ end
 ----------------------------------------
 
 function Spaceship:addAnimations()
-  local animation = self.config.animation
+  local animation = self.animation
 
   local path = pngPathFormat({ animation.folder, animation.state })
 
-  addAnimation(self, path, animation.state, newAnimSetting(animation.frames, { width = animation.frameWidth, height = animation.frameHeight}, animation.frameDuration, animation.loop, animation.scale))
+  addAnimation(self, path, animation.state, newAnimSetting(animation.frames, { width = animation.frameWidth, height = animation.frameHeight }, animation.frameDuration, animation.loop, animation.scale))
+end
+
+----------------------------------------
+-- Draw
+----------------------------------------
+
+function Spaceship:draw(x, y, angle, state)
+  local animation = self.animations[state]
+  if not animation then
+    return
+  end
+
+  local quad = animation.frames[animation.currFrame]
+  local scale = self.stats:get(SCALE)
+  local offset = {
+    x = animation.frameDim.width / 2 - 4,
+    y = animation.frameDim.height / 2
+  }
+
+  love.graphics.draw(self.spriteSheets[state], quad, x, y, angle, scale, scale, offset.x, offset.y)
 end

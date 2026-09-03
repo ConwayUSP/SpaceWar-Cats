@@ -20,7 +20,7 @@ upgradesList = {
       colors.base, "faster!"
     },
     apply = function(ctx)
-      ctx.player.spaceship.firerate = ctx.player.spaceship.firerate * 1.15
+      ctx.player.spaceship:upgradeWeapon(FIRERATE, 1.15, MULT)
     end
   },
   {
@@ -32,7 +32,7 @@ upgradesList = {
       colors.base, "faster!"
     },
     apply = function(ctx)
-      ctx.player.spaceship.firerate = ctx.player.spaceship.firerate * 1.2
+      ctx.player.spaceship:upgradeWeapon(FIRERATE, 1.2, MULT)
     end
   },
   {
@@ -44,8 +44,7 @@ upgradesList = {
       colors.base, "!"
     },
     apply = function(ctx)
-      ctx.player.spaceship.damage = ctx.player.spaceship.damage + 8
-      ctx.player.spaceship:attWeapon()
+      ctx.player.spaceship:upgradeWeapon(DAMAGE, 8, ADD)
     end
   },
   {
@@ -57,8 +56,7 @@ upgradesList = {
       colors.base, "!"
     },
     apply = function(ctx)
-      ctx.player.spaceship.damage = ctx.player.spaceship.damage + 12
-      ctx.player.spaceship:attWeapon()
+      ctx.player.spaceship:upgradeWeapon(DAMAGE, 12, ADD)
     end
   },
   {
@@ -70,8 +68,7 @@ upgradesList = {
       colors.base, "!"
     },
     apply = function(ctx)
-      ctx.player.spaceship.damage = ctx.player.spaceship.damage + 16
-      ctx.player.spaceship:attWeapon()
+      ctx.player.spaceship:upgradeWeapon(DAMAGE, 16, ADD)
     end
   },
   {
@@ -83,8 +80,7 @@ upgradesList = {
       colors.base, "higher!"
     },
     apply = function(ctx)
-      ctx.player.spaceship.criticalChance = ctx.player.spaceship.criticalChance + 0.04
-      ctx.player.spaceship:attWeapon()
+      ctx.player.spaceship:upgradeWeapon(CRITICAL_CHANCE, 0.04, ADD)
     end
   },
   {
@@ -96,8 +92,7 @@ upgradesList = {
       colors.base, "higher!"
     },
     apply = function(ctx)
-      ctx.player.spaceship.criticalChance = ctx.player.spaceship.criticalChance + 0.08
-      ctx.player.spaceship:attWeapon()
+      ctx.player.spaceship:upgradeWeapon(CRITICAL_CHANCE, 0.08, ADD)
     end
   },
   {
@@ -109,8 +104,7 @@ upgradesList = {
       colors.base, "higher!"
     },
     apply = function(ctx)
-      ctx.player.spaceship.criticalChance = ctx.player.spaceship.criticalChance + 0.12
-      ctx.player.spaceship:attWeapon()
+      ctx.player.spaceship:upgradeWeapon(CRITICAL_CHANCE, 0.12, ADD)
     end
   },
   {
@@ -122,9 +116,9 @@ upgradesList = {
       colors.base, "smaller!"
     },
     apply = function(ctx)
-      ctx.player.spaceship.size = ctx.player.spaceship.size * 0.8
-      ctx.player.spaceship.scale = ctx.player.spaceship.scale * 0.8
-      ctx.player:newHitbox()
+      ctx.player.spaceship:upgrade(SIZE, 0.8, MULT)
+      ctx.player.spaceship:upgrade(SCALE, 0.8, MULT)
+      ctx.player:refreshHitbox()
     end
   },
   {
@@ -136,15 +130,9 @@ upgradesList = {
       colors.base, "larger!"
     },
     apply = function(ctx)
-      ctx.player.spaceship.hb = {
-        type = "rectangle",
-        width = ctx.player.spaceship.hb.width * 1.15,
-        height = ctx.player.spaceship.hb.height * 1.15
-      }
-
-      ctx.player.spaceship:attWeapon({
-        scale = ctx.player.spaceship.weapon.scale * 1.15
-      })
+      -- scale agora escala a hitbox do projétil (círculo ou retângulo)
+      -- junto automaticamente, então não precisamos mais mexer em hb à parte.
+      ctx.player.spaceship:upgradeWeapon(SCALE, 1.15, MULT)
     end
   },
   {
@@ -156,15 +144,7 @@ upgradesList = {
       colors.base, "larger!"
     },
     apply = function(ctx)
-      ctx.player.spaceship.hb = {
-        type = "rectangle",
-        width = ctx.player.spaceship.hb.width * 1.30,
-        height = ctx.player.spaceship.hb.height * 1.30
-      }
-
-      ctx.player.spaceship:attWeapon({
-        scale = ctx.player.spaceship.weapon.scale * 1.30
-      })
+      ctx.player.spaceship:upgradeWeapon(SCALE, 1.30, MULT)
     end
   },
   {
@@ -198,8 +178,7 @@ upgradesList = {
       colors.base, "!"
     },
     apply = function(ctx)
-      ctx.player.spaceship.criticalMultiplier = ctx.player.spaceship.criticalMultiplier + 0.15
-      ctx.player.spaceship:attWeapon()
+      ctx.player.spaceship:upgradeWeapon(CRITICAL_MULTIPLIER, 0.15, ADD)
     end
   },
   {
@@ -211,8 +190,7 @@ upgradesList = {
       colors.base, "!"
     },
     apply = function(ctx)
-      ctx.player.spaceship.criticalMultiplier = ctx.player.spaceship.criticalMultiplier + 0.30
-      ctx.player.spaceship:attWeapon()
+      ctx.player.spaceship:upgradeWeapon(CRITICAL_MULTIPLIER, 0.30, ADD)
     end
   },
   {

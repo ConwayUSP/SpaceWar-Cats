@@ -25,7 +25,7 @@ function Enemy.new(name, spawnPos, move, onDeath, weapon, customShot, config)
   enemy.cd = config.cd or 1
   enemy.fireRate = config.fireRate or 1
   enemy.hb = config.hb or {
-    type = "circle",
+    type = CIRCLE,
     radius = enemy.size
   }
   enemy.alpha = config.initialAlpha or 1
@@ -203,11 +203,21 @@ function Enemy:kill()
   local x, y = self.body:getPosition()
 
   if self.onDeath then
-    self:onDeath(x, y)
+    table.insert(Physics.delayedFunctions, function()
+      self:onDeath(x, y)
+    end)
   end
 
   self:die()
 end
+
+function Enemy:getHp()
+  return self.hp
+end
+
+----------------------------------------
+-- Draw
+----------------------------------------
 
 function Enemy:draw()
   if self.isDead then

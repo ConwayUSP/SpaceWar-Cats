@@ -18,11 +18,11 @@ end
 ----------------------------------------
 function newShooterEnemy(x, y)
     local projConfig = {
-        speed = 150,
+        bulletSpeed = 150,
         damage = 20,
         size = 2,
         hb = {
-            type = "circle",
+            type = CIRCLE,
             radius = 3
         },
         sound = "tiro1"
@@ -69,7 +69,7 @@ function newCatSwimmer(x, y, vx)
         shootsUntilCd = 5,
         cd = 3,
         hb = {
-            type = "rectangle",
+            type = RECTANGLE,
             width = 22,
             height = 18
         }
@@ -85,11 +85,11 @@ end
 ----------------------------------------
 function newTankEnemy(x, y, newVx)
     local projConfig = {
-        speed = 80,
+        bulletSpeed = 80,
         damage = 30,
         size = 10,
         hb = {
-            type = "circle",
+            type = CIRCLE,
             radius = 3
         },
         sound = "tiro2"
@@ -118,7 +118,7 @@ function newTankEnemy(x, y, newVx)
         shootsUntilCd = 3,
         cd = 4,
         hb = {
-            type = "rectangle",
+            type = RECTANGLE,
             width = 20,
             height = 25
         },
@@ -154,11 +154,11 @@ end
 
 function newCatMage(x, y, cd)
     local projConfig = {
-        speed = 50,
+        bulletSpeed = 50,
         damage = 20,
         size = 5,
         hb = {
-            type = "circle",
+            type = CIRCLE,
             radius = 3
         },
         turnSpeed = math.rad(360) * 0.8
@@ -215,7 +215,7 @@ function newCatMage(x, y, cd)
         shootsUntilCd = 1,
         cd = 3,
         hb = {
-            type = "rectangle",
+            type = RECTANGLE,
             width = 20,
             height = 28
         },
@@ -257,7 +257,7 @@ function newCatBox(x, y)
         hp = 100 * hpMultipler(),
         size = 12,
         hb = {
-            type = "rectangle",
+            type = RECTANGLE,
             width = 30,
             height = 30
         }

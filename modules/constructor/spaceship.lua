@@ -6,25 +6,13 @@ function defaultSpaceship()
     size = 5,
     scale = 1,
     maxHp = 1,
-
-    -- Movimento
-    speed = 600,
-
-    -- Arma / projétil
-    damage = 40,
-    criticalChance = 0.10,
-    criticalMultiplier = 1.5,
+    speed = 2,
 
     hb = {
-      type = "rectangle",
+      type = RECTANGLE,
       width = 10,
       height = 5
     },
-
-    firerate = 3,
-
-    -- Outros atributos da nave
-    planetRegen = 0.0,
 
     -- Arte
     animation = {
@@ -41,7 +29,12 @@ function defaultSpaceship()
     -- Arma
     weapon = {
       name = "blaster-tune",
-      scale = 1
+      bulletSpeed = 600,
+      firerate = 3,
+      scale = 1,
+      damage = 40,
+      criticalChance = 0.10,
+      criticalMultiplier = 1.5,
     }
   }
 
@@ -56,25 +49,13 @@ function bomberSpaceship()
     size = 5,
     scale = 1,
     maxHp = 1,
-
-    -- Movimento
-    speed = 300,
-
-    -- Arma / projétil
-    damage = 100,
-    criticalChance = 0.10,
-    criticalMultiplier = 1.5,
+    speed = 2,
 
     hb = {
-      type = "rectangle",
+      type = RECTANGLE,
       width = 10,
       height = 5
     },
-
-    firerate = 0.5,
-
-    -- Outros atributos da nave
-    planetRegen = 0.0,
 
     -- Arte
     animation = {
@@ -91,7 +72,12 @@ function bomberSpaceship()
     -- Arma
     weapon = {
       name = "bomb",
-      scale = 1
+      scale = 1,
+      firerate = 0.5,
+      bulletSpeed = 400,
+      damage = 100,
+      criticalChance = 0.10,
+      criticalMultiplier = 1.5,
     },
 
     customHit = function(projectile, target)

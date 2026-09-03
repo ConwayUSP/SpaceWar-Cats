@@ -58,13 +58,14 @@ function SetGameCtx(newCtx)
 end
 
 function resetGame()
+	enemyManager:reset()
+	eProjectiles:reset()
+
 	pProjectiles:clear()
-	eProjectiles:clear()
 	particleManager:reset()
 
 	p1:reset()
 	planet:reset()
-	enemyManager:reset()
 	waveManager:reset()
 	explosionManager:reset()
 	runStats:reset()

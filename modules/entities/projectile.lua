@@ -108,7 +108,7 @@ function Projectile:shoot(attacker, origin, dir)
 end
 
 function Projectile:tryShoot(attacker, origin, dir)
-    if not self.charge and self.firerateTimer < (1 / self.stats:get("firerate")) then
+    if not self.charge and not self:isCooldownReady() then
         return false
     end
 
@@ -121,7 +121,15 @@ function Projectile:tryShoot(attacker, origin, dir)
     return fired
 end
 
+function Projectile:isCooldownReady()
+    return self.firerateTimer >= (1 / self.stats:get("firerate"))
+end
+
 function Projectile:getCooldownPercent()
+    if self.charge and self.isCharging then
+        return 1 - self:getChargeRatio()
+    end
+
     return math.min(1, self.firerateTimer / (1 / self.stats:get("firerate")))
 end
 
@@ -175,7 +183,7 @@ end
 ---------------------------------------
 
 function Projectile:beginCharge()
-    if not self.charge or self.isCharging then
+    if not self.charge or self.isCharging or not self:isCooldownReady() then
         return
     end
 
@@ -185,13 +193,18 @@ end
 
 function Projectile:releaseCharge(attacker, origin, dir)
     if not self.isCharging then
-        return
+        return false
     end
 
     local ratio = self:getChargeRatio()
+    local canShoot = ratio >= 0.50 and self:isCooldownReady()
 
     self.isCharging = false
     self.chargeTimer = 0
+
+    if not canShoot then
+        return false
+    end
 
     -- local multiplier = 1
     --
@@ -201,6 +214,7 @@ function Projectile:releaseCharge(attacker, origin, dir)
 
     self:shoot(attacker, origin, dir)
     self.firerateTimer = 0
+    return true
 end
 
 function Projectile:getChargeRatio()

@@ -97,4 +97,8 @@ function BattleState:mousepressed(x, y, button, istouch, presses)
 	p1:mousepressed(x, y, button, istouch, presses)
 end
 
+function BattleState:mousereleased(x, y, button, istouch, presses)
+	p1:mousereleased(x, y, button, istouch, presses)
+end
+
 return BattleState

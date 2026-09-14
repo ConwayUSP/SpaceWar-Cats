@@ -12,11 +12,30 @@ require("modules.UI.interactive")
 --- BattleScene
 ----------------------------------------
 
+local battleWidgets = {
+    shoot = Interactive.new(40, VIRTUAL_HEIGHT - 40, 64, 64, nil, "shoot", function(self)
+        local image = p1.spaceship.weapon.image
+        love.graphics.draw(image, self.button.x, self.button.y, 0, 2, 2, image:getWidth() / 2, image:getHeight() / 2)
+    end, function()
+        p1:beginShoot()
+    end, function()
+        p1:releaseShoot()
+    end, function()
+        return p1.spaceship:getCooldownPercent()
+    end),
+
+    special = Interactive.new(105, VIRTUAL_HEIGHT - 40, 48, 48, function() 
+        -- TODO: implementar botão de special
+    end, "special", function(self) 
+        
+    end)
+}
+
 function newMenuScene()
     local menuScene = UIScene.new()
-    menuScene:add(Interactive.new(40, VIRTUAL_HEIGHT - 40, 64, 64, function() 
-        p1:shoot()
-    end, "shoot"))
+
+    menuScene:add(battleWidgets.shoot)
+    menuScene:add(battleWidgets.special)
 
     local txt = Text.new(
         "Press Escape for Settings",
@@ -38,9 +57,9 @@ end
 function newBattleScene()
     local battleScene = UIScene.new()
     battleScene:add(LifeBarWrapper.new())
-    battleScene:add(Interactive.new(40, VIRTUAL_HEIGHT - 40, 64, 64, function() 
-        p1:shoot()
-    end, "shoot"))
+    battleScene:add(battleWidgets.shoot)
+    battleScene:add(battleWidgets.special)
+
     
     local txt =  Text.new(
         "WAVE ",

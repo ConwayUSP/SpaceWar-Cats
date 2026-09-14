@@ -82,11 +82,18 @@ end
 -- Tiro
 ----------------------------------------
 
-function Spaceship:shoot(player)
+function Spaceship:beginShoot(player)
   local x, y = player.body:getPosition()
   local origin = addVec(vec(x, y), polarToVec(player.angle, 25))
 
   self.weapon:tryShoot(player, origin, player.angle)
+end
+
+function Spaceship:releaseShoot(player)
+  local x, y = player.body:getPosition()
+  local origin = addVec(vec(x, y), polarToVec(player.angle, 25))
+
+  self.weapon:releaseCharge(player, origin, player.angle)
 end
 
 function Spaceship:getCooldownPercent()

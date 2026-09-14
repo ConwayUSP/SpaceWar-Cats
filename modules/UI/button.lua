@@ -2,13 +2,16 @@ Button = {}
 Button.__index = Button
 Button.type = "Button"
 
-function Button.new(x, y, width, height, onClick, image, inverted)
+function Button.new(x, y, width, height, onClick, image, inverted, onPress, onRelease)
   local button = setmetatable({}, Button)
   button.x = x
   button.y = y
   button.width = width
   button.height = height
   button.onClick = onClick
+  button.onPress = onPress
+  button.onRelease = onRelease
+  button.isPressed = false
 
   button.state = STATIC
   button.isHovered = false
@@ -40,6 +43,10 @@ function Button:update(dt)
     self.animations[self.state]:update(dt)
   end
 
+  if self.isPressed and self.onPress then
+    self.onPress()
+  end
+
   local mouseX, mouseY = love.mouse.getPosition()
   self.isHovered = isMouseOver(self, mouseX, mouseY, true)
   self.state = self.isHovered and HOVER or STATIC
@@ -54,8 +61,22 @@ end
 
 function Button:mousepressed(x, y, button)
   if button == 1 and isMouseOver(self, x, y, true) then
-    if self.onClick then
+    self.isPressed = true
+
+    if not self.onPress and self.onClick then
       self.onClick()
     end
+  end
+end
+
+function Button:mousereleased(x, y, button)
+  if button ~= 1 or not self.isPressed then
+    return
+  end
+
+  self.isPressed = false
+
+  if self.onRelease then
+    self.onRelease()
   end
 end

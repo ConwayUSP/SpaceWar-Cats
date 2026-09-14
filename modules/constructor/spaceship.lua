@@ -87,3 +87,53 @@ function bomberSpaceship()
 
   return Spaceship.new(config)
 end
+
+function plasmaSpaceship()
+  local config = {
+    name = "Plasmatic",
+
+    -- Player / nave
+    size = 5,
+    scale = 1,
+    maxHp = 1,
+    speed = 2,
+
+    hb = {
+      type = RECTANGLE,
+      width = 10,
+      height = 5
+    },
+
+    -- Arte
+    animation = {
+      folder = "assets/animations/player",
+      state = FLYING,
+      frameWidth = 32,
+      frameHeight = 32,
+      frameDuration = 0.1,
+      frames = 4,
+      loop = true,
+      scale = 1
+    },
+
+    -- Arma
+    weapon = {
+      name = "plasma",
+      scale = 1,
+      firerate = 0.4,
+      bulletSpeed = 300,
+      damage = 100,
+      criticalChance = 0.10,
+      criticalMultiplier = 1.5,
+      charge = {
+        time = 2
+      }
+    },
+
+    customHit = function(projectile, target)
+
+    end
+  }
+
+  return Spaceship.new(config)
+end

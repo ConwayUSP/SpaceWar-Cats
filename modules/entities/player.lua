@@ -57,7 +57,8 @@ function Player:load()
 
   -- Nave inicial
   -- self:setSpaceship(defaultSpaceship())
-  self:setSpaceship(bomberSpaceship())
+  -- self:setSpaceship(bomberSpaceship())
+  self:setSpaceship(plasmaSpaceship())
 end
 
 ----------------------------------------
@@ -169,7 +170,7 @@ function Player:updateShooting(dt)
   end
 
   if love.keyboard.isDown("space") then
-    self:shoot()
+    self:beginShoot()
   end
 end
 
@@ -235,12 +236,21 @@ end
 -- Tiro
 ----------------------------------------
 
-function Player:shoot()
+
+function Player:beginShoot()
   if self.isDead then
     return
   end
 
-  self.spaceship:shoot(self)
+  self.spaceship:beginShoot(self)
+end
+
+function Player:releaseShoot()
+  if self.isDead then
+    return
+  end
+
+  self.spaceship:releaseShoot(self)
 end
 
 ----------------------------------------
@@ -249,13 +259,19 @@ end
 
 function Player:keypressed(key, scancode, isrepeat)
   if key == "space" then
-    self:shoot()
+    self:beginShoot()
   end
 end
 
 function Player:mousepressed(x, y, button, istouch, presses)
   if button == 1 then
     -- self:shoot()
+  end
+end
+
+function Player:mousereleased(x, y, button, istouch, presses)
+  if button == 1 then
+    -- self:releaseShoot()
   end
 end
 

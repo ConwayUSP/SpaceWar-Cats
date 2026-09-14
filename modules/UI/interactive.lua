@@ -1,10 +1,24 @@
+----------------------------------------
+-- Importações de Módulos
+----------------------------------------
+
+require("modules.UI.button")
+
+----------------------------------------
+-- Classe Interactive
+----------------------------------------
+
 Interactive = {}
 Interactive.__index = Interactive
 Interactive.type = "Interactive"
 
-function Interactive.new(x, y, width, height, onClick, image)
+function Interactive.new(x, y, width, height, onClick, image, frontDrawFunc, onPress, onRelease, getCooldownPercent)
   local self = setmetatable({}, Interactive)
-  self.button = Button.new(x, y, width, height, onClick, image)
+  self.button = Button.new(x, y, width, height, onClick, image, false, onPress, onRelease)
+  self.frontDrawFunc = frontDrawFunc
+  self.getCooldownPercent = getCooldownPercent or function()
+    return 1
+  end
 
   return self
 end
@@ -15,24 +29,28 @@ function Interactive:draw()
 
   self.button:draw()
 
-  local image = p1.spaceship.weapon.image
-  love.graphics.draw(image, self.button.x, self.button.y, 0, 2, 2, image:getWidth() / 2, image:getHeight() / 2)
+  if self.frontDrawFunc then
+    self:frontDrawFunc()
+  end
 
   love.graphics.setShader()
 end
 
 function Interactive:update(dt)
-  self.cooldownPercent = p1.spaceship:getCooldownPercent()
+  self.cooldownPercent = self.getCooldownPercent()
+
+  self.button:update(dt)
 
   if self.cooldownPercent < 1 then
     self.button.isHovered = false
     self.button.state = STATIC
-    return
   end
-
-  self.button:update(dt)
 end
 
 function Interactive:mousepressed(x, y, button)
   self.button:mousepressed(x, y, button)
+end
+
+function Interactive:mousereleased(x, y, button)
+  self.button:mousereleased(x, y, button)
 end

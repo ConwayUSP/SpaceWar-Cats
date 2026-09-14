@@ -3,6 +3,7 @@
 ----------------------------------------
 math.randomseed(os.time()) -- precisa ficar aqui no topo pra randomizar os oponentes
 
+require("modules.system.globals")
 require("modules.gamectx")
 require("modules.gamestate")
 require("modules.entities.projectile")
@@ -15,17 +16,6 @@ require("modules.engine.uiManager")
 require("modules.utils.screen")
 require("modules.system.runStats")
 require("modules.engine.camera")
-
-
-VIRTUAL_WIDTH = 640
-VIRTUAL_HEIGHT = 360
-VIRTUAL_SCALE = 1
-
-SCREEN_WIDTH = VIRTUAL_WIDTH
-SCREEN_HEIGHT = VIRTUAL_HEIGHT
-SCREEN_SCALE = 1
-SCREEN_OFFSET_X = 0
-SCREEN_OFFSET_Y = 0
 
 GameCtx = CTX.MENU
 LastGameCtx = nil
@@ -188,5 +178,13 @@ function love.mousepressed(x, y, button, istouch, presses)
 
 	if GAMESTATE[GameCtx].mousepressed then
 		GAMESTATE[GameCtx]:mousepressed(x, y, button, istouch, presses)
+	end
+end
+
+function love.mousereleased(x, y, button, istouch, presses)
+	UIManager:mousereleased(x, y, button, istouch, presses)
+
+	if GAMESTATE[GameCtx].mousereleased then
+		GAMESTATE[GameCtx]:mousereleased(x, y, button, istouch, presses)
 	end
 end

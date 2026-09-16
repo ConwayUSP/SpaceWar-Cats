@@ -31,6 +31,7 @@ waveManager = require("modules.engine.waveManager")
 particleManager = require("modules.engine.particleManager")
 shaderManager = require("modules.engine.shaderManager")
 soundManager = require("modules.engine.soundManager")
+lootManager = require("modules.engine.lootManager")
 explosionManager = require("modules.engine.explosionManager")
 runStats = require("modules.system.runStats")
 

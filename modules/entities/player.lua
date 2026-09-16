@@ -56,9 +56,9 @@ function Player:load()
   self.state = FLYING
 
   -- Nave inicial
-  -- self:setSpaceship(defaultSpaceship(self))
-  -- self:setSpaceship(bomberSpaceship(self))
-  self:setSpaceship(plasmaSpaceship(self))
+  self:setSpaceship(defaultSpaceship())
+  -- self:setSpaceship(bomberSpaceship())
+  -- self:setSpaceship(plasmaSpaceship())
 end
 
 ----------------------------------------

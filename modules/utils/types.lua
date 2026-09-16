@@ -17,3 +17,5 @@ CRITICAL_MULTIPLIER = "criticalMultiplier"
 CRITICAL_CHANGE = "criticalChance"
 SIZE = "size"
 SCALE = "scale"
+
+BASIC = "basic"

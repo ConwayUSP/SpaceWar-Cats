@@ -4,6 +4,7 @@
 require("modules.utils.utils")
 require("modules.entities.enemy")
 require("modules.constructor.projectile")
+require("modules.constructor.loot")
 require("modules.system.shots")
 require("modules.utils.types")
 
@@ -47,7 +48,8 @@ function newShooterEnemy(x, y)
         shootsUntilCd = 3,
         cd = 4
     }
-    local enemy = Enemy.new(SHOOTER_ENEMY, vec(x, y), move, nil, proj, nil, config)
+
+    local enemy = Enemy.new(SHOOTER_ENEMY, vec(x, y), move, onDeath, proj, nil, config)
     local flyingConfig = newAnimSetting(4, { width = 32, height = 32 }, 0.1, true, 1)
     enemy:addAnimations(flyingConfig)
     return enemy
@@ -62,6 +64,9 @@ function newCatSwimmer(x, y, vx)
         local f = -math.cos(self.timer * math.pi) + 1.2
         self.body:setLinearVelocity(-45 * f * vx, 0)
     end
+        local function onDeath(self, sx, sy)
+            newBasic(sx, sy)
+    end
     local config = {
         hp = 55 * hpMultipler(),
         size = 12,
@@ -74,7 +79,7 @@ function newCatSwimmer(x, y, vx)
             height = 18
         }
     }
-    local enemy = Enemy.new(CAT_SWIMMER, vec(x, y), move, nil, nil, nil, config)
+    local enemy = Enemy.new(CAT_SWIMMER, vec(x, y), move, onDeath, nil, nil, config)
     local flyingConfig = newAnimSetting(9, { width = 32, height = 32 }, 0.1, true, 1)
     enemy:addAnimations(flyingConfig)
     return enemy

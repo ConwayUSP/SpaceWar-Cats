@@ -1,3 +1,14 @@
+local function fireWeaponSpread(player, shots, arc)
+  local x, y = player.body:getPosition()
+  local origin = addVec(vec(x, y), polarToVec(player.angle, 25))
+  local weapon = player.spaceship.weapon
+
+  for i = 0, shots - 1 do
+    local offset = shots == 1 and 0 or (-arc / 2 + arc * i / (shots - 1))
+    weapon:shoot(player, origin, player.angle + offset)
+  end
+end
+
 function defaultSpaceship()
   local config = {
     name = "Default",
@@ -35,6 +46,14 @@ function defaultSpaceship()
       damage = 40,
       criticalChance = 0.10,
       criticalMultiplier = 1.5,
+    },
+
+    super = {
+      name = "Scatter Blaster",
+      cooldown = 7,
+      onActivate = function(_, player)
+        fireWeaponSpread(player, 5, math.rad(40))
+      end
     }
   }
 
@@ -78,6 +97,14 @@ function bomberSpaceship()
       damage = 100,
       criticalChance = 0.10,
       criticalMultiplier = 1.5,
+    },
+
+    super = {
+      name = "Bombing Run",
+      cooldown = 12,
+      onActivate = function(_, player)
+        fireWeaponSpread(player, 3, math.rad(24))
+      end
     },
 
     customHit = function(projectile, target)
@@ -128,6 +155,18 @@ function plasmaSpaceship()
       charge = {
         time = 2
       }
+    },
+
+    super = {
+      name = "Overcharge",
+      cooldown = 15,
+      duration = 5,
+      onActivate = function(_, player)
+        player.spaceship.weapon.superDamageMultiplier = 2
+      end,
+      onEnd = function(_, player)
+        player.spaceship.weapon.superDamageMultiplier = 1
+      end
     },
 
     customHit = function(projectile, target)

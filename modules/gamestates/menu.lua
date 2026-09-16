@@ -67,6 +67,10 @@ function MenuState:draw()
 	love.graphics.setColor(1, 1, 1, 1)
 end
 
+function MenuState:keyreleased(key, scancode)
+	p1:keyreleased(key, scancode)
+end
+
 function MenuState:keypressed(key, scancode, isrepeat)
 	p1:keypressed(key, scancode, isrepeat)
 
@@ -77,6 +81,10 @@ end
 
 function MenuState:mousepressed( x, y, button, istouch, presses )
 	p1:mousepressed(x, y, button, istouch, presses)
+end
+
+function MenuState:mousereleased(x, y, button, istouch, presses)
+	p1:mousereleased(x, y, button, istouch, presses)
 end
 
 return MenuState

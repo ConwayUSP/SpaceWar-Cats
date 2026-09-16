@@ -169,7 +169,9 @@ function Player:updateShooting(dt)
     return
   end
 
-  if love.keyboard.isDown("space") then
+  if love.keyboard.isDown("space") or
+    (love.mouse.isDown(1) and not checkMobile())
+  then
     self:beginShoot()
   end
 end
@@ -261,17 +263,25 @@ function Player:keypressed(key, scancode, isrepeat)
   if key == "space" then
     self:beginShoot()
   end
+function Player:keyreleased(key, scancode)
+  if key == "space" then
+    self:releaseShoot()
+  end
 end
 
 function Player:mousepressed(x, y, button, istouch, presses)
+  if checkMobile() then return end
+  
   if button == 1 then
-    -- self:shoot()
+    self:beginShoot()
   end
 end
 
 function Player:mousereleased(x, y, button, istouch, presses)
+  if checkMobile() then return end
+
   if button == 1 then
-    -- self:releaseShoot()
+    self:releaseShoot()
   end
 end
 

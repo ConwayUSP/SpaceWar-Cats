@@ -93,6 +93,10 @@ function BattleState:keypressed(key, scancode, isrepeat)
 	end
 end
 
+function BattleState:keyreleased(key, scancode)
+	p1:keyreleased(key, scancode)
+end
+
 function BattleState:mousepressed(x, y, button, istouch, presses)
 	p1:mousepressed(x, y, button, istouch, presses)
 end

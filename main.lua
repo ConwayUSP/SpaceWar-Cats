@@ -173,6 +173,12 @@ function love.keypressed(key, scancode, isrepeat)
 
 end
 
+function love.keyreleased(key, scancode)
+	if GAMESTATE[GameCtx].keyreleased then
+		GAMESTATE[GameCtx]:keyreleased(key, scancode)
+	end
+end
+
 function love.mousepressed(x, y, button, istouch, presses)
 	UIManager:mousepressed(x, y, button, istouch, presses)
 

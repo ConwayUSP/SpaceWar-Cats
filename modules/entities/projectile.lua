@@ -41,6 +41,7 @@ function Projectile.new(name, trajectory, customHit, projManager, config)
     })
 
     projectile.firerateTimer = math.huge
+    projectile.superDamageMultiplier = 1
     projectile.isCharging = false
     projectile.chargeTimer = 0
 
@@ -64,6 +65,7 @@ function Projectile:reset()
     self.stats:reset()
 
     self.firerateTimer = math.huge
+    self.superDamageMultiplier = 1
     self.isCharging = false
     self.chargeTimer = 0
 end
@@ -244,7 +246,7 @@ function ShotEvent.new(projectileState, attacker, origin, dir)
     shot.trajectory = projectileState.trajectory
     shot.turnSpeed = projectileState.stats:get("turnSpeed")
     shot.speed = projectileState.stats:get("bulletSpeed")
-    shot.dmg = projectileState.stats:get("damage")
+    shot.dmg = projectileState.stats:get("damage") * projectileState.superDamageMultiplier
     shot.criticalMultiplier = projectileState.stats:get("criticalMultiplier")
     shot.criticalChance = projectileState.stats:get("criticalChance")
     shot.customHit = projectileState.customHit

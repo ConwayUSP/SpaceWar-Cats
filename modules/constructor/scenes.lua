@@ -13,7 +13,8 @@ require("modules.UI.interactive")
 ----------------------------------------
 
 local battleWidgets = {
-    shoot = Interactive.new(40, VIRTUAL_HEIGHT - 40, 64, 64, nil, "shoot", function(self)
+    shoot = Interactive.new(40, VIRTUAL_HEIGHT - 40, 64, 64, nil, "shoot", 
+    function(self)
         local image = p1.spaceship.weapon.image
         love.graphics.draw(image, self.button.x, self.button.y, 0, 2, 2, image:getWidth() / 2, image:getHeight() / 2)
     end, function()
@@ -24,10 +25,15 @@ local battleWidgets = {
         return p1.spaceship:getCooldownPercent()
     end),
 
-    special = Interactive.new(105, VIRTUAL_HEIGHT - 40, 48, 48, function() 
-        -- TODO: implementar botão de special
-    end, "special", function(self) 
-        
+    special = Interactive.new(105, VIRTUAL_HEIGHT - 40, 48, 48, 
+    function()
+        p1:activateSuper()
+    end, "special", 
+    function(self)
+        -- TODO: renderizar imagem do SUPER
+    end, nil, nil, 
+    function()
+        return p1.spaceship:getSuperCooldownPercent()
     end)
 }
 

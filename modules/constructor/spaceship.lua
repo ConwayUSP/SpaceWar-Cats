@@ -9,7 +9,7 @@ local function fireWeaponSpread(player, shots, arc)
   end
 end
 
-function defaultSpaceship()
+function defaultSpaceship(player)
   local config = {
     name = "Default",
 
@@ -48,19 +48,20 @@ function defaultSpaceship()
       criticalMultiplier = 1.5,
     },
 
+    -- TODO: trocar para super de verdade
     super = {
       name = "Scatter Blaster",
       cooldown = 7,
-      onActivate = function(_, player)
-        fireWeaponSpread(player, 5, math.rad(40))
+      onActivate = function(super)
+        fireWeaponSpread(super.owner, 5, math.rad(40))
       end
     }
   }
 
-  return Spaceship.new(config)
+  return Spaceship.new(config, player)
 end
 
-function bomberSpaceship()
+function bomberSpaceship(player)
   local config = {
     name = "Bomber",
 
@@ -99,11 +100,12 @@ function bomberSpaceship()
       criticalMultiplier = 1.5,
     },
 
+    -- TODO: trocar para super de verdade
     super = {
       name = "Bombing Run",
       cooldown = 12,
-      onActivate = function(_, player)
-        fireWeaponSpread(player, 3, math.rad(24))
+      onActivate = function(super)
+        fireWeaponSpread(super.owner, 3, math.rad(24))
       end
     },
 
@@ -112,10 +114,10 @@ function bomberSpaceship()
     end
   }
 
-  return Spaceship.new(config)
+  return Spaceship.new(config, player)
 end
 
-function plasmaSpaceship()
+function plasmaSpaceship(player)
   local config = {
     name = "Plasmatic",
 
@@ -157,22 +159,19 @@ function plasmaSpaceship()
       }
     },
 
+    -- TODO: trocar para super de verdade
     super = {
       name = "Overcharge",
       cooldown = 15,
       duration = 5,
-      onActivate = function(_, player)
-        player.spaceship.weapon.superDamageMultiplier = 2
+      onActivate = function(super)
+        super.owner.spaceship.weapon.superDamageMultiplier = 2
       end,
-      onEnd = function(_, player)
-        player.spaceship.weapon.superDamageMultiplier = 1
+      onEnd = function(super)
+        super.owner.spaceship.weapon.superDamageMultiplier = 1
       end
     },
-
-    customHit = function(projectile, target)
-
-    end
   }
 
-  return Spaceship.new(config)
+  return Spaceship.new(config, player)
 end

@@ -7,6 +7,7 @@ require("table")
 require("modules.engine.animation")
 require("modules.system.shots")
 require("modules.entities.projectile")
+require("modules.entities.super")
 require("modules.utils.states")
 require("modules.constructor.projectile")
 
@@ -24,10 +25,11 @@ Spaceship.type = "Spaceship"
 -- Construtor
 ----------------------------------------
 
-function Spaceship.new(config)
+function Spaceship.new(config, owner)
   local self = setmetatable({}, Spaceship)
 
   self.config = config
+  self.owner = owner
   self.name = config.name
   self.animation = config.animation
   self.customHit = config.customHit
@@ -45,6 +47,7 @@ function Spaceship.new(config)
   self.spriteSheets = {}
 
   self.weapon = Projectile.new(config.weapon.name, moveDirection, self.customHit, pProjectiles, config.weapon)
+  self.super = Super.new(owner, config.super)
 
   self:reset()
   self:addAnimations()
@@ -58,6 +61,7 @@ end
 
 function Spaceship:update(dt, state)
   self.weapon:update(dt)
+  self.super:update(dt)
 
   local animation = self.animations[state]
   if animation then
@@ -100,6 +104,14 @@ function Spaceship:getCooldownPercent()
   return self.weapon:getCooldownPercent()
 end
 
+function Spaceship:activateSuper()
+  return self.super:tryActivate()
+end
+
+function Spaceship:getSuperCooldownPercent()
+  return self.super:getCooldownPercent()
+end
+
 ----------------------------------------
 -- Upgrades
 ----------------------------------------
@@ -121,6 +133,9 @@ function Spaceship:reset()
   self.hp = self.stats:get("maxHp")
 
   self.weapon:reset()
+  if self.super then
+    self.super:reset()
+  end
 end
 
 ----------------------------------------

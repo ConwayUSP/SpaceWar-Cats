@@ -56,9 +56,9 @@ function Player:load()
   self.state = FLYING
 
   -- Nave inicial
-  -- self:setSpaceship(defaultSpaceship())
-  -- self:setSpaceship(bomberSpaceship())
-  self:setSpaceship(plasmaSpaceship())
+  -- self:setSpaceship(defaultSpaceship(self))
+  -- self:setSpaceship(bomberSpaceship(self))
+  self:setSpaceship(plasmaSpaceship(self))
 end
 
 ----------------------------------------
@@ -255,6 +255,14 @@ function Player:releaseShoot()
   self.spaceship:releaseShoot(self)
 end
 
+function Player:activateSuper()
+  if self.isDead then
+    return false
+  end
+
+  return self.spaceship:activateSuper()
+end
+
 ----------------------------------------
 -- Input
 ----------------------------------------
@@ -263,6 +271,12 @@ function Player:keypressed(key, scancode, isrepeat)
   if key == "space" then
     self:beginShoot()
   end
+
+  if key == "c" then
+    self:activateSuper()
+  end
+end
+
 function Player:keyreleased(key, scancode)
   if key == "space" then
     self:releaseShoot()

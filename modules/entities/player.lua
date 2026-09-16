@@ -109,7 +109,7 @@ function Player:refreshHitbox()
 
   self.fixture:setFilterData(
     CATEGORY.PLAYER,
-    CATEGORY.ENEMY_BULLET + CATEGORY.ENEMY + CATEGORY.TEXT,
+    CATEGORY.ENEMY_BULLET + CATEGORY.ENEMY + CATEGORY.TEXT + CATEGORY.LOOT,
     0
   )
 

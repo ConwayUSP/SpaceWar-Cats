@@ -5,6 +5,7 @@ require("modules.engine.animation")
 require("modules.utils.utils")
 require("modules.engine.physics")
 require("modules.system.render")
+require("modules.utils.vec")
 require("table")
 
 ----------------------------------------
@@ -28,6 +29,9 @@ function Loot.new(name, move, pos, config, effect)
   loot.active = true
   loot.state = FLYING
 
+  loot.magnetAcceleration = config.magnetAcceleration or 1000
+  loot.magnetSteering = config.magnetSteering or 10
+
   loot.hb = config.hb or {
     type = CIRCLE,
     radius = loot.size
@@ -39,17 +43,18 @@ function Loot.new(name, move, pos, config, effect)
   loot.fixture:setUserData(loot)
   
   loot.fixture:setFilterData(
-    CATEGORY.LOOT or 16, 
+    CATEGORY.LOOT, 
     CATEGORY.PLAYER,
     0
   )
   loot.fixture:setSensor(true)
 
   -- Efeito visual de dispersão inicial ao dropar
-  local angle = math.rad(math.random(0, 360))
-  local speed = math.random(20, 60)
-  loot.body:setLinearVelocity(math.cos(angle) * speed, math.sin(angle) * speed)
-  loot.body:setLinearDamping(2)
+  local angle = math.rad(math.random(-15, 15))
+  local speed = 800
+  local initialVelocity = polarToVec(angle, speed)
+  loot.body:setLinearVelocity(initialVelocity.x, initialVelocity.y)
+  loot.body:setLinearDamping(3)
 
   lootManager:add(loot)
 
@@ -87,12 +92,29 @@ function Loot:collect()
 end
 
 function Loot:updateMotion(dt) 
-
-  self.timer = self.timer + dt
-  
   if self.move then
     self:move(dt)
   end
+
+  if p1.isDead then
+    return
+  end
+
+  local lootPosition = vec(self.body:getPosition())
+  local playerPosition = vec(p1.body:getPosition())
+  local direction = subVec(playerPosition, lootPosition)
+
+  if nullVec(direction) then
+    return
+  end
+
+  -- A velocidade-alvo cresce com o tempo, produzindo uma atração gradual.
+  local speed = self.timer * self.magnetAcceleration
+  local targetVelocity = scaleVec(normalize(direction), speed)
+  local currentVelocity = vec(self.body:getLinearVelocity())
+  local nextVelocity = steerVec(currentVelocity, targetVelocity, self.magnetSteering * dt)
+
+  self.body:setLinearVelocity(nextVelocity.x, nextVelocity.y)
 end
 
 function Loot:destroy()

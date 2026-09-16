@@ -77,6 +77,16 @@ function scaleVec(v, a)
 	return vec(v.x * a, v.y * a)
 end
 
+---@param current Vec
+---@param target Vec
+---@param amount number
+---@return Vec
+-- aproxima um vetor da direção e magnitude do vetor alvo
+function steerVec(current, target, amount)
+	amount = math.min(1, math.max(0, amount))
+	return addVec(current, scaleVec(subVec(target, current), amount))
+end
+
 ---@param angle rad
 ---@param r number
 ---@return Vec

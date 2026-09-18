@@ -35,8 +35,8 @@ end
 
 function ShaderManager:loadShaders()
   self.shaders.crt = love.graphics.newShader("modules/shaders/crt.glsl")
-  self.shaders.crt:send("distortionFactor", {1.04, 1.06})
-  self.shaders.crt:send("scaleFactor",{1.02, 1.05})
+  self.shaders.crt:send("distortionFactor", {1.02, 1.04})
+  self.shaders.crt:send("scaleFactor",{1.01, 1.03})
   self.shaders.crt:send("feather",0.03)
 
   self.shaders.scanlines = love.graphics.newShader("modules/shaders/scanlines.glsl")

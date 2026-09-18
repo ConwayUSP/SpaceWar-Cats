@@ -9,6 +9,7 @@ require("modules.gamectx")
 
 GAMESTATE = {}
 GAMESTATE[CTX.MENU] = require("modules.gamestates.menu")
+GAMESTATE[CTX.SHIP_SELECTION] = require("modules.gamestates.shipselection")
 GAMESTATE[CTX.BATTLE] = require("modules.gamestates.battle")
 GAMESTATE[CTX.UPGRADES] = require("modules.gamestates.upgrades")
 GAMESTATE[CTX.DEATH_SCREEN] = require("modules.gamestates.deathscreen")

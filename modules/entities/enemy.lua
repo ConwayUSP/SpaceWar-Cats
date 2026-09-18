@@ -26,7 +26,7 @@ function Enemy.new(name, spawnPos, move, onDeath, weapon, customShot, config)
   enemy.cd = config.cd or 1
   enemy.fireRate = config.fireRate or 1
   enemy.hb = config.hb or {
-    type = "circle",
+    type = CIRCLE,
     radius = enemy.size
   }
   enemy.alpha = config.initialAlpha or 1
@@ -75,14 +75,6 @@ function Enemy:update(dt)
 end
 
 function Enemy:updateState(dt)
-
-  if self.isDead then
-    if self.onDeath then
-      local x, y = self.body:getPosition()
-      self:onDeath(x, y)
-    end
-    self:die()
-  end
   if self.damagedTimer > 0 then
     self.damagedTimer = self.damagedTimer - dt
   end
@@ -199,9 +191,35 @@ function Enemy:takeDamage(damage, hitPos, color)
   self.damagedTimer = 0.1
 
   if self.hp <= 0 then
-    self.isDead = true
+    self:kill()
   end
 end
+
+function Enemy:kill()
+  if self.isDead then
+    return
+  end
+
+  self.isDead = true
+
+  local x, y = self.body:getPosition()
+
+  if self.onDeath then
+    table.insert(Physics.delayedFunctions, function()
+      self:onDeath(x, y)
+    end)
+  end
+
+  self:die()
+end
+
+function Enemy:getHp()
+  return self.hp
+end
+
+----------------------------------------
+-- Draw
+----------------------------------------
 
 function Enemy:draw()
   if self.isDead then
@@ -242,7 +260,7 @@ function Enemy:onCollision(target)
       local dmg = math.min(target.hp, 150)
 
       target:takeDamage(dmg)
-      self:die()
+      self:kill()
 
     end)
   elseif target.type == "Player" then
@@ -253,7 +271,7 @@ function Enemy:onCollision(target)
       newExplosionParticle(vec(x, y))
 
       target:takeDamage(math.huge)
-      self:die()
+      self:kill()
     end)
   end
 

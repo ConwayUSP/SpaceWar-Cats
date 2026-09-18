@@ -58,6 +58,7 @@ function BattleState:update(dt)
 	explosionManager:update(dt)
 	enemyManager:update(dt)
 	waveManager:update(dt)
+	lootManager:update(dt)
 	particleManager:update(dt)
 	pProjectiles:update(dt)
 	eProjectiles:update(dt)
@@ -79,6 +80,7 @@ function BattleState:draw()
 	eProjectiles:draw()
 	particleManager:draw()
 	explosionManager:draw()
+	lootManager:draw()
 
 	-- reset de cor
 	love.graphics.setColor(1, 1, 1, 1)
@@ -93,8 +95,16 @@ function BattleState:keypressed(key, scancode, isrepeat)
 	end
 end
 
+function BattleState:keyreleased(key, scancode)
+	p1:keyreleased(key, scancode)
+end
+
 function BattleState:mousepressed(x, y, button, istouch, presses)
 	p1:mousepressed(x, y, button, istouch, presses)
+end
+
+function BattleState:mousereleased(x, y, button, istouch, presses)
+	p1:mousereleased(x, y, button, istouch, presses)
 end
 
 return BattleState

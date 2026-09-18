@@ -2,29 +2,38 @@ Button = {}
 Button.__index = Button
 Button.type = "Button"
 
-function Button.new(x, y, width, height, onClick, image, inverted)
+function Button.new(x, y, width, height, onClick, image, inverted, onPress, onRelease)
   local button = setmetatable({}, Button)
   button.x = x
   button.y = y
   button.width = width
   button.height = height
   button.onClick = onClick
+  button.onPress = onPress
+  button.onRelease = onRelease
+  button.isPressed = false
 
   button.state = STATIC
   button.isHovered = false
   button.inverted = inverted or false
 
-  local setting = newAnimSetting(1, { width = width, height = height }, 0.2, true, 1)
-  local path = pngPathFormat({ "assets", "sprites", "UI", image, STATIC })
+  if image then
+    local setting = newAnimSetting(1, { width = width, height = height }, 0.2, true, 1)
+    local path = pngPathFormat({ "assets", "sprites", "UI", image, STATIC })
 
-  addAnimation(button, path, STATIC, setting)
-  path = pngPathFormat({ "assets", "sprites", "UI", image, HOVER })
-  addAnimation(button, path, HOVER, setting)
+    addAnimation(button, path, STATIC, setting)
+    path = pngPathFormat({ "assets", "sprites", "UI", image, HOVER })
+    addAnimation(button, path, HOVER, setting)
+  end
 
   return button
  end
  
 function Button:draw()
+  if not self.animations then
+    return
+  end
+
   local animation = self.animations[self.state]
   local quad = animation.frames[animation.currFrame]
   local offset = {
@@ -40,13 +49,14 @@ function Button:update(dt)
     self.animations[self.state]:update(dt)
   end
 
+  if self.isPressed and self.onPress then
+    self.onPress()
+  end
+
   local mouseX, mouseY = love.mouse.getPosition()
   self.isHovered = isMouseOver(self, mouseX, mouseY, true)
   self.state = self.isHovered and HOVER or STATIC
 
-  if self.isHovered and love.mouse.isDown(1) and self.onClick then
-    self.onClick()
-  end
 end
 
 function Button:isMouseOver()
@@ -57,8 +67,22 @@ end
 
 function Button:mousepressed(x, y, button)
   if button == 1 and isMouseOver(self, x, y, true) then
-    if self.onClick then
+    self.isPressed = true
+
+    if not self.onPress and self.onClick then
       self.onClick()
     end
+  end
+end
+
+function Button:mousereleased(x, y, button)
+  if button ~= 1 or not self.isPressed then
+    return
+  end
+
+  self.isPressed = false
+
+  if self.onRelease then
+    self.onRelease()
   end
 end

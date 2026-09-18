@@ -4,6 +4,7 @@
 require("modules.utils.utils")
 require("modules.entities.enemy")
 require("modules.constructor.projectile")
+require("modules.constructor.loot")
 require("modules.system.shots")
 require("modules.utils.types")
 
@@ -18,11 +19,11 @@ end
 ----------------------------------------
 function newShooterEnemy(x, y)
     local projConfig = {
-        speed = 150,
+        bulletSpeed = 150,
         damage = 20,
         size = 2,
         hb = {
-            type = "circle",
+            type = CIRCLE,
             radius = 3
         },
         sound = "tiro1"
@@ -47,6 +48,7 @@ function newShooterEnemy(x, y)
         shootsUntilCd = 3,
         cd = 4
     }
+
     local enemy = Enemy.new(SHOOTER_ENEMY, vec(x, y), move, nil, proj, nil, config)
     local flyingConfig = newAnimSetting(4, { width = 32, height = 32 }, 0.1, true, 1)
     enemy:addAnimations(flyingConfig)
@@ -62,6 +64,9 @@ function newCatSwimmer(x, y, vx)
         local f = -math.cos(self.timer * math.pi) + 1.2
         self.body:setLinearVelocity(-45 * f * vx, 0)
     end
+    local function onDeath(self, sx, sy)
+        newBasic(sx, sy)
+    end
     local config = {
         hp = 55 * hpMultipler(),
         size = 12,
@@ -69,12 +74,12 @@ function newCatSwimmer(x, y, vx)
         shootsUntilCd = 5,
         cd = 3,
         hb = {
-            type = "rectangle",
+            type = RECTANGLE,
             width = 22,
             height = 18
         }
     }
-    local enemy = Enemy.new(CAT_SWIMMER, vec(x, y), move, nil, nil, nil, config)
+    local enemy = Enemy.new(CAT_SWIMMER, vec(x, y), move, onDeath, nil, nil, config)
     local flyingConfig = newAnimSetting(9, { width = 32, height = 32 }, 0.1, true, 1)
     enemy:addAnimations(flyingConfig)
     return enemy
@@ -85,11 +90,11 @@ end
 ----------------------------------------
 function newTankEnemy(x, y, newVx)
     local projConfig = {
-        speed = 80,
+        bulletSpeed = 80,
         damage = 30,
         size = 10,
         hb = {
-            type = "circle",
+            type = CIRCLE,
             radius = 3
         },
         sound = "tiro2"
@@ -118,7 +123,7 @@ function newTankEnemy(x, y, newVx)
         shootsUntilCd = 3,
         cd = 4,
         hb = {
-            type = "rectangle",
+            type = RECTANGLE,
             width = 20,
             height = 25
         },
@@ -154,11 +159,11 @@ end
 
 function newCatMage(x, y, cd)
     local projConfig = {
-        speed = 50,
+        bulletSpeed = 50,
         damage = 20,
         size = 5,
         hb = {
-            type = "circle",
+            type = CIRCLE,
             radius = 3
         },
         turnSpeed = math.rad(360) * 0.8
@@ -215,7 +220,7 @@ function newCatMage(x, y, cd)
         shootsUntilCd = 1,
         cd = 3,
         hb = {
-            type = "rectangle",
+            type = RECTANGLE,
             width = 20,
             height = 28
         },
@@ -257,7 +262,7 @@ function newCatBox(x, y)
         hp = 100 * hpMultipler(),
         size = 12,
         hb = {
-            type = "rectangle",
+            type = RECTANGLE,
             width = 30,
             height = 30
         }

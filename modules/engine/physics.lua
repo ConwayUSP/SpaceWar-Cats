@@ -36,9 +36,9 @@ function Physics:update(dt)
 end
 
 function getRightHitbox(hb)
-  if hb.type == "circle" then
+  if hb.type == CIRCLE then
     return love.physics.newCircleShape(hb.radius)
-  elseif hb.type == "rectangle" then
+  elseif hb.type == RECTANGLE then
     return love.physics.newRectangleShape(hb.width, hb.height)
   end
 end
@@ -55,3 +55,4 @@ CATEGORY.ENEMY_BULLET  = 8
 CATEGORY.TEXT          = 16
 CATEGORY.PLANET        = 32
 CATEGORY.EXPLOSION     = 64
+CATEGORY.LOOT          = 128

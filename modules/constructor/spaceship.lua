@@ -1,4 +1,15 @@
-function defaultSpaceship()
+local function fireWeaponSpread(player, shots, arc)
+  local x, y = player.body:getPosition()
+  local origin = addVec(vec(x, y), polarToVec(player.angle, 25))
+  local weapon = player.spaceship.weapon
+
+  for i = 0, shots - 1 do
+    local offset = shots == 1 and 0 or (-arc / 2 + arc * i / (shots - 1))
+    weapon:shoot(player, origin, player.angle + offset)
+  end
+end
+
+function defaultSpaceship(player)
   local config = {
     name = "Default",
 
@@ -6,29 +17,17 @@ function defaultSpaceship()
     size = 5,
     scale = 1,
     maxHp = 1,
-
-    -- Movimento
-    speed = 600,
-
-    -- Arma / projétil
-    damage = 40,
-    criticalChance = 0.10,
-    criticalMultiplier = 1.5,
+    speed = 2,
 
     hb = {
-      type = "rectangle",
+      type = RECTANGLE,
       width = 10,
       height = 5
     },
 
-    firerate = 3,
-
-    -- Outros atributos da nave
-    planetRegen = 0.0,
-
     -- Arte
     animation = {
-      folder = "assets/animations/player",
+      folder = "assets/animations/player/default",
       state = FLYING,
       frameWidth = 32,
       frameHeight = 32,
@@ -41,14 +40,28 @@ function defaultSpaceship()
     -- Arma
     weapon = {
       name = "blaster-tune",
-      scale = 1
+      bulletSpeed = 600,
+      firerate = 3,
+      scale = 1,
+      damage = 40,
+      criticalChance = 0.10,
+      criticalMultiplier = 1.5,
+    },
+
+    -- TODO: trocar para super de verdade
+    super = {
+      name = "Scatter Blaster",
+      cooldown = 7,
+      onActivate = function(super)
+        fireWeaponSpread(super.owner, 5, math.rad(40))
+      end
     }
   }
 
-  return Spaceship.new(config)
+  return Spaceship.new(config, player)
 end
 
-function bomberSpaceship()
+function bomberSpaceship(player)
   local config = {
     name = "Bomber",
 
@@ -56,29 +69,17 @@ function bomberSpaceship()
     size = 5,
     scale = 1,
     maxHp = 1,
-
-    -- Movimento
-    speed = 300,
-
-    -- Arma / projétil
-    damage = 100,
-    criticalChance = 0.10,
-    criticalMultiplier = 1.5,
+    speed = 2,
 
     hb = {
-      type = "rectangle",
+      type = RECTANGLE,
       width = 10,
       height = 5
     },
 
-    firerate = 0.5,
-
-    -- Outros atributos da nave
-    planetRegen = 0.0,
-
     -- Arte
     animation = {
-      folder = "assets/animations/player",
+      folder = "assets/animations/player/bomber",
       state = FLYING,
       frameWidth = 32,
       frameHeight = 32,
@@ -91,7 +92,21 @@ function bomberSpaceship()
     -- Arma
     weapon = {
       name = "bomb",
-      scale = 1
+      scale = 1,
+      firerate = 0.5,
+      bulletSpeed = 400,
+      damage = 100,
+      criticalChance = 0.10,
+      criticalMultiplier = 1.5,
+    },
+
+    -- TODO: trocar para super de verdade
+    super = {
+      name = "Bombing Run",
+      cooldown = 12,
+      onActivate = function(super)
+        fireWeaponSpread(super.owner, 3, math.rad(24))
+      end
     },
 
     customHit = function(projectile, target)
@@ -99,5 +114,92 @@ function bomberSpaceship()
     end
   }
 
-  return Spaceship.new(config)
+  return Spaceship.new(config, player)
 end
+
+function plasmaSpaceship(player)
+  local config = {
+    name = "Plasmatic",
+
+    -- Player / nave
+    size = 5,
+    scale = 1,
+    maxHp = 1,
+    speed = 2,
+
+    hb = {
+      type = RECTANGLE,
+      width = 10,
+      height = 5
+    },
+
+    -- Arte
+    animation = {
+      folder = "assets/animations/player/plasmatic",
+      state = FLYING,
+      frameWidth = 32,
+      frameHeight = 32,
+      frameDuration = 0.1,
+      frames = 4,
+      loop = true,
+      scale = 1
+    },
+
+    -- Arma
+    weapon = {
+      name = "plasma",
+      scale = 1,
+      firerate = 0.4,
+      bulletSpeed = 300,
+      damage = 100,
+      criticalChance = 0.10,
+      criticalMultiplier = 1.5,
+      charge = {
+        time = 2
+      }
+    },
+
+    -- TODO: trocar para super de verdade
+    super = {
+      name = "Overcharge",
+      cooldown = 15,
+      duration = 5,
+      onActivate = function(super)
+        super.owner.spaceship.weapon.superDamageMultiplier = 2
+      end,
+      onEnd = function(super)
+        super.owner.spaceship.weapon.superDamageMultiplier = 1
+      end
+    },
+  }
+
+  return Spaceship.new(config, player)
+end
+
+----------------------------------------
+-- Pool de naves selecionaveis
+----------------------------------------
+
+SpaceshipPool = {
+  {
+    name = "Default",
+    description = "A balanced ship equipped with a fast-firing blaster.",
+    superName = "Scatter Blaster",
+    superDescription = "Fires five projectiles in a wide arc.",
+    constructor = defaultSpaceship
+  },
+  {
+    name = "Bomber",
+    description = "A heavy ship that fires slow, powerful explosive bombs.",
+    superName = "Bombing Run",
+    superDescription = "Fires three bombs in a focused arc.",
+    constructor = bomberSpaceship
+  },
+  {
+    name = "Plasmatic",
+    description = "A high-damage ship whose plasma weapon can be charged.",
+    superName = "Overcharge",
+    superDescription = "Doubles plasma damage for five seconds.",
+    constructor = plasmaSpaceship
+  }
+}

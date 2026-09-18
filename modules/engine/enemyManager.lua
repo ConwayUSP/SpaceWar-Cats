@@ -33,6 +33,9 @@ function EnemyManager:reset()
     end
 
     self.list = {}
+    for enemyName in pairs(self.counters) do
+        self.counters[enemyName] = 0
+    end
 end
 
 function EnemyManager:draw()

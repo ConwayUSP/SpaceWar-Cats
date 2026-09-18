@@ -292,8 +292,8 @@ function newPufferCat(x, y, vx)
     local function updatePufferHitbox(self, isBig)
         local newHB = isBig and {
             type = "rectangle",
-            width = 30,
-            height = 30
+            width = 60,
+            height = 60
         } or {
             type = "rectangle",
             width = 20,
@@ -344,7 +344,7 @@ function newPufferCat(x, y, vx)
 
         -- Clamp position to screen bounds
         local x, y = self.body:getPosition()
-        local margin = self.size * 0.5
+        local margin = self.hb.height * 0.5
         y = math.max(margin, math.min(VIRTUAL_HEIGHT - margin, y))
         self.body:setPosition(x, y)
     end

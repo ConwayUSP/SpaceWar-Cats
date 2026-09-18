@@ -3,6 +3,7 @@ CAT_SWIMMER = "swimmer"
 TANK_ENEMY = "tank"
 CAT_MAGE = "mage"
 CAT_BOX = "box"
+PUFFER_CAT = "puffer"
 
 ADD = "add"
 MULT = "mult"

@@ -21,6 +21,7 @@ function Enemy.new(name, spawnPos, move, onDeath, weapon, customShot, config)
 
   enemy.size = config.size or 30                               
   enemy.hp = config.hp or 100
+  enemy.defense = config.defense or 0
   enemy.shootsUntilCd = config.shootsUntilCd or 1
   enemy.cd = config.cd or 1
   enemy.fireRate = config.fireRate or 1
@@ -175,17 +176,18 @@ function Enemy:destroy()
 end
 
 function Enemy:takeDamage(damage, hitPos, color)
+  local finalDamage = damage * (1 - self.defense)
   if self.isDead then
     return
   end
 
   if hitPos then
     color = color or {1, 0.8, 0.3, 1}
-    newAscendingTextParticle(addVec(hitPos, vec(math.random(-10, 10), -20)), math.floor(damage), color)
+    newAscendingTextParticle(addVec(hitPos, vec(math.random(-10, 10), -20)), math.floor(finalDamage), color)
   end
 
-  runStats:add(TDD, damage)
-  self.hp = self.hp - damage
+  runStats:add(TDD, finalDamage)
+  self.hp = self.hp - finalDamage
   self.damagedTimer = 0.1
 
   if self.hp <= 0 then

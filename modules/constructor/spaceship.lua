@@ -27,7 +27,7 @@ function defaultSpaceship(player)
 
     -- Arte
     animation = {
-      folder = "assets/animations/player",
+      folder = "assets/animations/player/default",
       state = FLYING,
       frameWidth = 32,
       frameHeight = 32,
@@ -79,7 +79,7 @@ function bomberSpaceship(player)
 
     -- Arte
     animation = {
-      folder = "assets/animations/player",
+      folder = "assets/animations/player/bomber",
       state = FLYING,
       frameWidth = 32,
       frameHeight = 32,
@@ -135,7 +135,7 @@ function plasmaSpaceship(player)
 
     -- Arte
     animation = {
-      folder = "assets/animations/player",
+      folder = "assets/animations/player/plasmatic",
       state = FLYING,
       frameWidth = 32,
       frameHeight = 32,
@@ -175,3 +175,31 @@ function plasmaSpaceship(player)
 
   return Spaceship.new(config, player)
 end
+
+----------------------------------------
+-- Pool de naves selecionaveis
+----------------------------------------
+
+SpaceshipPool = {
+  {
+    name = "Default",
+    description = "A balanced ship equipped with a fast-firing blaster.",
+    superName = "Scatter Blaster",
+    superDescription = "Fires five projectiles in a wide arc.",
+    constructor = defaultSpaceship
+  },
+  {
+    name = "Bomber",
+    description = "A heavy ship that fires slow, powerful explosive bombs.",
+    superName = "Bombing Run",
+    superDescription = "Fires three bombs in a focused arc.",
+    constructor = bomberSpaceship
+  },
+  {
+    name = "Plasmatic",
+    description = "A high-damage ship whose plasma weapon can be charged.",
+    superName = "Overcharge",
+    superDescription = "Doubles plasma damage for five seconds.",
+    constructor = plasmaSpaceship
+  }
+}

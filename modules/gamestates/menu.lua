@@ -21,7 +21,7 @@ MenuState.timer = 0
 function MenuState:load()
 	local width, height = VIRTUAL_WIDTH, VIRTUAL_HEIGHT
 	
-	if not self.texts.play then
+	if not self.texts.play or self.texts.play.fixture:isDestroyed() then
 		self.texts.play = TextPhysical.new(
 			"PLAY",
 			48,
@@ -35,7 +35,7 @@ function MenuState:load()
 			function(text)
 				text.fixture:destroy()
 				runStats:set(RST, love.timer.getTime())
-				SetGameCtx(CTX.BATTLE)
+				SetGameCtx(CTX.SHIP_SELECTION)
 			end
 		)
 	end

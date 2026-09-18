@@ -7,6 +7,7 @@ require("modules.UI.life")
 require("modules.UI.progress_bar")
 require("modules.UI.statsDisplay")
 require("modules.UI.interactive")
+require("modules.UI.shipSelection")
 
 ----------------------------------------
 --- BattleScene
@@ -58,6 +59,27 @@ function newMenuScene()
     )
     menuScene:addText(txt)
     return menuScene
+end
+
+function newShipSelectionScene()
+    local scene = UIScene.new()
+    local title = Text.new(
+        "CHOOSE YOUR SHIP",
+        22,
+        {1, 1, 1, 1},
+        vec(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 8),
+        0,
+        true
+    )
+
+    scene:addText(title)
+    scene.selection = ShipSelectionUI.new(function(spaceshipData)
+        p1:setSpaceship(spaceshipData.constructor(p1))
+        SetGameCtx(CTX.BATTLE)
+    end)
+    scene:add(scene.selection)
+
+    return scene
 end
 
 function newBattleScene()

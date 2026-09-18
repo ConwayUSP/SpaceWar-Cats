@@ -83,6 +83,7 @@ function love.load()
 
 	UIManager:load({
 		[CTX.MENU] = newMenuScene(),
+		[CTX.SHIP_SELECTION] = newShipSelectionScene(),
 		[CTX.BATTLE] = newBattleScene(),
 		[CTX.UPGRADES] = newUpgradeScene(),
 		[CTX.DEATH_SCREEN] = newDeathScene(),

@@ -17,17 +17,23 @@ function Button.new(x, y, width, height, onClick, image, inverted, onPress, onRe
   button.isHovered = false
   button.inverted = inverted or false
 
-  local setting = newAnimSetting(1, { width = width, height = height }, 0.2, true, 1)
-  local path = pngPathFormat({ "assets", "sprites", "UI", image, STATIC })
+  if image then
+    local setting = newAnimSetting(1, { width = width, height = height }, 0.2, true, 1)
+    local path = pngPathFormat({ "assets", "sprites", "UI", image, STATIC })
 
-  addAnimation(button, path, STATIC, setting)
-  path = pngPathFormat({ "assets", "sprites", "UI", image, HOVER })
-  addAnimation(button, path, HOVER, setting)
+    addAnimation(button, path, STATIC, setting)
+    path = pngPathFormat({ "assets", "sprites", "UI", image, HOVER })
+    addAnimation(button, path, HOVER, setting)
+  end
 
   return button
  end
  
 function Button:draw()
+  if not self.animations then
+    return
+  end
+
   local animation = self.animations[self.state]
   local quad = animation.frames[animation.currFrame]
   local offset = {

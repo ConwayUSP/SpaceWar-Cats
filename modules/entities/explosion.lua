@@ -6,7 +6,7 @@ Explosion = {}
 Explosion.__index = Explosion
 Explosion.type = "Explosion"
 
-function Explosion.new(pos, radius, damage, duration)
+function Explosion.new(pos, radius, damage)
   local explosion = setmetatable({}, Explosion)
 
   ----------------------------------------
@@ -15,10 +15,9 @@ function Explosion.new(pos, radius, damage, duration)
 
   explosion.radius = radius
   explosion.damage = damage
-  explosion.duration = duration
-
-  explosion.timer = 0
   explosion.active = true
+  explosion.hitboxActive = true
+  explosion.createdAtPhysicsStep = Physics.stepCount
 
   explosion.position = vec(pos.x, pos.y)
 
@@ -53,6 +52,9 @@ function Explosion.new(pos, radius, damage, duration)
   local path = pngPathFormat({"assets", "animations", EXPLOSION})
 
   addAnimation(explosion, path, EXPLOSION, animationConfig)
+  explosion.animations[EXPLOSION].onFinish = function()
+    explosion.active = false
+  end
 
   return explosion
 end
@@ -68,10 +70,9 @@ function Explosion:update(dt)
     return
   end
 
-  self.timer = self.timer + dt
-
-  if self.timer >= self.duration then
-    self.active = false
+  -- a explosão é removida após um tick do mundo físico
+  if self.hitboxActive and Physics.stepCount > self.createdAtPhysicsStep then
+    self:disableHitbox()
   end
 
   self.animations[EXPLOSION]:update(dt)
@@ -97,7 +98,9 @@ function Explosion:draw()
 
   love.graphics.draw(self.spriteSheets[EXPLOSION], quad, x, y, 0, 3, 3, offset.x, offset.y)
 
-  debugRender(self)
+  if self.hitboxActive then
+    debugRender(self)
+  end
 end
 
 
@@ -107,7 +110,7 @@ end
 
 function Explosion:onCollision(other)
 
-  if not self.active then
+  if not self.active or not self.hitboxActive then
     return
   end
 
@@ -115,7 +118,7 @@ function Explosion:onCollision(other)
     return
   end
 
-  -- Uma explosão causa dano apenas uma vez
+  -- uma explosão causa dano apenas uma vez
   -- em cada inimigo.
   if self.hitEnemies[other] then
     return
@@ -124,6 +127,15 @@ function Explosion:onCollision(other)
   self.hitEnemies[other] = true
   other:takeDamage(self.damage, self:getHitPosition(other))
 
+end
+
+function Explosion:disableHitbox()
+  if self.fixture then
+    self.fixture:destroy()
+    self.fixture = nil
+  end
+
+  self.hitboxActive = false
 end
 
 function Explosion:getHitPosition(target)
@@ -143,10 +155,7 @@ function Explosion:getHitPosition(target)
 end
 
 function Explosion:destroy()
-  if self.fixture then
-    self.fixture:destroy()
-    self.fixture = nil
-  end
+  self:disableHitbox()
 
   if self.body then
       self.body:destroy()

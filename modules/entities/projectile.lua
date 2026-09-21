@@ -319,7 +319,7 @@ end
 
 
 function ShotEvent:spawnExplosion(target)
-    local explosion = Explosion.new(vec(target.body:getX(), target.body:getY()), 64, 80, 3)
+    local explosion = Explosion.new(vec(target.body:getX(), target.body:getY()), 64, 80)
     explosionManager:add(explosion)
 end
 

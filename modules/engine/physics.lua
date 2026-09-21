@@ -4,6 +4,7 @@ Physics.type = "Physics"
 
 Physics.world = {}
 Physics.delayedFunctions = {}
+Physics.stepCount = 0
 
 local function beginContact(a, b, coll)
   local objA = a:getUserData()
@@ -25,10 +26,12 @@ end
 function Physics:load()
   self.world = love.physics.newWorld(0, 0)
   self.world:setCallbacks(beginContact, nil)
+  self.stepCount = 0
 end
 
 function Physics:update(dt)
   self.world:update(dt)
+  self.stepCount = self.stepCount + 1
   for _, func in ipairs(self.delayedFunctions) do
     func()
   end

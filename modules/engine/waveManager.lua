@@ -70,7 +70,7 @@ function WaveManager:update(dt)
 
     local currentWave = self.list[self.currentWaveIndex]
     currentWave:update(dt)
-    if currentWave.isFinished and #EnemyManager.list == 0 then
+    if currentWave.isFinished and EnemyManager:isCleared() then
         -- print("Wave " .. self.currentWaveIndex .. " finished!")
         if self.currentWaveIndex >= #self.list then
             SetGameCtx(CTX.WIN_SCREEN)

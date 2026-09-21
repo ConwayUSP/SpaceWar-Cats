@@ -205,8 +205,10 @@ function Enemy:kill()
   local x, y = self.body:getPosition()
 
   if self.onDeath then
+    enemyManager:beginDeathCallback()
     table.insert(Physics.delayedFunctions, function()
       self:onDeath(x, y)
+      enemyManager:endDeathCallback()
     end)
   end
 

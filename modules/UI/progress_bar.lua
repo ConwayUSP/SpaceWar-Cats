@@ -25,7 +25,7 @@ function WaveProgressBar:update()
 	end
 
 	self.progress = math.min(1.0, currentWave.timer / currentWave.duration)
-	if currentWave.isFinished and #enemyManager.list == 0 then
+	if currentWave.isFinished and enemyManager:isCleared() then
 		self.progress = 1
 	end
 end

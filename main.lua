@@ -62,7 +62,7 @@ function resetGame()
 	runStats:reset()
 	soundManager:stopAll()
 
-	SetGameCtx(CTX.BATTLE)
+	SetGameCtx(CTX.MENU)
 end
 
 function love.load()

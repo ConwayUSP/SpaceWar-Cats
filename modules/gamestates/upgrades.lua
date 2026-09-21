@@ -347,10 +347,7 @@ function UpgradesState:applyUpgrade(upgrade)
 		return
 	end
 
-	upgrade.apply({
-		player = p1,
-		planet = planet,
-	})
+	waveManager:addPendingUpgrade(upgrade)
 	runStats:add(TUP, 1)
 
 	local rand = math.random(1, 2)

@@ -3,6 +3,7 @@ require("modules.constructor.wave")
 WaveManager = {}
 
 WaveManager.list = {}
+WaveManager.upgradesPending = {}
 WaveManager.currentWaveIndex = 0
 WaveManager.type = "WaveManager"
 WaveManager.transitionTimer = 0.5
@@ -35,10 +36,27 @@ function WaveManager:startWave()
     self.isTransitioning = true
     self.transitionTimer = 0.5
     self.currentWaveIndex = self.currentWaveIndex + 1
+    self:applyPendingUpgrades()
+end
+
+function WaveManager:addPendingUpgrade(upgrade)
+    table.insert(self.upgradesPending, upgrade)
+end
+
+function WaveManager:applyPendingUpgrades()
+    for _, upgrade in ipairs(self.upgradesPending) do
+        upgrade.apply({
+            player = p1,
+            planet = planet,
+        })
+    end
+
+    self.upgradesPending = {}
 end
 
 function WaveManager:reset()
     self:buildWaves()
+    self.upgradesPending = {}
     self.currentWaveIndex = 0
     self.isTransitioning = true
     self.transitionTimer = 0.5
@@ -61,8 +79,6 @@ function WaveManager:update(dt)
         self.transitionTimer = self.transitionTimer - dt
         if self.transitionTimer <= 0 then
             self.isTransitioning = false
-            -- Inicia a wave atual
-            -- print("Starting " .. self.list[self.currentWaveIndex].name)
             self.list[self.currentWaveIndex]:start()
         end
         return

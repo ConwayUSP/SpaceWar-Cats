@@ -1,4 +1,7 @@
 function love.conf(t)
+    -- LÖVE runtime version used by the desktop and Android builds.
+    t.version = "11.5"
+
     -- Fixed canvas size for web builds
     t.window.width = 1280
     t.window.height = 720

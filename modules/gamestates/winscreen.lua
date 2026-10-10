@@ -12,6 +12,8 @@ function WinScreen:load()
 	self.timer = 0
   soundManager:play("win")
 	soundManager:pause("ambience")
+	runStats:set(RET, love.timer.getTime())
+  	runStats:set(TRT, runStats:get(RET) - runStats:get(RST))
 end
 
 function WinScreen:update(dt)
@@ -47,11 +49,11 @@ function WinScreen:keypressed(key, scancode, isrepeat)
 end
 
 function WinScreen:mousepressed( x, y, button, istouch, presses )
-	-- if self.timer < 1 then
-	-- 	return
-	-- end
+	if self.timer < 1 then
+		return
+	end
 
-	-- resetGame()
+	resetGame()
 end
 
 return WinScreen

@@ -1,18 +1,26 @@
+require("modules.utils.types")
+
 EnemyManager = {}
 EnemyManager.list = {}
+EnemyManager.counters = {[CAT_SWIMMER] = 0, [SHOOTER_ENEMY] = 0, [TANK_ENEMY] = 0, [CAT_MAGE] = 0}
 EnemyManager.type = "EnemyManager"
+
+function EnemyManager:getCounter(enemyName)
+    return self.counters[enemyName]
+end
 
 function EnemyManager:add(enemy)
     table.insert(self.list, enemy)
+    self.counters[enemy.name] = (self.counters[enemy.name]) + 1
 end
 
 function EnemyManager:update(dt)
     for i = #self.list, 1, -1 do
         local e = self.list[i]
+        e:update(dt)
         if e.isDead then
             table.remove(self.list, i)
-        else
-            e:update(dt)
+            self.counters[e.name] = self.counters[e.name] - 1
         end
     end
 end

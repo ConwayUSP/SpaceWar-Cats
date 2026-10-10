@@ -216,3 +216,41 @@ function renderDots(x1, y1, x2, y2, size, step)
   love.graphics.points(points)
   love.graphics.setPointSize(1)
 end
+
+----------------------------------------
+-- String
+----------------------------------------
+
+function split(inputstr, sep)
+	if sep == nil then
+		sep = "%s" -- Default separator is whitespace
+	end
+	local t = {}
+	for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
+		table.insert(t, str)
+	end
+	return t
+end
+
+----------------------------------------
+-- System
+----------------------------------------
+
+function checkMobile()
+	local os = love.system.getOS()
+	if os == "Android" or os == "iOS" then
+		return true
+	end
+	return false
+end
+
+function isMouseOver(obj, x, y, isCentered)
+	local gameX, gameY = screenToGamePosition(x, y)
+	local objX = obj.x or obj.pos.x
+	local objY = obj.y or obj.pos.y
+	if isCentered then
+		return gameX >= objX - obj.width/2 and gameX <= objX + obj.width/2 and gameY >= objY - obj.height/2 and gameY <= objY + obj.height/2
+	else
+		return gameX >= objX and gameX <= objX + obj.width and gameY >= objY and gameY <= objY + obj.height
+	end
+end

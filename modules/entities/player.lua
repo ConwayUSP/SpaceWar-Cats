@@ -18,7 +18,7 @@ local planet = require("modules.entities.planet")
 ----------------------------------------
 
 local baseConfigs = {
-  speed = 40000,                -- projetil
+  speed = 600,                -- projetil
   damage = 40,                  -- projetil
   size = 5,                     -- player
   scale = 1,                    -- player
@@ -73,6 +73,7 @@ function Player:reset()
   self.isDefeated = false
   self.respawnTimer = 0
   self.invulrabilityTimer = 0
+  self.boostParticle = newBoostParticle(addVec(self.initialPos, self.boostOffset))
   self.boostParticle:play()
 end
 
@@ -212,7 +213,7 @@ function Player:updateMotion(dt)
   mouseY = clamp(mouseY, limit, VIRTUAL_HEIGHT - limit)
 
   local error = mouseY - y
-  local vy = error * 200 * dt
+  local vy = error * 2
 
   self.body:setLinearVelocity(0, vy)
 end

@@ -67,7 +67,7 @@ function UpgradesSlot.new(upgrade, x, y, width, height, delay)
 		upgrade.description,
 		14,
 		{0.85, 0.85, 0.85, 1},
-		vec(self.paddingX, self.paddingY + 34),
+		vec(self.paddingX, self.paddingY + 24),
 		0,
 		false,
 		math.huge,
@@ -115,11 +115,6 @@ function UpgradesSlot:update(dt)
 		self.angle = 0
 		love.mouse.setCursor(cursors.arrow)
 	end
-end
-
-function UpgradesSlot:mouseOver(x, y)
-	local gameX, gameY = screenToGamePosition(x, y)
-	return gameX >= self.x and gameX <= self.x + self.width and gameY >= self.y and gameY <= self.y + self.height
 end
 
 function UpgradesSlot:drawCanvas()
@@ -198,7 +193,6 @@ function UpgradesState:update(dt)
 	end
 end
 
-
 function UpgradesState:updateExit(dt)
 	self.timer = self.timer + dt
 
@@ -227,7 +221,7 @@ function UpgradesState:updateSlots(dt)
 	for i, slot in ipairs(self.slots) do
 		slot:update(dt)
 		local mouseX, mouseY = love.mouse.getPosition()
-		if slot:mouseOver(mouseX, mouseY) then
+		if isMouseOver(slot, mouseX, mouseY) then
 			isHover = true
 			idx = i
 		end
@@ -308,10 +302,20 @@ function UpgradesState:getRandomUpgrades(upgrades)
 	end
 
 	for _ = 1, self.slotsCount do
-		i = self:pickRandomUpgrade(pool)
+		local i = self:pickRandomUpgrade(pool)
 
 		table.insert(result, pool[i])
-		table.remove(pool, i)
+		
+		local splitSelected = split(pool[i].name)
+		
+		for j = #pool, 1, -1 do
+			local splitTarget = split(pool[j].name)
+
+			if splitTarget[1] == splitSelected[1] then
+				table.remove(pool, j)
+			end
+		end
+
 	end
 
 	return result
@@ -347,6 +351,7 @@ function UpgradesState:applyUpgrade(upgrade)
 		player = p1,
 		planet = planet,
 	})
+	runStats:add(TUP, 1)
 
 	local rand = math.random(1, 2)
 	soundManager:play("buy" .. rand)
@@ -393,9 +398,9 @@ function UpgradesState:mousepressed( x, y, button, istouch, presses )
 end
 
 function UpgradesState:handleSlotClick(slot, x, y)
-	local isClicked = slot:mouseOver(x, y)
+	local isOver = isMouseOver(slot, x, y)
 
-	if isClicked then
+	if isOver then
 		self:applyUpgrade(slot.upgrade)
 	end
 end

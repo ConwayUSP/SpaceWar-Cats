@@ -23,7 +23,7 @@ ESC/P - Open game menu
 - Linux
   ```bash
   sudo apt install love
-  love game.love
+  love .
   ```
   
 - Windows

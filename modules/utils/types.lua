@@ -1,0 +1,4 @@
+SHOOTER_ENEMY = "drone"
+CAT_SWIMMER = "swimmer"
+TANK_ENEMY = "tank"
+CAT_MAGE = "mage"

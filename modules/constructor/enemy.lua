@@ -5,6 +5,7 @@ require("modules.utils.utils")
 require("modules.entities.enemy")
 require("modules.constructor.projectile")
 require("modules.system.shots")
+require("modules.utils.types")
 
 
 function hpMultipler()
@@ -17,7 +18,7 @@ end
 ----------------------------------------
 function newShooterEnemy(x, y)
     local projConfig = {
-        speed = 15000,
+        speed = 150,
         damage = 20,
         size = 2,
         hb = {
@@ -29,10 +30,15 @@ function newShooterEnemy(x, y)
     local proj = Projectile.new("blaster-ball", moveDirection, nil, eProjectiles, projConfig)
 
     local function move(self, dt)
-        local error = (VIRTUAL_WIDTH - 50) - self.body:getX()
-        local vx = error * dt * 100
-        local vy = 1000 * math.cos(self.timer * math.pi * 0.2) * dt
+        local vx = -25 * (math.cos(self.timer * math.pi * 0.2) ^ 4)
+        local vy = 10 * math.cos(self.timer * math.pi * 0.2)
         self.body:setLinearVelocity(vx, vy)
+        
+        -- Clamp position to screen bounds
+        local x, y = self.body:getPosition()
+        local margin = self.size * 0.5
+        y = math.max(margin, math.min(VIRTUAL_HEIGHT - margin, y))
+        self.body:setPosition(x, y)
     end
     local config = {
         hp = 50 * hpMultipler(),
@@ -41,7 +47,7 @@ function newShooterEnemy(x, y)
         shootsUntilCd = 3,
         cd = 4
     }
-    local enemy = Enemy.new("drone", vec(x, y), move, proj, nil, config)
+    local enemy = Enemy.new(SHOOTER_ENEMY, vec(x, y), move, proj, nil, config)
     local flyingConfig = newAnimSetting(4, { width = 32, height = 32 }, 0.1, true, 1)
     enemy:addAnimations(flyingConfig)
     return enemy
@@ -54,7 +60,7 @@ function newCatSwimmer(x, y, vx)
     vx = vx or 1
     local function move(self, dt)
         local f = -math.cos(self.timer * math.pi) + 1.2
-        self.body:setLinearVelocity(-7000 * dt * f * vx, 0)
+        self.body:setLinearVelocity(-45 * f * vx, 0)
     end
     local config = {
         hp = 55 * hpMultipler(),
@@ -68,7 +74,7 @@ function newCatSwimmer(x, y, vx)
             height = 18
         }
     }
-    local enemy = Enemy.new("swimmer", vec(x, y), move, nil, nil, config)
+    local enemy = Enemy.new(CAT_SWIMMER, vec(x, y), move, nil, nil, config)
     local flyingConfig = newAnimSetting(9, { width = 32, height = 32 }, 0.1, true, 1)
     enemy:addAnimations(flyingConfig)
     return enemy
@@ -79,7 +85,7 @@ end
 ----------------------------------------
 function newTankEnemy(x, y, newVx)
     local projConfig = {
-        speed = 8000,
+        speed = 80,
         damage = 30,
         size = 10,
         hb = {
@@ -89,15 +95,21 @@ function newTankEnemy(x, y, newVx)
         sound = "tiro2"
     }
     local moveProj = function(e, dt)
-        local vx = -e.speed * (6 ^ (e.timer - 1) + 1) * dt
+        local vx = -e.speed * (6 ^ (e.timer - 1) + 1)
         e.body:setLinearVelocity(vx, 0)
     end
     local proj = Projectile.new("blaster-ball", moveProj, nil, eProjectiles, projConfig)
     local function move(self, dt)
         local vx, vy = self.body:getLinearVelocity()
-        vy = vy + math.cos(self.timer) * 62.5 * dt
+        vy = vy + math.cos(self.timer) * .625
         vx = newVx and (-newVx * 15) or -15
         self.body:setLinearVelocity(vx, vy)
+        
+        -- Clamp position to screen bounds
+        local x, y = self.body:getPosition()
+        local margin = self.size*0.5
+        y = math.max(margin, math.min(VIRTUAL_HEIGHT - margin, y))
+        self.body:setPosition(x, y)
     end
     local config = {
         hp = 100 * hpMultipler(),
@@ -131,7 +143,7 @@ function newTankEnemy(x, y, newVx)
     end
     -- local customShot = defaultConicalAttackFunc(-1, 1, math.rad(10))
     local flyingConfig = newAnimSetting(4, { width = 32, height = 32 }, 0.1, true, 1)
-    local enemy = Enemy.new("tank", vec(x, y), move, proj, customShot, config)
+    local enemy = Enemy.new(TANK_ENEMY, vec(x, y), move, proj, customShot, config)
     enemy:addAnimations(flyingConfig)
     return enemy
 end
@@ -142,7 +154,7 @@ end
 
 function newCatMage(x, y, cd)
     local projConfig = {
-        speed = 5000,
+        speed = 50,
         damage = 20,
         size = 5,
         hb = {
@@ -165,9 +177,15 @@ function newCatMage(x, y, cd)
                 self.fadeState = "fadeOut"
             else
                 local k = 0.4
-                local vx = -400 * math.cos(self.timer * math.pi * k) * (math.pi * k) * dt
-                local vy = 400 * math.cos(self.timer * math.pi * 2*k) * (math.pi * 2*k) * dt
+                local vx = -40 * math.cos(self.timer * math.pi * k) * (math.pi * k)
+                local vy = 40 * math.cos(self.timer * math.pi * 2*k) * (math.pi * 2*k)
                 self.body:setLinearVelocity(vx, vy)
+                
+                -- Clamp position to screen bounds
+                local x, y = self.body:getPosition()
+                local margin = self.size*0.5
+                y = math.max(margin, math.min(VIRTUAL_HEIGHT - margin, y))
+                self.body:setPosition(x, y)
             end
         end
 
@@ -202,7 +220,7 @@ function newCatMage(x, y, cd)
             height = 28
         }
     }
-    local enemy = Enemy.new("mage", vec(x, y), move, proj, nil, config, 0)
+    local enemy = Enemy.new(CAT_MAGE, vec(x, y), move, proj, nil, config, 0)
     local flyingConfig = newAnimSetting(6, { width = 32, height = 32 }, 0.1, true, 1)
     enemy:addAnimations(flyingConfig)
     return enemy

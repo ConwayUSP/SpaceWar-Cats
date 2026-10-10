@@ -96,6 +96,13 @@ function Enemy:updateShooting(dt)
       return
   end
 
+  local x, y = self.body:getPosition()
+
+  -- passa a atirar somente se estiver 50px distante da borda direita da tela
+  if x > VIRTUAL_WIDTH - 50 then
+    return
+  end
+
   -- cooldown
   if self.cooldownTimer > 0 then
     self.cooldownTimer = self.cooldownTimer - dt
@@ -132,7 +139,6 @@ function Enemy:updateShooting(dt)
     return
   end
 
-  local x, y = self.body:getPosition()
   x = x - self.size / 2
 
   local origin = vec(x, y)
@@ -175,6 +181,7 @@ function Enemy:destroy()
   self.body:destroy()
   if self.weapon then
     self.weapon:destroy()
+    runStats:add(TEK, 1)
   end
 end
 

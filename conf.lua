@@ -12,6 +12,9 @@ function love.conf(t)
 
     t.console = true
 
+    t.modules.joystick = false
+    t.externalstorage = true
+
     -- Threads are not available on the web, so keep this disabled
     t.modules.thread = false
 end

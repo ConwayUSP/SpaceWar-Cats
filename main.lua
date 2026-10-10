@@ -133,6 +133,8 @@ function love.draw()
 
 	shaderManager:finish()
 	shaderManager:draw()
+
+	-- love.graphics.print(string.format("FPS: %.1f  dt: %.4f", love.timer.getFPS(), love.timer.getDelta()), 10, 10)
 end
 
 function love.keypressed(key, scancode, isrepeat)

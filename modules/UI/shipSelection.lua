@@ -2,6 +2,7 @@
 -- Importacoes de modulos
 ----------------------------------------
 require("modules.UI.button")
+require("modules.UI.textButton")
 require("modules.engine.text")
 require("modules.engine.animation")
 require("modules.constructor.spaceship")
@@ -30,7 +31,6 @@ function ShipSelectionUI.new(onConfirm)
   self.descriptionText = Text.new("", 14, {1, 1, 1, 0.9}, vec(345, 108), 0, false, nil, nil, 175, "left")
   self.superNameText = Text.new("", 14, {1, 1, 1, 1}, vec(345, 185), 0, false, nil, nil, 175, "left")
   self.superDescriptionText = Text.new("", 12, {1, 1, 1, 0.8}, vec(395, 215), 0, false, nil, nil, 125, "left")
-  self.selectText = Text.new("SELECT", 18, {1, 1, 1, 1}, vec(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT - 50), 0, true)
 
   self.leftButton = Button.new(88, 180, 32, 32, function()
     self:previous()
@@ -40,14 +40,20 @@ function ShipSelectionUI.new(onConfirm)
     self:next()
   end, "arrow")
 
-  self.selectButton = Button.new(
+  self.selectButton = TextButton.new(
     self.selectButtonBounds.x,
     self.selectButtonBounds.y,
     self.selectButtonBounds.width,
     self.selectButtonBounds.height,
+    "SELECT",
     function()
       self:confirm()
-    end
+    end,
+    {
+      fontSize = 18,
+      fillColor = {0.42, 0.42, 0.45, 0.84},
+      hoverFillColor = {0.54, 0.54, 0.58, 0.94}
+    }
   )
 
   self:setSelectedIndex(self.selectedIndex)
@@ -98,39 +104,24 @@ function ShipSelectionUI:update(dt)
   self.descriptionText:update(dt)
   self.superNameText:update(dt)
   self.superDescriptionText:update(dt)
-  self.selectText:update(dt)
 
   local hovering = self.leftButton.isHovered
     or self.rightButton.isHovered
     or self.selectButton.isHovered
   love.mouse.setCursor(hovering and cursors.hand or cursors.arrow)
 
-  self.selectText.color[4] = self.selectButton.isHovered and 1 or 0.75
 end
 
 function ShipSelectionUI:drawPanel()
-  -- love.graphics.setColor(0.04, 0.03, 0.11, 0.92)
-  -- love.graphics.rectangle("fill", self.panel.x, self.panel.y, self.panel.width, self.panel.height)
-  -- love.graphics.setColor(1, 1, 1, 1)
-  -- love.graphics.rectangle("line", self.panel.x, self.panel.y, self.panel.width, self.panel.height)
-
-  love.graphics.setColor(0.04, 0.03, 0.11, 0.88)
+  love.graphics.setColor(0.09, 0.09, 0.105, 0.78)
   love.graphics.rectangle("fill", self.shipCard.x, self.shipCard.y, self.shipCard.width, self.shipCard.height)
   love.graphics.setColor(1, 1, 1, 1)
   love.graphics.rectangle("line", self.shipCard.x, self.shipCard.y, self.shipCard.width, self.shipCard.height)
 
-  love.graphics.setColor(0.04, 0.03, 0.11, 0.88)
+  love.graphics.setColor(0.09, 0.09, 0.105, 0.78)
   love.graphics.rectangle("fill", self.infoCard.x, self.infoCard.y, self.infoCard.width, self.infoCard.height)
   love.graphics.setColor(1, 1, 1, 1)
   love.graphics.rectangle("line", self.infoCard.x, self.infoCard.y, self.infoCard.width, self.infoCard.height)
-
-  -- love.graphics.rectangle(
-  --   "line",
-  --   self.selectButtonBounds.x - self.selectButtonBounds.width / 2,
-  --   self.selectButtonBounds.y - self.selectButtonBounds.height / 2,
-  --   self.selectButtonBounds.width,
-  --   self.selectButtonBounds.height
-  -- )
 end
 
 function ShipSelectionUI:drawShip()
@@ -155,8 +146,6 @@ function ShipSelectionUI:draw()
   self.descriptionText:draw()
   self.superNameText:draw()
   self.superDescriptionText:draw()
-  self.selectText:draw()
-
   love.graphics.setColor(1, 1, 1, 1)
 end
 
@@ -170,4 +159,34 @@ function ShipSelectionUI:mousereleased(x, y, button, istouch, presses)
   self.leftButton:mousereleased(x, y, button)
   self.rightButton:mousereleased(x, y, button)
   self.selectButton:mousereleased(x, y, button)
+end
+
+function ShipSelectionUI:touchpressed(id, x, y)
+  if self.leftButton:touchpressed(id, x, y) then
+    return true
+  end
+
+  if self.rightButton:touchpressed(id, x, y) then
+    return true
+  end
+
+  return self.selectButton:touchpressed(id, x, y)
+end
+
+function ShipSelectionUI:touchmoved(id, x, y)
+  self.leftButton:touchmoved(id, x, y)
+  self.rightButton:touchmoved(id, x, y)
+  self.selectButton:touchmoved(id, x, y)
+end
+
+function ShipSelectionUI:touchreleased(id, x, y)
+  self.leftButton:touchreleased(id, x, y)
+  self.rightButton:touchreleased(id, x, y)
+  self.selectButton:touchreleased(id, x, y)
+end
+
+function ShipSelectionUI:cancelTouches()
+  self.leftButton:cancelTouch()
+  self.rightButton:cancelTouch()
+  self.selectButton:cancelTouch()
 end

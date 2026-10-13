@@ -5,6 +5,7 @@ require("modules.engine.text")
 require("modules.utils.utils")
 require("modules.engine.physics")
 require("modules.UI.button")
+require("modules.UI.textButton")
 
 ----------------------------------------
 -- Estado do Pause
@@ -28,7 +29,7 @@ PauseState.options = {
 		type = LIST,
 		currentIdx = 11,
 		values = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
-		label = "SFX",
+		label = "SFX VOLUME",
 		get = function()
 			return soundManager.sfxVolume * 10
 		end,
@@ -41,7 +42,7 @@ PauseState.options = {
 		type = LIST,
 		currentIdx = 11,
 		values = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
-		label = "Music",
+		label = "MUSIC VOLUME",
 		get = function()
 			return soundManager.musicVolume * 10
 		end,
@@ -52,7 +53,7 @@ PauseState.options = {
 
 	{
 		type = TOGGLE,
-		label = "Fullscreen",
+		label = "FULLSCREEN",
 		get = function()
 			return isFullscreen
 		end,
@@ -62,7 +63,7 @@ PauseState.options = {
 	},
 	{
 		type = TOGGLE,
-		label = "Shake",
+		label = "SCREEN SHAKE",
 		get = function()
 			return camera:isShakeEnabled()
 		end,
@@ -72,7 +73,7 @@ PauseState.options = {
 	},
 	{
 		type = TOGGLE,
-		label = "CRT Shader",
+		label = "CRT SHADER",
 		get = function()
 			return shaderManager:isEnabled("crt")
 		end,
@@ -83,7 +84,7 @@ PauseState.options = {
 
 	{
 		type = TOGGLE,
-		label = "Scanlines",
+		label = "SCANLINES",
 
 		get = function()
 			return shaderManager:isEnabled("scanlines")
@@ -96,7 +97,7 @@ PauseState.options = {
 
 	{
 		type = TOGGLE,
-		label = "Particles",
+		label = "PARTICLES",
 
 		get = function()
 			return particleManager:isActive()
@@ -159,15 +160,13 @@ end
 -- adicionados aqui posteriormente.
 function PauseState:createRow(option, index)
 	local x = self.topLeft.x + self.px
-	local endX = self.bottomRight.x - self.px
-	local y = self.topLeft.y + self.py
-	local rowY = y + (index - 1) * self.rowHeight
+	local rowCenterY = self.contentTop + (index - 0.5) * self.rowHeight
 
 	local label = Text.new(
 		option.label,
-		16,
-		{1, 1, 1, 1},
-		vec(x, rowY),
+		13,
+		{0.82, 0.82, 0.92, 1},
+		vec(x, rowCenterY - 7),
 		0,
 		false,
 		nil,
@@ -178,9 +177,9 @@ function PauseState:createRow(option, index)
 
 	local value = Text.new(
 		self:getRightValue(option),
-		14,
+		12,
 		{1, 1, 1, 1},
-		vec(endX - 20, rowY + label.font:getHeight() / 2),
+		vec(self.controlCenterX, rowCenterY),
 		0,
 		true,
 		nil,
@@ -196,7 +195,7 @@ function PauseState:createRow(option, index)
 		index = index,
 
 		x = x,
-		y = rowY,
+		y = rowCenterY,
 	}
 
 	self:createControls(row)
@@ -234,8 +233,8 @@ function PauseState:createControls(row)
 		)
 
 	elseif row.option.type == TOGGLE then
-		local buttonWidth = 48
-		local buttonHeight = 32
+		local buttonWidth = 58
+		local buttonHeight = 22
 
 		row.toggleButton = Button.new(
 			0,
@@ -245,8 +244,7 @@ function PauseState:createControls(row)
 			function()
 				self:selectOption(row.index)
 				self:setOption(1)
-			end,
-			"small-button"
+			end
 		)
 	end
 
@@ -315,20 +313,16 @@ function PauseState:updateRows(dt)
 end
 
 function PauseState:updateControls(row)
-	local bounds = self:getValueBounds(row)
-
-	local spacing = 15
-
 	if row.option.type == LIST then
-		row.leftButton.x = bounds.left - spacing
-		row.leftButton.y = bounds.centerY
+		row.leftButton.x = self.controlCenterX - 42
+		row.leftButton.y = row.y
 
-		row.rightButton.x = bounds.right + spacing
-		row.rightButton.y = bounds.centerY
+		row.rightButton.x = self.controlCenterX + 42
+		row.rightButton.y = row.y
 
 	elseif row.option.type == TOGGLE then
-		row.toggleButton.x = bounds.centerX
-		row.toggleButton.y = bounds.centerY
+		row.toggleButton.x = self.controlCenterX
+		row.toggleButton.y = row.y
 	end
 end
 
@@ -390,30 +384,80 @@ function PauseState:increaseOption()
 	self:setOption(1)
 end
 
+function PauseState:continueGame()
+	soundManager:play("select2")
+	SetGameCtx(LastGameCtx)
+end
+
+function PauseState:returnToMenu()
+	resetGame()
+end
+
 ----------------------------------------
 -- Carregamento
 ----------------------------------------
 
 function PauseState:load()
-	self.px = 12
-	self.py = 12
+	self.px = 22
+	self.py = 16
 
-	self.rowHeight = 25
+	self.rowHeight = 27
+	self.headerHeight = 62
+	self.footerHeight = 58
 
-	self.width = 400
-	self.height = #self.options * self.rowHeight + self.py * 2
+	self.width = 420
+	self.height = 326
 
 	self.pos = vec(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2)
 
 	self.topLeft = subVec(self.pos, vec(self.width / 2, self.height / 2))
 
 	self.bottomRight = addVec(self.pos, vec(self.width / 2, self.height / 2))
+	self.contentTop = self.topLeft.y + self.headerHeight
+	self.controlCenterX = self.bottomRight.x - 62
+	self.footerTop = self.contentTop + #self.options * self.rowHeight + 7
 
 	self:createState()
 
 	if #self.rows == 0 then
 		self:buildRows()
 	end
+
+	if not self.continueButton then
+		self.continueButton = TextButton.new(
+			self.pos.x - 86,
+			self.bottomRight.y - 28,
+			152,
+			30,
+			"CONTINUE",
+			function()
+				self:continueGame()
+			end,
+			{
+				fillColor = {0.42, 0.42, 0.45, 0.84},
+				hoverFillColor = {0.54, 0.54, 0.58, 0.94}
+			}
+		)
+
+		self.menuButton = TextButton.new(
+			self.pos.x + 86,
+			self.bottomRight.y - 28,
+			152,
+			30,
+			"MAIN MENU",
+			function()
+				self:returnToMenu()
+			end,
+			{
+				fillColor = {0.16, 0.16, 0.18, 0.76},
+				hoverFillColor = {0.3, 0.3, 0.33, 0.92}
+			}
+		)
+	end
+
+	self.titleFont = self.titleFont or returnFont(23)
+	self.sectionFont = self.sectionFont or returnFont(10)
+	self.controlFont = self.controlFont or returnFont(12)
 
 	soundManager:play("ambience", false, true)
 	soundManager:pause("battle")
@@ -429,6 +473,8 @@ function PauseState:update(dt)
 	self.timer = self.timer + dt
 
 	self:updateRows(dt)
+	self.continueButton:update(dt)
+	self.menuButton:update(dt)
 	self:updateCursor()
 end
 
@@ -452,6 +498,10 @@ function PauseState:updateCursor()
 		end
 	end
 
+	if self.continueButton.isHovered or self.menuButton.isHovered then
+		hovered = true
+	end
+
 	love.mouse.setCursor(hovered and cursors.hand or cursors.arrow)
 end
 
@@ -468,7 +518,7 @@ function PauseState:draw()
 	particleManager:draw()
 
 	-- Overlay escuro sobre o jogo.
-	love.graphics.setColor(0.08, 0.05, 0.14, 0.8)
+	love.graphics.setColor(0.025, 0.025, 0.035, 0.62)
 	love.graphics.rectangle(
 		"fill",
 		0,
@@ -483,82 +533,76 @@ function PauseState:draw()
 end
 
 function PauseState:drawMenu()
-	-- Fundo do menu.
-	love.graphics.setColor(0.15, 0.15, 0.15, 1)
+	-- Sombra curta e painel opaco mantêm o jogo visível sem competir com as opções.
+	love.graphics.setColor(0, 0, 0, 0.42)
+	love.graphics.rectangle("fill", self.topLeft.x + 5, self.topLeft.y + 6, self.width, self.height)
 
-	love.graphics.rectangle(
-		"fill",
-		self.topLeft.x,
-		self.topLeft.y,
-		self.width,
-		self.height
-	)
+	love.graphics.setColor(0.09, 0.09, 0.105, 0.78)
+	love.graphics.rectangle("fill", self.topLeft.x, self.topLeft.y, self.width, self.height)
 
-	-- Borda do menu.
 	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.rectangle("line", self.topLeft.x, self.topLeft.y, self.width, self.height)
 
-	love.graphics.rectangle(
-		"line",
-		self.topLeft.x,
-		self.topLeft.y,
-		self.width,
-		self.height
-	)
+	self:drawCenteredLabel("PAUSED", self.titleFont, self.pos.x, self.topLeft.y + 25, {0.94, 0.94, 0.95, 1})
+	self:drawCenteredLabel("SETTINGS", self.sectionFont, self.pos.x, self.topLeft.y + 48, {0.58, 0.58, 0.62, 1})
 
 	for index, row in ipairs(self.rows) do
 		self:drawRow(row, index)
 	end
+
+	self.continueButton:draw()
+	self.menuButton:draw()
+
+	love.graphics.setColor(1, 1, 1, 1)
 end
 
 function PauseState:drawRow(row, index)
-	local startX =
-		self.topLeft.x
-		+ row.label.font:getWidth(row.label.content)
-		+ 5
-		+ self.px
-
-	local endX =
-		self.bottomRight.x
-		- row.value.font:getWidth(row.value.content)
-		- 5
-		- self.px
-		- (row.option.type == LIST and 32 or 0)
-
-	local rowHeight = row.label.font:getHeight()
-
-	local rowY =
-		self.topLeft.y
-		+ (index - 1) * self.rowHeight
-		+ rowHeight / 2
-		+ self.py
-
 	-- Destaque da opção selecionada.
 	if index == self.selectedOption then
-		love.graphics.setColor(1, 1, 1, 0.3)
-
-		love.graphics.rectangle(
-			"fill",
-			self.topLeft.x + 2,
-			rowY - rowHeight / 2 - 2,
-			self.width - 4,
-			rowHeight
-		)
-
-		love.graphics.setColor(1, 1, 1, 1)
+		love.graphics.setColor(0.72, 0.72, 0.76, 0.13)
+		love.graphics.rectangle("fill", self.topLeft.x + 9, row.y - self.rowHeight / 2 + 2, self.width - 18, self.rowHeight - 4)
 	end
 
-	renderDots(startX, rowY, endX, rowY, 3)
+	if index < #self.rows then
+		love.graphics.setColor(0.58, 0.58, 0.62, 0.12)
+		love.graphics.line(self.topLeft.x + self.px, row.y + self.rowHeight / 2, self.bottomRight.x - self.px, row.y + self.rowHeight / 2)
+	end
 
+	row.label.color = index == self.selectedOption and {0.95, 0.95, 0.96, 1} or {0.72, 0.72, 0.75, 1}
 	row.label:draw()
 	
 	if row.option.type == LIST then
+		love.graphics.setColor(1, 1, 1, 1)
 		row.leftButton:draw()
 		row.rightButton:draw()
+		row.value.color = {0.92, 0.92, 0.94, 1}
+		row.value:draw()
 	elseif row.option.type == TOGGLE then
-		row.toggleButton:draw()
+		self:drawToggle(row)
+	end
+end
+
+function PauseState:drawCenteredLabel(content, font, centerX, centerY, color)
+	love.graphics.setFont(font)
+	love.graphics.setColor(color[1], color[2], color[3], color[4])
+	love.graphics.printf(content, centerX - 120, centerY - font:getHeight() / 2, 240, "center")
+end
+
+function PauseState:drawToggle(row)
+	local button = row.toggleButton
+	local enabled = row.option.get()
+	local hovered = button.isHovered
+
+	if enabled then
+		love.graphics.setColor(0.39, 0.43, 0.41, hovered and 0.95 or 0.82)
+	else
+		love.graphics.setColor(0.25, 0.24, 0.27, hovered and 0.95 or 0.82)
 	end
 
-	row.value:draw()
+	love.graphics.rectangle("fill", button.x - button.width / 2, button.y - button.height / 2, button.width, button.height)
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.rectangle("line", button.x - button.width / 2, button.y - button.height / 2, button.width, button.height)
+	self:drawCenteredLabel(enabled and "ON" or "OFF", self.controlFont, button.x, button.y, {1, 1, 1, 1})
 end
 
 ----------------------------------------
@@ -591,7 +635,7 @@ function PauseState:keypressed(key, scancode, isrepeat)
 	end
 
 	if key == "p" or key == "escape" then
-		SetGameCtx(LastGameCtx)
+		self:continueGame()
 	end
 end
 
@@ -603,7 +647,7 @@ function PauseState:mousepressed(x, y, button, istouch, presses)
 	local gameX, gameY = screenToGamePosition(x, y)
 
 	if gameX < self.topLeft.x or gameX > self.bottomRight.x or gameY < self.topLeft.y or gameY > self.bottomRight.y then
-		SetGameCtx(LastGameCtx)
+		self:continueGame()
 		return
 	end
 
@@ -615,6 +659,9 @@ function PauseState:mousepressed(x, y, button, istouch, presses)
 			row.toggleButton:mousepressed(x, y, button)
 		end
 	end
+
+	self.continueButton:mousepressed(x, y, button)
+	self.menuButton:mousepressed(x, y, button)
 end
 
 function PauseState:mousereleased(x, y, button, istouch, presses)
@@ -626,13 +673,17 @@ function PauseState:mousereleased(x, y, button, istouch, presses)
 			row.toggleButton:mousereleased(x, y, button)
 		end
 	end
+
+
+	self.continueButton:mousereleased(x, y, button)
+	self.menuButton:mousereleased(x, y, button)
 end
 
 function PauseState:touchpressed(id, x, y, dx, dy, pressure)
 	local gameX, gameY = screenToGamePosition(x, y)
 
 	if gameX < self.topLeft.x or gameX > self.bottomRight.x or gameY < self.topLeft.y or gameY > self.bottomRight.y then
-		SetGameCtx(LastGameCtx)
+		self:continueGame()
 		return true
 	end
 
@@ -650,6 +701,14 @@ function PauseState:touchpressed(id, x, y, dx, dy, pressure)
 		end
 	end
 
+	if self.continueButton:touchpressed(id, x, y) then
+		return true
+	end
+
+	if self.menuButton:touchpressed(id, x, y) then
+		return true
+	end
+
 	return false
 end
 
@@ -662,6 +721,10 @@ function PauseState:touchreleased(id, x, y, dx, dy, pressure)
 			row.toggleButton:touchreleased(id)
 		end
 	end
+
+
+	self.continueButton:touchreleased(id)
+	self.menuButton:touchreleased(id)
 end
 
 function PauseState:cancelTouches()
@@ -672,6 +735,12 @@ function PauseState:cancelTouches()
 		elseif row.option.type == TOGGLE then
 			row.toggleButton:cancelTouch()
 		end
+	end
+
+
+	if self.continueButton then
+		self.continueButton:cancelTouch()
+		self.menuButton:cancelTouch()
 	end
 end
 

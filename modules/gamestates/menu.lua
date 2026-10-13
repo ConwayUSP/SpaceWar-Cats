@@ -87,4 +87,16 @@ function MenuState:mousereleased(x, y, button, istouch, presses)
 	p1:mousereleased(x, y, button, istouch, presses)
 end
 
+function MenuState:touchpressed(id, x, y, dx, dy, pressure)
+	return p1:touchpressed(id, x, y)
+end
+
+function MenuState:touchmoved(id, x, y, dx, dy, pressure)
+	return p1:touchmoved(id, x, y)
+end
+
+function MenuState:touchreleased(id, x, y, dx, dy, pressure)
+	return p1:touchreleased(id)
+end
+
 return MenuState

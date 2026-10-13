@@ -107,4 +107,16 @@ function BattleState:mousereleased(x, y, button, istouch, presses)
 	p1:mousereleased(x, y, button, istouch, presses)
 end
 
+function BattleState:touchpressed(id, x, y, dx, dy, pressure)
+	return p1:touchpressed(id, x, y)
+end
+
+function BattleState:touchmoved(id, x, y, dx, dy, pressure)
+	return p1:touchmoved(id, x, y)
+end
+
+function BattleState:touchreleased(id, x, y, dx, dy, pressure)
+	return p1:touchreleased(id)
+end
+
 return BattleState

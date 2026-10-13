@@ -12,6 +12,7 @@ function Button.new(x, y, width, height, onClick, image, inverted, onPress, onRe
   button.onPress = onPress
   button.onRelease = onRelease
   button.isPressed = false
+  button.activeInputId = nil
 
   button.state = STATIC
   button.isHovered = false
@@ -66,7 +67,8 @@ function Button:isMouseOver()
 end
 
 function Button:mousepressed(x, y, button)
-  if button == 1 and isMouseOver(self, x, y, true) then
+  if button == 1 and self.activeInputId == nil and isMouseOver(self, x, y, true) then
+    self.activeInputId = "mouse"
     self.isPressed = true
 
     if not self.onPress and self.onClick then
@@ -76,13 +78,52 @@ function Button:mousepressed(x, y, button)
 end
 
 function Button:mousereleased(x, y, button)
-  if button ~= 1 or not self.isPressed then
+  if button ~= 1 or self.activeInputId ~= "mouse" then
     return
   end
 
+  self:releaseInput()
+end
+
+function Button:touchpressed(id, x, y)
+  if self.activeInputId ~= nil or not isMouseOver(self, x, y, true) then
+    return false
+  end
+
+  self.activeInputId = id
+  self.isPressed = true
+
+  if not self.onPress and self.onClick then
+    self.onClick()
+  end
+
+  return true
+end
+
+function Button:touchmoved(id)
+  return self.activeInputId == id
+end
+
+function Button:touchreleased(id)
+  if self.activeInputId ~= id then
+    return false
+  end
+
+  self:releaseInput()
+  return true
+end
+
+function Button:releaseInput()
+  self.activeInputId = nil
   self.isPressed = false
 
   if self.onRelease then
     self.onRelease()
+  end
+end
+
+function Button:cancelTouch()
+  if self.activeInputId ~= nil and self.activeInputId ~= "mouse" then
+    self:releaseInput()
   end
 end

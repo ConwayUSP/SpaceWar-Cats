@@ -54,6 +54,8 @@ function Player:load()
   self.isDefeated = false
 
   self.state = FLYING
+  self.movementTouchId = nil
+  self.touchPosition = nil
 
   -- Nave inicial
   self:setSpaceship(defaultSpaceship())
@@ -87,6 +89,8 @@ function Player:reset()
 
   self.respawnTimer = 0
   self.invulrabilityTimer = 0
+  self.movementTouchId = nil
+  self.touchPosition = nil
 
   self.boostParticle = newBoostParticle(addVec(self.initialPos, self.boostOffset))
   self.boostParticle:play()
@@ -154,10 +158,19 @@ function Player:updateDead(dt)
 end
 
 function Player:updateState(dt)
-  local mouseX, mouseY = screenToGamePosition(love.mouse.getPosition())
-  mouseX = math.max(mouseX, 200)
   local x, y = self.body:getPosition()
-  self.angle = math.atan2(mouseY - y, mouseX - x)
+  local targetX, targetY
+
+  if self.touchPosition then
+    targetX, targetY = self.touchPosition.x, self.touchPosition.y
+  elseif not checkMobile() then
+    targetX, targetY = screenToGamePosition(love.mouse.getPosition())
+  else
+    targetX, targetY = VIRTUAL_WIDTH, y
+  end
+
+  targetX = math.max(targetX, 200)
+  self.angle = math.atan2(targetY - y, targetX - x)
 
   if self.invulrabilityTimer > 0 then
     self.invulrabilityTimer = self.invulrabilityTimer - dt
@@ -181,12 +194,21 @@ function Player:updateMotion(dt)
     return
   end
 
-  local _, mouseY = screenToGamePosition(love.mouse.getPosition())
+  local targetY
+  if self.touchPosition then
+    targetY = self.touchPosition.y
+  elseif not checkMobile() then
+    _, targetY = screenToGamePosition(love.mouse.getPosition())
+  else
+    self.body:setLinearVelocity(0, 0)
+    return
+  end
+
   local limit = 20
   local y = clamp(self.body:getY(), limit, VIRTUAL_HEIGHT - limit)
-  mouseY = clamp(mouseY, limit, VIRTUAL_HEIGHT - limit)
+  targetY = clamp(targetY, limit, VIRTUAL_HEIGHT - limit)
 
-  local error = mouseY - y
+  local error = targetY - y
   local vy = error * self.spaceship.stats:get("speed")
 
   self.body:setLinearVelocity(0, vy)
@@ -296,6 +318,50 @@ function Player:mousereleased(x, y, button, istouch, presses)
 
   if button == 1 then
     self:releaseShoot()
+  end
+end
+
+function Player:touchpressed(id, x, y)
+  if self.movementTouchId ~= nil then
+    return false
+  end
+
+  local gameX, gameY = screenToGamePosition(x, y)
+  if gameX <= VIRTUAL_WIDTH / 2 then
+    return false
+  end
+
+  self.movementTouchId = id
+  self.touchPosition = vec(gameX, gameY)
+  return true
+end
+
+function Player:touchmoved(id, x, y)
+  if self.movementTouchId ~= id then
+    return false
+  end
+
+  local gameX, gameY = screenToGamePosition(x, y)
+  self.touchPosition.x = gameX
+  self.touchPosition.y = gameY
+  return true
+end
+
+function Player:touchreleased(id)
+  if self.movementTouchId ~= id then
+    return false
+  end
+
+  self:cancelTouches()
+  return true
+end
+
+function Player:cancelTouches()
+  self.movementTouchId = nil
+  self.touchPosition = nil
+
+  if self.body then
+    self.body:setLinearVelocity(0, 0)
   end
 end
 

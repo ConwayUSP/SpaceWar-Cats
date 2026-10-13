@@ -53,6 +53,49 @@ function UIScene:mousereleased(x, y, button, istouch, presses)
   end
 end
 
+function UIScene:touchpressed(id, x, y, dx, dy, pressure)
+  for _, element in ipairs(self.elements) do
+    if element.active then
+      if element.touchpressed and element:touchpressed(id, x, y, dx, dy, pressure) then
+        return true
+      elseif not element.touchpressed and element.mousepressed then
+        element:mousepressed(x, y, 1, true, 1)
+        return true
+      end
+    end
+  end
+
+  return false
+end
+
+function UIScene:touchmoved(id, x, y, dx, dy, pressure)
+  for _, element in ipairs(self.elements) do
+    if element.active and element.touchmoved then
+      element:touchmoved(id, x, y, dx, dy, pressure)
+    end
+  end
+end
+
+function UIScene:touchreleased(id, x, y, dx, dy, pressure)
+  for _, element in ipairs(self.elements) do
+    if element.active then
+      if element.touchreleased then
+        element:touchreleased(id, x, y, dx, dy, pressure)
+      elseif element.mousereleased then
+        element:mousereleased(x, y, 1, true, 1)
+      end
+    end
+  end
+end
+
+function UIScene:cancelTouches()
+  for _, element in ipairs(self.elements) do
+    if element.cancelTouches then
+      element:cancelTouches()
+    end
+  end
+end
+
 function UIScene:add(element)
   table.insert(self.elements, element)
   element.active = true

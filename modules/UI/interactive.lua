@@ -54,3 +54,19 @@ end
 function Interactive:mousereleased(x, y, button)
   self.button:mousereleased(x, y, button)
 end
+
+function Interactive:touchpressed(id, x, y)
+  return self.button:touchpressed(id, x, y)
+end
+
+function Interactive:touchmoved(id, x, y)
+  return self.button:touchmoved(id, x, y)
+end
+
+function Interactive:touchreleased(id, x, y)
+  return self.button:touchreleased(id, x, y)
+end
+
+function Interactive:cancelTouches()
+  self.button:cancelTouch()
+end

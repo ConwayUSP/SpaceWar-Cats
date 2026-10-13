@@ -44,6 +44,32 @@ function UIManager:mousereleased(x, y, button, istouch, presses)
   end
 end
 
+function UIManager:touchpressed(id, x, y, dx, dy, pressure)
+  if self.scene then
+    return self.scene:touchpressed(id, x, y, dx, dy, pressure)
+  end
+
+  return false
+end
+
+function UIManager:touchmoved(id, x, y, dx, dy, pressure)
+  if self.scene then
+    self.scene:touchmoved(id, x, y, dx, dy, pressure)
+  end
+end
+
+function UIManager:touchreleased(id, x, y, dx, dy, pressure)
+  if self.scene then
+    self.scene:touchreleased(id, x, y, dx, dy, pressure)
+  end
+end
+
+function UIManager:cancelTouches()
+  if self.scene then
+    self.scene:cancelTouches()
+  end
+end
+
 function UIManager:changeScene(newScene)
   if not self.scenes[newScene] then
     self.scene = nil

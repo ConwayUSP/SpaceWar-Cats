@@ -42,6 +42,10 @@ camera = Camera.new()
 
 -- Função auxiliar para trocar de contexto e carregar o novo estado
 function SetGameCtx(newCtx)
+	UIManager:cancelTouches()
+	if p1 and p1.cancelTouches then
+		p1:cancelTouches()
+	end
 	LastGameCtx = GameCtx
 	GameCtx = newCtx
 	GAMESTATE[GameCtx]:load()
@@ -182,6 +186,10 @@ function love.keyreleased(key, scancode)
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
+	if istouch then
+		return
+	end
+
 	UIManager:mousepressed(x, y, button, istouch, presses)
 
 	if GAMESTATE[GameCtx].mousepressed then
@@ -190,9 +198,48 @@ function love.mousepressed(x, y, button, istouch, presses)
 end
 
 function love.mousereleased(x, y, button, istouch, presses)
+	if istouch then
+		return
+	end
+
 	UIManager:mousereleased(x, y, button, istouch, presses)
 
 	if GAMESTATE[GameCtx].mousereleased then
 		GAMESTATE[GameCtx]:mousereleased(x, y, button, istouch, presses)
+	end
+end
+
+function love.touchpressed(id, x, y, dx, dy, pressure)
+	local consumed = UIManager:touchpressed(id, x, y, dx, dy, pressure)
+	local state = GAMESTATE[GameCtx]
+
+	if consumed then
+		return
+	end
+
+	if state.touchpressed then
+		state:touchpressed(id, x, y, dx, dy, pressure)
+	elseif state.mousepressed then
+		state:mousepressed(x, y, 1, true, 1)
+	end
+end
+
+function love.touchmoved(id, x, y, dx, dy, pressure)
+	UIManager:touchmoved(id, x, y, dx, dy, pressure)
+
+	local state = GAMESTATE[GameCtx]
+	if state.touchmoved then
+		state:touchmoved(id, x, y, dx, dy, pressure)
+	end
+end
+
+function love.touchreleased(id, x, y, dx, dy, pressure)
+	UIManager:touchreleased(id, x, y, dx, dy, pressure)
+
+	local state = GAMESTATE[GameCtx]
+	if state.touchreleased then
+		state:touchreleased(id, x, y, dx, dy, pressure)
+	elseif state.mousereleased then
+		state:mousereleased(x, y, 1, true, 1)
 	end
 end

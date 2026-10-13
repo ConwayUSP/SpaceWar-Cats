@@ -30,7 +30,7 @@ function RunStats:get(stat)
   return self.stats[stat]
 end
 
-function RunStats:reset()
+function RunStats:clearRunStats()
   for stat, _ in pairs(self.stats) do
     self.stats[stat] = 0
   end

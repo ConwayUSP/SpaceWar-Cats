@@ -20,15 +20,17 @@ function ProjectileManager:update(dt)
   end
 end
 
-function ProjectileManager:clear()
-  for i = #self.projectiles, 1, -1 do
-    for _, shotEvent in pairs(self.projectiles[i].events) do
+function ProjectileManager:clearActiveShots()
+  for _, projectile in ipairs(self.projectiles) do
+    for _, shotEvent in ipairs(projectile.events) do
       shotEvent:destroy()
     end
+
+    projectile.events = {}
   end
 end
 
-function ProjectileManager:reset()
+function ProjectileManager:destroyAllProjectiles()
   for i = #self.projectiles, 1, -1 do
     local p = self.projectiles[i]
     p:destroy()

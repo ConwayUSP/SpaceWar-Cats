@@ -118,8 +118,11 @@ function Loot:updateMotion(dt)
 end
 
 function Loot:destroy()
-  if not self.active then
+  self.active = false
+
+  if self.body then
     self.body:destroy()
+    self.body = nil
   end
 end
 

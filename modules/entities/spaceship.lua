@@ -49,7 +49,7 @@ function Spaceship.new(config, owner)
   self.weapon = Projectile.new(config.weapon.name, moveDirection, self.customHit, pProjectiles, config.weapon)
   self.super = Super.new(owner, config.super)
 
-  self:reset()
+  self:resetForNewRun()
   self:addAnimations()
 
   return self
@@ -128,13 +128,13 @@ end
 -- Reset
 ----------------------------------------
 
-function Spaceship:reset()
+function Spaceship:resetForNewRun()
   self.stats:reset()
   self.hp = self.stats:get("maxHp")
 
-  self.weapon:reset()
+  self.weapon:resetWeaponState()
   if self.super then
-    self.super:reset()
+    self.super:resetAbilityState()
   end
 end
 

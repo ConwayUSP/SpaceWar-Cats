@@ -38,6 +38,10 @@ function Physics:update(dt)
   self.delayedFunctions = {}
 end
 
+function Physics:clearPendingCallbacks()
+  self.delayedFunctions = {}
+end
+
 function getRightHitbox(hb)
   if hb.type == CIRCLE then
     return love.physics.newCircleShape(hb.radius)

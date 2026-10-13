@@ -38,7 +38,7 @@ function EnemyManager:update(dt)
     end
 end
 
-function EnemyManager:reset()
+function EnemyManager:clearRunState()
     for i = #self.list, 1, -1 do
         local e = self.list[i]
         e:destroy()

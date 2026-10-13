@@ -44,7 +44,7 @@ function WinScreen:keypressed(key, scancode, isrepeat)
 	end
 
 	if key == "space" then
-		resetGame()
+		returnToMainMenuAndResetRun()
 	end
 end
 
@@ -53,7 +53,7 @@ function WinScreen:mousepressed( x, y, button, istouch, presses )
 		return
 	end
 
-	resetGame()
+	returnToMainMenuAndResetRun()
 end
 
 return WinScreen

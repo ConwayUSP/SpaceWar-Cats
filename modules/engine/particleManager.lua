@@ -78,7 +78,7 @@ function ParticleManager:remove(particleAnim)
   end
 end
 
-function ParticleManager:reset()
+function ParticleManager:clearRunEffects()
   self.particlesAnim = {}
   self.particlesText = {}
   self.particles = {}

@@ -39,17 +39,27 @@ function Planet:load()
 
   self.cureTimer = 1
 
-  self:reset()
+  self:resetForNewRun()
   self:addAnimations()
 
 end
 
-function Planet:reset()
+function Planet:resetForNewRun()
   self.maxHp = baseConfigs.maxHp
   self.regen = baseConfigs.regen
   self.hp = self.maxHp
   self.state = INTACT
   self.isDead = false
+  self.damagedTimer = 0
+  self.healTimer = 0
+  self.cureTimer = 1
+  self.body:setPosition(self.pos.x, self.pos.y)
+  self.body:setLinearVelocity(0, 0)
+
+  if self.animations and self.animations[INTACT] then
+    self.animations[INTACT]:reset()
+  end
+
   self.fixture:setFilterData(
     CATEGORY.PLANET, 
     CATEGORY.ENEMY, 

@@ -68,6 +68,11 @@ end
 ----------------------------------------
 
 function Player:setSpaceship(spaceship)
+  if self.spaceship then
+    self.spaceship.super:resetAbilityState()
+    self.spaceship.weapon:destroy()
+  end
+
   self.spaceship = spaceship
 
   self:refreshHitbox()
@@ -77,8 +82,8 @@ end
 -- Reset
 ----------------------------------------
 
-function Player:reset()
-  self.spaceship:reset()
+function Player:resetForNewRun()
+  self.spaceship:resetForNewRun()
   self:refreshHitbox()
 
   self.body:setPosition(self.initialPos.x, self.initialPos.y)
@@ -91,6 +96,8 @@ function Player:reset()
   self.invulrabilityTimer = 0
   self.movementTouchId = nil
   self.touchPosition = nil
+  self.state = FLYING
+  self.angle = 0
 
   self.boostParticle = newBoostParticle(addVec(self.initialPos, self.boostOffset))
   self.boostParticle:play()

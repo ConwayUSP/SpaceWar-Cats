@@ -18,11 +18,11 @@ function Super.new(owner, config)
   self.onUpdate = self.config.onUpdate
   self.onEnd = self.config.onEnd
 
-  self:reset()
+  self:resetAbilityState()
   return self
 end
 
-function Super:reset()
+function Super:resetAbilityState()
   if self.isActive and self.onEnd then
     self.onEnd(self)
   end

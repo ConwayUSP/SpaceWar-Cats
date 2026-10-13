@@ -61,6 +61,14 @@ function Camera:shake(intensity, duration)
   self.shakeTimer = duration
 end
 
+function Camera:clearTransientEffects()
+  self.shakeIntensity = 0
+  self.shakeDuration = 0
+  self.shakeTimer = 0
+  self.shakeX = 0
+  self.shakeY = 0
+end
+
 function Camera:attach()
   love.graphics.push()
 

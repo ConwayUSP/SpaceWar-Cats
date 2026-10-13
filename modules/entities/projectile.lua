@@ -61,7 +61,7 @@ function Projectile:upgrade(key, value, mode)
     self.stats:upgrade(key, value, mode)
 end
 
-function Projectile:reset()
+function Projectile:resetWeaponState()
     self.stats:reset()
 
     self.firerateTimer = math.huge

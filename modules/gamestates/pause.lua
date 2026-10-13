@@ -390,7 +390,7 @@ function PauseState:continueGame()
 end
 
 function PauseState:returnToMenu()
-	resetGame()
+	returnToMainMenuAndResetRun()
 end
 
 ----------------------------------------

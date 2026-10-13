@@ -9,7 +9,7 @@ WaveManager.type = "WaveManager"
 WaveManager.transitionTimer = 0.5
 
 function WaveManager:load()
-    self:buildWaves()
+    self:prepareNewRun()
 end
 
 function WaveManager:buildWaves()
@@ -54,7 +54,7 @@ function WaveManager:applyPendingUpgrades()
     self.upgradesPending = {}
 end
 
-function WaveManager:reset()
+function WaveManager:prepareNewRun()
     self:buildWaves()
     self.upgradesPending = {}
     self.currentWaveIndex = 0

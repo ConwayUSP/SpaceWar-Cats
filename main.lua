@@ -57,18 +57,23 @@ function SetGameCtx(newCtx)
 	UIManager:changeScene(GameCtx)
 end
 
-function resetGame()
-	enemyManager:reset()
-	eProjectiles:reset()
+function returnToMainMenuAndResetRun()
+	-- Callbacks antigos podem referenciar corpos que serão destruídos abaixo.
+	Physics:clearPendingCallbacks()
+	GAMESTATE[CTX.BATTLE]:clearRunState()
 
-	pProjectiles:clear()
-	particleManager:reset()
+	enemyManager:clearRunState()
+	eProjectiles:destroyAllProjectiles()
+	pProjectiles:clearActiveShots()
+	lootManager:clearRunState()
+	explosionManager:clearRunState()
+	particleManager:clearRunEffects()
 
-	p1:reset()
-	planet:reset()
-	waveManager:reset()
-	explosionManager:reset()
-	runStats:reset()
+	p1:resetForNewRun()
+	planet:resetForNewRun()
+	waveManager:prepareNewRun()
+	camera:clearTransientEffects()
+	runStats:clearRunStats()
 	soundManager:stopAll()
 
 	SetGameCtx(CTX.MENU)

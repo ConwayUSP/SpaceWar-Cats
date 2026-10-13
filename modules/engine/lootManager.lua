@@ -25,7 +25,7 @@ function LootManager:update(dt)
     end
 end
 
-function LootManager:reset()
+function LootManager:clearRunState()
     for i = #self.list, 1, -1 do
         local l = self.list[i]
         l:destroy()
@@ -33,6 +33,9 @@ function LootManager:reset()
     end
 
     self.list = {}
+    for lootName in pairs(self.counters) do
+        self.counters[lootName] = 0
+    end
 end
 
 function LootManager:draw()

@@ -35,7 +35,7 @@ end
 -- Reset
 ----------------------------------------
 
-function ExplosionManager:reset()
+function ExplosionManager:clearRunState()
 
   for i = #self.list, 1, -1 do
     local explosion = self.list[i]

@@ -42,8 +42,7 @@ function DeathScreen:keypressed(key, scancode, isrepeat)
 	end
 
 	if key == "space" then
-		resetGame()
-		runStats:set(RST, love.timer.getTime())
+		returnToMainMenuAndResetRun()
 	end
 
 end
@@ -53,7 +52,7 @@ function DeathScreen:mousepressed( x, y, button, istouch, presses )
 		return
 	end
 
-	resetGame()
+	returnToMainMenuAndResetRun()
 end
 
 return DeathScreen

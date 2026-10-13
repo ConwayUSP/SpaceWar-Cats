@@ -42,6 +42,11 @@ camera = Camera.new()
 
 -- Função auxiliar para trocar de contexto e carregar o novo estado
 function SetGameCtx(newCtx)
+	local currentState = GAMESTATE[GameCtx]
+	if currentState and currentState.cancelTouches then
+		currentState:cancelTouches()
+	end
+
 	UIManager:cancelTouches()
 	if p1 and p1.cancelTouches then
 		p1:cancelTouches()

@@ -123,7 +123,7 @@ function Button:releaseInput()
 end
 
 function Button:cancelTouch()
-  if self.activeInputId ~= nil and self.activeInputId ~= "mouse" then
+  if self.activeInputId ~= nil then
     self:releaseInput()
   end
 end

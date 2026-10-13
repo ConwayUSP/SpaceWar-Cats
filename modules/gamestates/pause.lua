@@ -617,6 +617,64 @@ function PauseState:mousepressed(x, y, button, istouch, presses)
 	end
 end
 
+function PauseState:mousereleased(x, y, button, istouch, presses)
+	for _, row in ipairs(self.rows) do
+		if row.option.type == LIST then
+			row.leftButton:mousereleased(x, y, button)
+			row.rightButton:mousereleased(x, y, button)
+		elseif row.option.type == TOGGLE then
+			row.toggleButton:mousereleased(x, y, button)
+		end
+	end
+end
+
+function PauseState:touchpressed(id, x, y, dx, dy, pressure)
+	local gameX, gameY = screenToGamePosition(x, y)
+
+	if gameX < self.topLeft.x or gameX > self.bottomRight.x or gameY < self.topLeft.y or gameY > self.bottomRight.y then
+		SetGameCtx(LastGameCtx)
+		return true
+	end
+
+	for _, row in ipairs(self.rows) do
+		if row.option.type == LIST then
+			if row.leftButton:touchpressed(id, x, y) then
+				return true
+			end
+
+			if row.rightButton:touchpressed(id, x, y) then
+				return true
+			end
+		elseif row.option.type == TOGGLE and row.toggleButton:touchpressed(id, x, y) then
+			return true
+		end
+	end
+
+	return false
+end
+
+function PauseState:touchreleased(id, x, y, dx, dy, pressure)
+	for _, row in ipairs(self.rows) do
+		if row.option.type == LIST then
+			row.leftButton:touchreleased(id)
+			row.rightButton:touchreleased(id)
+		elseif row.option.type == TOGGLE then
+			row.toggleButton:touchreleased(id)
+		end
+	end
+end
+
+function PauseState:cancelTouches()
+	for _, row in ipairs(self.rows) do
+		if row.option.type == LIST then
+			row.leftButton:cancelTouch()
+			row.rightButton:cancelTouch()
+		elseif row.option.type == TOGGLE then
+			row.toggleButton:cancelTouch()
+		end
+	end
+end
+
 ----------------------------------------
 -- Retorno
 ----------------------------------------

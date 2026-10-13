@@ -12,6 +12,8 @@ local SFX_ASSETS = {
     buy2 = "assets/sounds/sfx/buy/buy-2.mp3",
     select1 = "assets/sounds/sfx/select/select-1.wav",
     select2 = "assets/sounds/sfx/select/select-2.wav",
+    -- TODO: substituir pelo efeito sonoro final de coleta de loot.
+    loot1 = "assets/sounds/sfx/loot/loot-1.wav",
     evil_laugh = "assets/sounds/sfx/evil_laugh.mp3",
     hit1 = "assets/sounds/sfx/hit/hit-1.wav",
     end_wave = "assets/sounds/sfx/end_wave.mp3",

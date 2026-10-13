@@ -6,6 +6,7 @@ require("modules.utils.utils")
 require("modules.engine.physics")
 require("modules.system.render")
 require("modules.utils.vec")
+require("modules.utils.screen")
 require("table")
 
 ----------------------------------------
@@ -29,8 +30,11 @@ function Loot.new(name, move, pos, config, effect)
   loot.active = true
   loot.state = FLYING
 
-  loot.magnetAcceleration = config.magnetAcceleration or 1000
-  loot.magnetSteering = config.magnetSteering or 10
+  loot.activationRadius = config.activationRadius or 30
+  loot.magnetAcceleration = config.magnetAcceleration or 950
+  loot.magnetMaxSpeed = config.magnetMaxSpeed or 720
+  loot.magnetSteering = config.magnetSteering or 24
+  loot.isAttracted = false
 
   loot.hb = config.hb or {
     type = CIRCLE,
@@ -49,12 +53,8 @@ function Loot.new(name, move, pos, config, effect)
   )
   loot.fixture:setSensor(true)
 
-  -- Efeito visual de dispersão inicial ao dropar
-  local angle = math.rad(math.random(-15, 15))
-  local speed = 800
-  local initialVelocity = polarToVec(angle, speed)
-  loot.body:setLinearVelocity(initialVelocity.x, initialVelocity.y)
-  loot.body:setLinearDamping(3)
+  -- O loot nasce parado e continua exibindo sua animação até ser ativado.
+  loot.body:setLinearVelocity(0, 0)
 
   lootManager:add(loot)
 
@@ -82,13 +82,27 @@ function Loot:update(dt)
   self.animations[self.state]:update(dt)
 end
 
-function Loot:collect()
-    self.active = false
-    if self.effect then
-      self:effect()
-    end
+function Loot:collect(target)
+  self.active = false
+  if target and target.type == "Player" then
+    target:onLootCollected()
+  end
+
+  if self.effect then
+    self:effect()
+  end
 
   self:destroy()
+end
+
+function Loot:getInputPosition()
+  if p1.touchPosition then
+    return p1.touchPosition
+  end
+
+  if not checkMobile() then
+    return vec(screenToGamePosition(love.mouse.getPosition()))
+  end
 end
 
 function Loot:updateMotion(dt) 
@@ -101,6 +115,16 @@ function Loot:updateMotion(dt)
   end
 
   local lootPosition = vec(self.body:getPosition())
+  if not self.isAttracted then
+    local inputPosition = self:getInputPosition()
+    if not inputPosition or dist(lootPosition, inputPosition) > self.activationRadius then
+      self.body:setLinearVelocity(0, 0)
+      return
+    end
+
+    self.isAttracted = true
+  end
+
   local playerPosition = vec(p1.body:getPosition())
   local direction = subVec(playerPosition, lootPosition)
 
@@ -108,10 +132,10 @@ function Loot:updateMotion(dt)
     return
   end
 
-  -- A velocidade-alvo cresce com o tempo, produzindo uma atração gradual.
-  local speed = self.timer * self.magnetAcceleration
-  local targetVelocity = scaleVec(normalize(direction), speed)
+  -- O homing forte mantém o loot apontado ao jogador, como se fosse sugado por ele.
   local currentVelocity = vec(self.body:getLinearVelocity())
+  local speed = math.min(self.magnetMaxSpeed, lenVec(currentVelocity) + self.magnetAcceleration * dt)
+  local targetVelocity = scaleVec(normalize(direction), speed)
   local nextVelocity = steerVec(currentVelocity, targetVelocity, self.magnetSteering * dt)
 
   self.body:setLinearVelocity(nextVelocity.x, nextVelocity.y)

@@ -15,6 +15,7 @@ require("modules.utils.states")
 require("modules.utils.vec")
 require("modules.system.render")
 require("modules.system.shots")
+require("modules.system.shaders")
 
 local planet = require("modules.entities.planet")
 
@@ -49,6 +50,8 @@ function Player:load()
 
   self.invulrabilityTimer = 0
   self.invulnerabilityCd = 2
+  self.lootFlashDuration = 0.25
+  self.lootFlashTimer = 0
 
   self.isDead = false
   self.isDefeated = false
@@ -94,6 +97,7 @@ function Player:resetForNewRun()
 
   self.respawnTimer = 0
   self.invulrabilityTimer = 0
+  self.lootFlashTimer = 0
   self.movementTouchId = nil
   self.touchPosition = nil
   self.state = FLYING
@@ -132,6 +136,8 @@ end
 ----------------------------------------
 
 function Player:update(dt)
+  self:updateLootFlash(dt)
+
   if self.isDead then
     self:updateDead(dt)
     return
@@ -142,6 +148,10 @@ function Player:update(dt)
   self.spaceship:update(dt, self.state)
   self:updateShooting(dt)
   self:updateParticles(dt)
+end
+
+function Player:updateLootFlash(dt)
+  self.lootFlashTimer = math.max(0, self.lootFlashTimer - dt)
 end
 
 function Player:updateParticles(dt)
@@ -261,6 +271,11 @@ end
 
 function Player:getHp()
   return self.spaceship.hp
+end
+
+function Player:onLootCollected()
+  self.lootFlashTimer = self.lootFlashDuration
+  soundManager:play("loot1", true)
 end
 
 ----------------------------------------
@@ -389,7 +404,15 @@ function Player:draw()
   end
 
   local x, y = self.body:getPosition()
-  self.spaceship:draw(x, y, self.angle, self.state)
+  local drawFunc = function()
+    self.spaceship:draw(x, y, self.angle, self.state)
+  end
+
+  if self.lootFlashTimer > 0 then
+    applyColorShader(drawFunc)
+  else
+    drawFunc()
+  end
 
   debugRender(self)
 

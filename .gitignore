@@ -1,0 +1,13 @@
+# Credenciais de assinatura Android
+*.jks
+*.keystore
+*.jks.base64
+*.keystore.base64
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Artefatos locais de empacotamento
+dist/
+game.love
